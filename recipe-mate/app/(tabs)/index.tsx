@@ -1,7 +1,7 @@
 // app/(tabs)/index.tsx
 
-// ✅ Plotësim i kërkesës së fazës 1: Home Page UI me FlatList (pa backend, vetëm prototip)
-import React from "react";
+// Plotësim i kërkesës së fazës 1: Home Page UI me FlatList (pa backend, vetëm prototip)
+import React, { useEffect, useState }from "react";
 
 import {
   View,
@@ -13,29 +13,46 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import RecipeCard from "../../components/recipeCard";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 const router = useRouter();
 
 export default function HomeScreen() {
-  // ✅ Shembull i të dhënave statike për prototip (s'merr nga backend në fazën 1)
-  const recipes = [
+
+  const [addedOnce, setAddedOnce] = useState(false);
+  // Shembull i ni recete statike
+  const [recipes, setRecipes] = useState([
     {
       id: "1",
       title: "Spaghetti",
       time: "15 min",
       servings: 2,
       ingredients: ["Pasta", "Tomato", "Oil"],
-      category: "Dinner",
     },
-    {
-      id: "2",
-      title: "Salad",
-      time: "5 min",
-      servings: 1,
-      ingredients: ["Lettuce", "Tomato"],
-      category: "Lunch",
-    },
-  ];
+  ]);
+
+  const params = useLocalSearchParams(); //  Lexo nëse po vjen recetë e re
+
+
+  useEffect(() => {
+    const raw = params.recipeData;
+    if (!raw) return;
+
+    let newRecipe: any = null;
+    try {
+      newRecipe = JSON.parse(String(raw));
+    } catch {
+      return;
+    }
+    if (!newRecipe?.id) return;
+
+    setRecipes(prev => {
+      //  nuk len duplikate (edhe mas reload)
+      if (prev.some(r => r.id === newRecipe.id)) return prev;
+      return [...prev, newRecipe];
+    });
+
+    
+  }, [params.recipeData]); //  prej recipeData
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,7 +80,7 @@ export default function HomeScreen() {
             time={item.time}
             servings={item.servings}
             ingredientsCount={item.ingredients.length}
-            category={item.category}
+            
           />
         )}
         showsVerticalScrollIndicator={false}
