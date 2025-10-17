@@ -25,7 +25,7 @@ export default function HomeScreen() {
       time: "15 min",
       servings: 2,
       ingredients: ["Pasta", "Tomato", "Oil"],
-      category: "Dinner",
+   
     },
     {
       id: "2",
@@ -63,7 +63,7 @@ export default function HomeScreen() {
             time={item.time}
             servings={item.servings}
             ingredientsCount={item.ingredients.length}
-            category={item.category}
+            
           />
         )}
         showsVerticalScrollIndicator={false}
