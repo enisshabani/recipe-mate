@@ -1,33 +1,44 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+// app/(tabs)/_layout.tsx
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+// ✅ Plotësim kërkese faza 1: Navigim bazik me Tabs nga Expo Router, UI PA funksionalitet backend.
+import { Tabs } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function Layout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+        headerShown: false, // Heq header default që na jep Expo
+        tabBarStyle: {
+          backgroundColor: "#fff",
+          borderTopWidth: 0.5,
+          borderTopColor: "#ddd",
+          height: 60,
+          paddingBottom: 8,
+        },
+        tabBarActiveTintColor: "#8B4513", // ngjyrë kafe e butonit aktiv
+        tabBarInactiveTintColor: "#999",
+      }}
+    >
+      {/* 🏠 Home Tab */}
       <Tabs.Screen
-        name="index"
+        name="index" // kjo lidhet me index.tsx automatikisht
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
         }}
       />
+
+      {/* 👤 Profile Tab (placeholder për fazën 1) */}
       <Tabs.Screen
-        name="explore"
+        name="profile" // file ende nuk ekziston - vetëm për UI prototip
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarLabel: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
