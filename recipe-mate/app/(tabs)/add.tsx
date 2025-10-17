@@ -109,11 +109,10 @@ export default function AddRecipeScreen() {
   );
 }
 
-// 🧾 Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fdf8e7", // ngjyrë bezhë e ngrohtë
+    backgroundColor: "#fdf8e7", 
     padding: 16,
   },
   header: {
@@ -121,6 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
+    paddingtop: 45,
   },
   headerTitle: {
     fontSize: 22,
