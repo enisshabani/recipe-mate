@@ -72,14 +72,96 @@ export default function CreateRecipeModal() {
           <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
       </View>
+
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Recipe Details</Text>
+          
+          <TextInput
+            style={styles.input}
+            placeholder="Recipe Name *"
+            value={recipe.name}
+            onChangeText={(text) => handleInputChange('name', text)}
+            placeholderTextColor="#999"
+          />
+          
+          <View style={styles.row}>
+            <TextInput
+              style={[styles.input, styles.halfInput]}
+              placeholder="Category"
+              value={recipe.category}
+              onChangeText={(text) => handleInputChange('category', text)}
+              placeholderTextColor="#999"
+            />
+            <TextInput
+              style={[styles.input, styles.halfInput]}
+              placeholder="Time (e.g., 15 min)"
+              value={recipe.time}
+              onChangeText={(text) => handleInputChange('time', text)}
+              placeholderTextColor="#999"
+            />
+          </View>
+          
+          <TextInput
+            style={styles.input}
+            placeholder="Servings"
+            value={recipe.servings}
+            onChangeText={(text) => handleInputChange('servings', text)}
+            keyboardType="numeric"
+            placeholderTextColor="#999"
+          />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>
+            Ingredients
+          </Text>
+          <Text style={styles.subtitle}>Enter each ingredient on a new line</Text>
+          
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="2 cups flour... 
+cup milk...
+eggs..."
+            value={recipe.ingredients}
+            onChangeText={(text) => handleInputChange('ingredients', text)}
+            multiline
+            numberOfLines={6}
+            textAlignVertical="top"
+            placeholderTextColor="#999"
+          />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>
+            Instructions
+          </Text>
+          
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="1. Mix dry ingredients...
+2. Add wet ingredients...
+3. Cook until golden brown..."
+            value={recipe.instructions}
+            onChangeText={(text) => handleInputChange('instructions', text)}
+            multiline
+            numberOfLines={6}
+            textAlignVertical="top"
+            placeholderTextColor="#999"
+          />
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#F8F5F2",
   },
   navbar: {
     flexDirection: 'row',
@@ -100,7 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   saveButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#8B4513",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
@@ -114,7 +196,59 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 20,
     fontWeight: '600',
+    color: "#3B2F2F",
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+  section: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+    width: 0,
+    height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
     color: '#1a1a1a',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 12,
+    fontStyle: 'italic',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: '#fafafa',
+    marginBottom: 12,
+    color: '#1a1a1a',
+  },
+  halfInput: {
+    flex: 1,
+  },
+  textArea: {
+    minHeight: 120,
+    textAlignVertical: 'top',
   },
 
 });
