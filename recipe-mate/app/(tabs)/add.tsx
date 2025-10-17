@@ -9,6 +9,7 @@ import {
   StyleSheet,
   StatusBar,
 } from "react-native";
+import{ useRouter } from "expo-router";
 
 export default function AddRecipeScreen() {
   const [recipeName, setRecipeName] = useState("");
@@ -17,6 +18,7 @@ export default function AddRecipeScreen() {
   const [servings, setServings] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
+  const router=useRouter();
 
   const handleSaveRecipe = () => {
     if (!recipeName || !ingredients || !instructions) {
@@ -25,18 +27,27 @@ export default function AddRecipeScreen() {
     }
 
     const recipe = {
-      recipeName,
-      description,
-      cookingTime,
-      servings,
-      ingredients: ingredients.split("\n"),
-      instructions: instructions.split("\n"),
-    };
+  id: Date.now().toString(), // gjenerojmë ID unike
+  title: recipeName,
+  time: cookingTime ? `${cookingTime} min` : "", // nëse user s'jep, mos shfaq
+  servings: servings || undefined,
+  ingredients: ingredients.split("\n"),
+};
 
-    console.log("Recipe saved:", recipe);
-    alert("Recipe saved successfully!");
+// Dërgojmë recetën në Home përmes params
+router.push({
+  pathname: "/",
+  params: { recipeData: JSON.stringify(recipe) },
+});
+
+setRecipeName("");
+setDescription("");
+setCookingTime("");
+setServings("");
+setIngredients("");
+setInstructions("");
+
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -110,17 +121,15 @@ export default function AddRecipeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fdf8e7", 
-    padding: 16,
-  },
+ container: {
+  flex: 1,
+  backgroundColor: "#fdf8e7",
+},
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
-    paddingtop: 45,
+    paddingTop: 45,
   },
   headerTitle: {
     fontSize: 22,
@@ -177,4 +186,4 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16,
   },
-});
+});  
