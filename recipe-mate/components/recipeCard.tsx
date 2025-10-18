@@ -1,9 +1,11 @@
-// components/RecipeCard.tsx
 
-// ✅ Komponent UI i ndarë - plotëson kërkesën e fazës 1 për organizim modular të kodit
+// Komponent UI i ndarë 
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+
+
 
 interface RecipeCardProps {
   id: string;
@@ -13,6 +15,8 @@ interface RecipeCardProps {
   ingredientsCount: number;
   category?: string; // opsionale
 }
+
+const router = useRouter();
 
 const RecipeCard: React.FC<RecipeCardProps> = ({
   id,
@@ -32,6 +36,15 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
         <View style={styles.infoRow}>
           <Ionicons name="time-outline" size={16} color="#555" />
           <Text style={styles.infoText}>{time}</Text>
+          {/* Edit Button */}
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => router.push(`/editRecipe?id=${id}`)}
+        >
+          <Ionicons name="create-outline" size={18} color="#8B4513" />
+          <Text style={styles.editButtonText}>Edit</Text>
+        </TouchableOpacity>
+
         </View>
 
         {/* Ikona e servings */}
@@ -47,6 +60,8 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
       {/* Ingredients link */}
       <Text style={styles.ingredientsText}>{ingredientsCount} ingredients</Text>
     </TouchableOpacity>
+
+    
   );
 };
 
@@ -96,4 +111,16 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#8B4513", // ngjyrë kafe si në screenshot
   },
+  editButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 6,
+  },
+  editButtonText: {
+    color: "#8B4513",
+    fontSize: 13,
+    fontWeight: "500",
+  },
+  
 });
