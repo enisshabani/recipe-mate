@@ -1,9 +1,13 @@
 // ✅ Plotësim kërkese faza 1: Navigim bazik me Tabs nga Expo Router, UI PA funksionalitet backend.
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "react-native";
+
 
 export default function Layout() {
   return (
+    <>
+     <StatusBar barStyle="dark-content" backgroundColor="#F8F5F2" />
     <Tabs
       screenOptions={{
         headerShown: false, // Heq header default që na jep Expo
@@ -17,6 +21,7 @@ export default function Layout() {
         tabBarActiveTintColor: "#8B4513", // ngjyrë kafe e butonit aktiv
         tabBarInactiveTintColor: "#999",
       }}
+      
     >
       {/* 🏠 Home Tab */}
       <Tabs.Screen
@@ -28,6 +33,7 @@ export default function Layout() {
           ),
         }}
       />
+      
       {/* ➕ Add Recipe Tab */}
       <Tabs.Screen
         name="add"
@@ -45,9 +51,11 @@ export default function Layout() {
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" size={size} color={color} />
-          ),
+      
+            ),
         }}
       />
     </Tabs>
+    </>
   );
 }
