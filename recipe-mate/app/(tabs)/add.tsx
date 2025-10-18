@@ -51,7 +51,11 @@ setInstructions("");
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+  showsVerticalScrollIndicator={false}
+  contentContainerStyle={{ paddingHorizontal: 20 }}
+>
+
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Add Recipe</Text>
@@ -129,7 +133,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingTop: 45,
+    paddingTop: 35,
   },
   headerTitle: {
     fontSize: 22,
