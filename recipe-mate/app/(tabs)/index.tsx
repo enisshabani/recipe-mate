@@ -1,22 +1,23 @@
-// app/(tabs)/index.tsx
+// Plotësim i kërkesës së fazës 1: Home Page UI me FlatList (pa backend, vetëm prototip)
 import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  FlatList,
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
-  Alert,
-  Platform,
+  FlatList,
+  SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import RecipeCard from "../../components/recipeCard";
-import { useLocalSearchParams, useRouter, Stack } from "expo-router";
-import { useTheme } from "@react-navigation/native";
-import { IconSymbol } from "@/components/IconSymbol";
+import { useLocalSearchParams, useRouter } from "expo-router";
+
+const router = useRouter();
 
 export default function HomeScreen() {
+  const [addedOnce, setAddedOnce] = useState(false);
+
+  // Shembull i ni recete statike
   const [recipes, setRecipes] = useState([
     {
       id: "1",
@@ -27,11 +28,8 @@ export default function HomeScreen() {
     },
   ]);
 
-  const router = useRouter();
-  const params = useLocalSearchParams();
-  const theme = useTheme();
+  const params = useLocalSearchParams(); // Lexo nëse po vjen recetë e re
 
-  // ✅ Merr recetat e reja nga params.recipeData
   useEffect(() => {
     const raw = params.recipeData;
     if (!raw) return;
@@ -42,108 +40,74 @@ export default function HomeScreen() {
     } catch {
       return;
     }
+
     if (!newRecipe?.id) return;
 
     setRecipes((prev) => {
+      // nuk len duplikate (edhe mas reload)
       if (prev.some((r) => r.id === newRecipe.id)) return prev;
       return [...prev, newRecipe];
     });
-  }, [params.recipeData]);
-
-  // ✅ Header Left dhe Right
-  const renderHeaderRight = () => (
-    <TouchableOpacity
-      onPress={() => router.push("/add")}
-      style={styles.headerButtonContainer}
-    >
-      <IconSymbol name="plus" color={theme.colors.primary} />
-    </TouchableOpacity>
-  );
-
-  const renderHeaderLeft = () => (
-    <TouchableOpacity
-      onPress={() => Alert.alert("Settings", "Not implemented yet")}
-      style={styles.headerButtonContainer}
-    >
-      <IconSymbol name="gear" color={theme.colors.primary} />
-    </TouchableOpacity>
-  );
+  }, [params.recipeData]); // prej recipeData
 
   return (
-    <>
-      {Platform.OS === "ios" && (
-        <Stack.Screen
-          options={{
-            title: "Recipe Mate",
-            headerRight: renderHeaderRight,
-            headerLeft: renderHeaderLeft,
-          }}
-        />
-      )}
+    <SafeAreaView style={styles.container}>
+      {/* Header si në screenshot (titull + butoni add) */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Recipe Mate</Text>
 
-      <SafeAreaView style={styles.container}>
-        <FlatList
-          data={recipes}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <RecipeCard
-              id={item.id}
-              title={item.title}
-              time={item.time}
-              servings={item.servings}
-              ingredientsCount={item.ingredients.length}
-            />
-          )}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={styles.listHeader}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="book" size={48} color="#A0522D" />
-              </View>
-              <Text style={styles.title}>Welcome to Recipe Mate</Text>
-              <Text style={styles.description}>
-                Your personal recipe collection and cooking companion.
-              </Text>
-            </View>
-          }
-        />
-      </SafeAreaView>
-    </>
+        {/* Butoni Add – me navigim */}
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => router.push("/add")} // ✅ Hap faqen add.jsx
+        >
+          <Ionicons name="add" size={22} color="#fff" />
+        </TouchableOpacity>
+      </View>
+
+      {/* kërkesa: FlatList për listim */}
+      <FlatList
+        data={recipes}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <RecipeCard
+            id={item.id}
+            title={item.title}
+            time={item.time}
+            servings={item.servings}
+            ingredientsCount={item.ingredients.length}
+          />
+        )}
+        showsVerticalScrollIndicator={false}
+      />
+    </SafeAreaView>
   );
 }
 
+// 🎨 UI stilim sipas screenshot (tonë pastel me fokus në lexueshmëri)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F5F2",
+    backgroundColor: "#F8F5F2", // ngjyrë shumë e zbehtë pastel si sfond
   },
-  listHeader: {
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 24,
-  },
-  iconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 3,
-    marginBottom: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   title: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#3B2F2F",
-    marginBottom: 4,
+    color: "#3B2F2F", // kafe e errët
   },
-  description: {
-    fontSize: 15,
-    color: "#666",
-    textAlign: "center",
-    paddingHorizontal: 20,
-  },
-  headerButtonContainer: {
-    padding: 6,
+  addButton: {
+    backgroundColor: "#8B4513", // kafe si në screenshot
+    width: 34,
+    height: 34,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
