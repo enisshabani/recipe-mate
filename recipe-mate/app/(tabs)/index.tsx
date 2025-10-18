@@ -11,6 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import RecipeCard from "../../components/recipeCard";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import {Link} from "expo-router";
 
 const router = useRouter();
 
@@ -80,7 +81,13 @@ export default function HomeScreen() {
         )}
         showsVerticalScrollIndicator={false}
       />
+      <View> 
+      <Link href="/editRecipe" style = {{  marginVertical: 10, borderBottomWidth: 1,}} >Edit Page</Link>
+      </View>
+
     </SafeAreaView>
+
+    
   );
 }
 
