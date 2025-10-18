@@ -1,4 +1,4 @@
-// Plotësim i kërkesës së fazës 1: Home Page UI me FlatList (pa backend, vetëm prototip)
+// Plotësim i kërkesës: Home Page UI me FlatList
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -12,10 +12,17 @@ import { Ionicons } from "@expo/vector-icons";
 import RecipeCard from "../../components/recipeCard";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {Link} from "expo-router";
+import { TextInput } from "react-native";
+
 
 const router = useRouter();
 
 export default function HomeScreen() {
+  {/* Per histori te search*/ }
+  const [searchQuery, setSearchQuery] = useState("");
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+
   const [addedOnce, setAddedOnce] = useState(false);
 
   // Shembull i ni recete statike
@@ -51,24 +58,62 @@ export default function HomeScreen() {
     });
   }, [params.recipeData]); // prej recipeData
 
+
+const filteredRecipes = recipes.filter((recipe) =>
+  recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
+);
+
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header si në screenshot (titull + butoni add) */}
+      {/* Header (titull + butoni add) */}
       <View style={styles.header}>
         <Text style={styles.title}>Recipe Mate</Text>
 
         {/* Butoni Add – me navigim */}
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => router.push("/add")} // ✅ Hap faqen add.jsx
+          onPress={() => router.push("/add")} // Hap faqen add.jsx
         >
           <Ionicons name="add" size={22} color="#fff" />
         </TouchableOpacity>
       </View>
+      
+      {/*  Search Bar */}
+<View style={styles.searchContainer}>
+  <Ionicons name="search-outline" size={18} color="#777" style={{ marginRight: 6 }} />
+  <TextInput
+    style={styles.searchInput}
+    placeholder="Search for a recipe"
+    placeholderTextColor="#999"
+    value={searchQuery}
+    onChangeText={setSearchQuery}
+    onSubmitEditing={() => {
+      if (searchQuery.trim() !== "" && !recentSearches.includes(searchQuery)) {
+        setRecentSearches((prev) => [...prev, searchQuery]);
+      }
+    }}
+  />
+</View>
+
+  {/* Per search history */}
+  {recentSearches.length > 0 && (
+    <View style={styles.recentRow}>
+      <Text style={styles.recentLabel}>Recent:</Text>
+      <View style={styles.recentTagRow}>
+        {recentSearches.map((term, index) => (
+          <TouchableOpacity key={index} style={styles.recentTag} onPress={() => setSearchQuery(term)}>
+            <Text style={styles.recentTagText}>{term}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  )}
+
 
       {/* kërkesa: FlatList për listim */}
       <FlatList
-        data={recipes}
+        data={filteredRecipes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <RecipeCard
@@ -91,7 +136,7 @@ export default function HomeScreen() {
   );
 }
 
-// 🎨 UI stilim sipas screenshot (tonë pastel me fokus në lexueshmëri)
+// UI Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -117,4 +162,53 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginHorizontal: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    fontSize: 14,
+    color: "#333",
+  },
+
+
+  recentRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 16,
+    marginTop: 6,
+    gap: 8, // hapësirë mes "Recent:" dhe tag-eve
+  },
+  recentLabel: {
+    fontSize: 14,
+    color: "#666",
+  },
+  recentTagRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+  },
+  recentTag: {
+    backgroundColor: "#f7f7f7",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  recentTagText: {
+    fontSize: 13,
+    color: "#333",
+  },
+  
+  
 });
