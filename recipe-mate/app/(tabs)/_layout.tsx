@@ -1,4 +1,4 @@
-// ✅ Plotësim kërkese faza 1: Navigim bazik me Tabs nga Expo Router, UI PA funksionalitet backend.
+// Plotësim kërkese: Navigim bazik 
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "react-native";
@@ -23,7 +23,7 @@ export default function Layout() {
       }}
       
     >
-      {/* 🏠 Home Tab */}
+      {/* Home Tab */}
       <Tabs.Screen
         name="index" // kjo lidhet me index.tsx automatikisht
         options={{
@@ -34,7 +34,7 @@ export default function Layout() {
         }}
       />
       
-      {/* ➕ Add Recipe Tab */}
+      {/*  Add Recipe Tab */}
       <Tabs.Screen
         name="add"
         options={{
@@ -44,7 +44,7 @@ export default function Layout() {
           ),
         }}
       />
-      {/* 👤 Profile Tab (placeholder për fazën 1) */}
+      {/*  Profile Tab */}
       <Tabs.Screen
         name="profile" // file ende nuk ekziston - vetëm për UI prototip
         options={{
