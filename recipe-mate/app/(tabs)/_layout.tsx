@@ -28,7 +28,16 @@ export default function Layout() {
           ),
         }}
       />
-
+      {/* ➕ Add Recipe Tab */}
+      <Tabs.Screen
+        name="add"
+        options={{
+          tabBarLabel: "Add",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="add-circle-outline" size={size} color={color} />
+          ),
+        }}
+      />
       {/* 👤 Profile Tab (placeholder për fazën 1) */}
       <Tabs.Screen
         name="profile" // file ende nuk ekziston - vetëm për UI prototip
