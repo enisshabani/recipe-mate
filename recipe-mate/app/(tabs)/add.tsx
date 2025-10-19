@@ -143,7 +143,7 @@ export default function AddRecipeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fdf8e7",
+    backgroundColor: "#2E5630",
   },
   header: {
     flexDirection: "row",
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#F4A300",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -167,23 +167,23 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#5c3d2e",
+    color: "#F4D6A0",
   },
   headerSave: {
-    backgroundColor: "#b87333",
+    backgroundColor: "#F4A300",
     paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 8,
   },
   headerSaveText: {
-    color: "#fff",
+    color: "#333",
     fontWeight: "600",
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: "600",
     marginTop: 16,
-    color: "#5c3d2e",
+    color: "#F4D6A0",
   },
   subText: {
     fontSize: 12,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 8,
     padding: 10,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   textArea: {
     height: 100,
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   saveButton: {
-    backgroundColor: "#a65a2e",
+    backgroundColor: "#F4A300",
     padding: 14,
     borderRadius: 10,
     alignItems: "center",
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   saveButtonText: {
-    color: "#fff",
+    color: "#333",
     fontWeight: "700",
     fontSize: 16,
   },
