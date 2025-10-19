@@ -54,6 +54,7 @@ export default function RecipeScreen() {
   const handleDelete = () => {
     if (!recipe) return;
     
+    if (recipe.id === "1") {
       Alert.alert(
         "Cannot Delete",
         "The default Spaghetti recipe cannot be deleted.",
