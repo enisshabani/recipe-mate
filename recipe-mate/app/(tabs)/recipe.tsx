@@ -8,8 +8,8 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RecipeScreen() {
@@ -54,36 +54,23 @@ export default function RecipeScreen() {
   };
 
   return (
-    <>
-      <Stack.Screen
-        options={{
-          title: "Recipe",
-          headerStyle: { backgroundColor: "#CA91A1" },
-          headerTintColor: "#F8F5F4",
-          headerShadowVisible: false,
-          headerTitleStyle: {
-            fontSize: 20,
-            fontWeight: "700",
-            color: "#F8F5F4",
-          },
-          headerLeft: () => (
-            <Pressable onPress={() => router.back()} style={{ marginLeft: 10 }}>
-              <Ionicons name="chevron-back" size={24} color="#F8F5F4" />
-            </Pressable>
-          ),
-          headerRight: () => (
-            <Pressable
-              onPress={() => router.push(`/editRecipe?name=${name}`)}
-              style={{ marginRight: 10 }}
-            >
-              <Ionicons name="create-outline" size={22} color="#F8F5F4" />
-            </Pressable>
-          ),
-        }}
-      />
+    <View style={styles.container}>
+      {/* Custom Header */}
+      <View style={styles.header}>
+        <Pressable onPress={() => router.back()} style={styles.headerLeft}>
+          <Ionicons name="chevron-back" size={24} color="#F8F5F4" />
+          <Text style={styles.headerTitle}>Recipe</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => router.push(`/editRecipe?name=${name}`)}
+          style={styles.headerRight}
+        >
+          <Ionicons name="create-outline" size={22} color="#F8F5F4" />
+        </Pressable>
+      </View>
 
       <ScrollView
-        style={styles.container}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
@@ -146,12 +133,30 @@ export default function RecipeScreen() {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#EADFD8" },
+
+  header: {
+    backgroundColor: "#CA91A1",
+    height: 60,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 14,
+  },
+  headerLeft: { flexDirection: "row", alignItems: "center" },
+  headerTitle: {
+    color: "#F8F5F4",
+    fontSize: 20,
+    fontWeight: "700",
+    marginLeft: 4,
+  },
+  headerRight: { padding: 4 },
+
   contentContainer: { padding: 16 },
   mainCard: {
     backgroundColor: "#293251",
