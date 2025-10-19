@@ -89,11 +89,13 @@ const styles = StyleSheet.create({
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,
-    borderRadius: 12,
-    shadowColor: "#000",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#F8a91f",
+    shadowColor: "#F8a91f",
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 6,
+    elevation: 2,
   },
   headerRow: {
     flexDirection: "row",
@@ -113,18 +115,21 @@ const styles = StyleSheet.create({
   infoText: {
     marginLeft: 4,
     fontSize: 13,
+    fontFamily: "System",
     color: "#555",
   },
   category: {
     marginTop: 6,
     fontSize: 14,
+    fontFamily: "System",
     color: "#666",
   },
   ingredientsText: {
     marginTop: 10,
     fontSize: 14,
     fontWeight: "500",
-    color: "#8B4513", // ngjyrë kafe si në screenshot
+    fontFamily: "System",
+    color: "#000", // ngjyrë kafe si në screenshot
   },
   editButton: {
     flexDirection: "row",
@@ -133,9 +138,10 @@ const styles = StyleSheet.create({
     marginLeft: 10, // Added margin for spacing
   },
   editButtonText: {
-    color: "#8B4513",
+    color: "#000",
     fontSize: 13,
     fontWeight: "500",
+    fontFamily: "System",
   },
   
 });

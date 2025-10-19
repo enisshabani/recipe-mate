@@ -121,6 +121,7 @@ const filteredRecipes = recipes.filter((recipe) =>
         </TouchableOpacity>
       </View>
       
+      
       {/* Search Bar */}
 <View style={styles.searchContainer}>
   <Ionicons name="search-outline" size={18} color="#777" style={{ marginRight: 6 }} />
@@ -179,25 +180,31 @@ const filteredRecipes = recipes.filter((recipe) =>
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F5F2", // ngjyrë shumë e zbehtë pastel si sfond
+    backgroundColor: "#FFFCFB", 
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    paddingTop: 38,
+    backgroundColor: "#2e573a", 
+    borderBottomWidth: 1,
+    borderBottomColor: "#2e573a", 
   },
   title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#3B2F2F", // kafe e errët
+    fontSize: 26, 
+    fontWeight: "800", // 
+    color: "#fde3cf", // Recipe mate - zi
+    fontFamily: "System",
+    letterSpacing: 0.5, // pak spacing 
   },
   addButton: {
-    backgroundColor: "#8B4513", // kafe si në screenshot
-    width: 34,
-    height: 34,
-    borderRadius: 8,
+    backgroundColor: "#F8a91f", // Butoni i zi
+    width: 36,
+    height: 36,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -205,12 +212,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    borderRadius: 10,
-    paddingHorizontal: 10,
+    borderRadius: 14,
+    paddingHorizontal: 14,
     marginHorizontal: 16,
     marginBottom: 12,
+    marginTop: 10,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#eee",
+    shadowColor: "#000",
+    shadowOpacity: 0.03,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 2,
   },
   searchInput: {
     flex: 1,
@@ -225,7 +238,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 16,
     marginTop: 6,
-    gap: 8, // hapësirë mes "Recent:" dhe tag-eve
+    gap: 8, // hapësir mes "Recent:" dhe tag-eve
   },
   recentLabel: {
     fontSize: 14,
