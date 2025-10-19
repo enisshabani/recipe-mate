@@ -247,7 +247,7 @@ container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: "#2e573a",
     paddingHorizontal: 16,
     paddingVertical: 12,
     elevation: 3,
@@ -262,7 +262,7 @@ container: {
     backgroundColor: '#f5f5f5',
   },
   saveButton: {
-    backgroundColor: "#8B4513",
+    backgroundColor:  "#F8a91f",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
@@ -276,7 +276,7 @@ container: {
   titleText: {
     fontSize: 20,
     fontWeight: '600',
-    color: "#3B2F2F",
+    color: "#fde3cf",
   },
   scrollContent: {
     padding: 16,
