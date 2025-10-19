@@ -73,7 +73,7 @@ export default function RecipeScreen() {
   if (!recipe) {
     return (
       <View style={styles.container}>
-        <Text style={{ color: "#fff", textAlign: "center", marginTop: 50 }}>
+        <Text style={{ color: "#2e573a", textAlign: "center", marginTop: 50 }}>
           Loading Recipe...
         </Text>
       </View>
@@ -82,9 +82,10 @@ export default function RecipeScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <Pressable onPress={() => router.back()} style={styles.headerLeft}>
-          <Ionicons name="chevron-back" size={24} color="#F8F5F4" />
+          <Ionicons name="chevron-back" size={24} color="#fde3cf" />
           <Text style={styles.headerTitle}>Recipe</Text>
         </Pressable>
 
@@ -97,7 +98,7 @@ export default function RecipeScreen() {
           }
           style={styles.headerRight}
         >
-          <Ionicons name="create-outline" size={22} color="#F8F5F4" />
+          <Ionicons name="create-outline" size={22} color="#fde3cf" />
         </Pressable>
       </View>
 
@@ -113,19 +114,19 @@ export default function RecipeScreen() {
 
           <View style={styles.infoRow}>
             <View style={styles.infoItem}>
-              <Ionicons name="time-outline" color="#CA91A1" size={26} />
+              <Ionicons name="time-outline" color="#F8a91f" size={26} />
               <Text style={styles.infoLabel}>Cooking Time</Text>
               <Text style={styles.infoValue}>{recipe.time || "N/A"}</Text>
             </View>
 
             <View style={styles.infoItem}>
-              <Ionicons name="people-outline" color="#CA91A1" size={26} />
+              <Ionicons name="people-outline" color="#F8a91f" size={26} />
               <Text style={styles.infoLabel}>Servings</Text>
               <Text style={styles.infoValue}>{recipe.servings || "N/A"}</Text>
             </View>
 
             <View style={styles.infoItem}>
-              <Ionicons name="list-outline" color="#CA91A1" size={26} />
+              <Ionicons name="list-outline" color="#F8a91f" size={26} />
               <Text style={styles.infoLabel}>Ingredients</Text>
               <Text style={styles.infoValue}>
                 {recipe.ingredients?.length || "N/A"}
@@ -152,7 +153,7 @@ export default function RecipeScreen() {
           <Pressable style={styles.favoriteButton} onPress={toggleFavorite}>
             <Ionicons
               name={isFavorite ? "heart" : "heart-outline"}
-              color="#293251"
+              color="#2e573a"
               size={18}
             />
             <Text style={styles.favoriteText}>
@@ -161,7 +162,7 @@ export default function RecipeScreen() {
           </Pressable>
 
           <Pressable style={styles.deleteButton} onPress={handleDelete}>
-            <Ionicons name="trash-outline" color="#293251" size={18} />
+            <Ionicons name="trash-outline" color="#2e573a" size={18} />
             <Text style={styles.deleteButtonText}>Delete Recipe</Text>
           </Pressable>
         </View>
@@ -173,9 +174,9 @@ export default function RecipeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#EADFD8" },
+  container: { flex: 1, backgroundColor: "#FFFCFB" },
   header: {
-    backgroundColor: "#CA91A1",
+    backgroundColor: "#2e573a",
     height: 60,
     flexDirection: "row",
     alignItems: "center",
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
   },
   headerLeft: { flexDirection: "row", alignItems: "center" },
   headerTitle: {
-    color: "#F8F5F4",
+    color: "#fde3cf",
     fontSize: 20,
     fontWeight: "700",
     marginLeft: 4,
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
   headerRight: { padding: 4 },
   contentContainer: { padding: 16 },
   mainCard: {
-    backgroundColor: "#293251",
+    backgroundColor: "#2e573a",
     borderRadius: 18,
     padding: 24,
     marginBottom: 16,
@@ -200,34 +201,41 @@ const styles = StyleSheet.create({
   recipeTitle: {
     fontSize: 30,
     fontWeight: "700",
-    color: "#F8F5F4",
+    color: "#fde3cf",
     textAlign: "center",
     marginBottom: 8,
   },
   optionalText: {
     fontSize: 16,
-    color: "#F8F5F4",
+    color: "#fde3cf",
     opacity: 0.9,
     textAlign: "center",
     marginBottom: 16,
   },
   infoRow: { flexDirection: "row", justifyContent: "space-around", marginTop: 10 },
   infoItem: { alignItems: "center", flex: 1 },
-  infoLabel: { fontSize: 14, color: "#CA91A1", marginTop: 6 },
-  infoValue: { fontSize: 18, fontWeight: "700", color: "#F8F5F4" },
+  infoLabel: { fontSize: 14, color: "#F8a91f", marginTop: 6 },
+  infoValue: { fontSize: 18, fontWeight: "700", color: "#fde3cf" },
   card: {
-    backgroundColor: "#293251",
+    backgroundColor: "#fff",
     borderRadius: 18,
     padding: 22,
     marginBottom: 16,
+    borderColor: "#2e573a",
+    borderWidth: 1,
   },
-  cardTitle: { fontSize: 20, fontWeight: "700", color: "#F8F5F4", marginBottom: 10 },
-  ingredientText: { fontSize: 16, color: "#F8F5F4", lineHeight: 22 },
-  instructionText: { fontSize: 16, color: "#F8F5F4", lineHeight: 22 },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#2e573a",
+    marginBottom: 10,
+  },
+  ingredientText: { fontSize: 16, color: "#2e573a", lineHeight: 22 },
+  instructionText: { fontSize: 16, color: "#2e573a", lineHeight: 22 },
   bottomRow: { flexDirection: "row", justifyContent: "space-between", gap: 10 },
   favoriteButton: {
     flex: 1,
-    backgroundColor: "#CA91A1",
+    backgroundColor: "#F8a91f",
     borderRadius: 14,
     padding: 16,
     flexDirection: "row",
@@ -235,14 +243,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   favoriteText: {
-    color: "#293251",
+    color: "#2e573a",
     fontSize: 16,
     fontWeight: "700",
     marginLeft: 6,
   },
   deleteButton: {
     flex: 1,
-    backgroundColor: "#CA91A1",
+    backgroundColor: "#F8a91f",
     borderRadius: 14,
     padding: 16,
     flexDirection: "row",
@@ -250,7 +258,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   deleteButtonText: {
-    color: "#293251",
+    color: "#2e573a",
     fontSize: 16,
     fontWeight: "700",
     marginLeft: 6,
