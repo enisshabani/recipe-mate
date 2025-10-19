@@ -1,6 +1,6 @@
 # Recipe Mate – Grupi 25
 
-### 👥 Anëtarët e grupit (rend alfabetik sipas emrit):
+###  Anëtarët e grupit (rend alfabetik sipas emrit):
 - **Enis Shabani**
 - **Lis Spahija**
 - **Lyra Bullaku**
