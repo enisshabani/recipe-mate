@@ -2,7 +2,7 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, Platform, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import IconSymbol from "@/components/ui/icon-symbol";
+import { Ionicons } from "@expo/vector-icons";
 
 
 export default function ProfileScreen() {
@@ -25,7 +25,7 @@ export default function ProfileScreen() {
       >
         <View style={[styles.profileCard, { backgroundColor: headerBackground }]}>
           <View style={[styles.avatar, { backgroundColor: "#FFFFFF" }]}>
-            <IconSymbol name="person.fill" size={48} color={deepAccent} />
+            <Ionicons name="person" size={48} color={deepAccent} />
           </View>
           <Text style={[styles.name, { color: "#fde3cf" }]}>Recipe Chef</Text>
           <Text style={[styles.subtitle, { color: "#fde3cf", opacity: 0.85 }]}>Cooking enthusiast since 2024</Text>
@@ -37,7 +37,7 @@ export default function ProfileScreen() {
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
               <View style={[styles.statIconContainer, { backgroundColor: "#fde3cf" }]}>
-                <IconSymbol name="book.fill" size={24} color={deepAccent} />
+                <Ionicons name="book" size={24} color={deepAccent} />
               </View>
               <Text style={[styles.statValue, { color: textPrimary }]}>3</Text>
               <Text style={[styles.statLabel, { color: textSecondary }]}>Total Recipes</Text>
@@ -45,7 +45,7 @@ export default function ProfileScreen() {
 
             <View style={styles.statItem}>
               <View style={[styles.statIconContainer, { backgroundColor: "#fde3cf" }]}>
-                <IconSymbol name="heart.fill" size={24} color={deepAccent} />
+                <Ionicons name="heart" size={24} color={deepAccent} />
               </View>
               <Text style={[styles.statValue, { color: textPrimary }]}>1</Text>
               <Text style={[styles.statLabel, { color: textSecondary }]}>Favorites</Text>
@@ -53,7 +53,7 @@ export default function ProfileScreen() {
 
             <View style={styles.statItem}>
               <View style={[styles.statIconContainer, { backgroundColor: "#fde3cf" }]}>
-                <IconSymbol name="clock.fill" size={24} color={deepAccent} />
+                <Ionicons name="time" size={24} color={deepAccent} />
               </View>
               <Text style={[styles.statValue, { color: textPrimary }]}>2h 15m</Text>
               <Text style={[styles.statLabel, { color: textSecondary }]}>Cooking Time</Text>
@@ -67,31 +67,31 @@ export default function ProfileScreen() {
           <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}>
             <View style={styles.menuItemLeft}>
               <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
-                <IconSymbol name="heart.fill" size={20} color={deepAccent} />
+                <Ionicons name="heart" size={20} color={deepAccent} />
               </View>
               <Text style={[styles.menuItemText, { color: textPrimary }]}>My Favorites</Text>
             </View>
-            <IconSymbol name="chevron.right" size={20} color={deepAccent} />
+            <Ionicons name="chevron-forward" size={20} color={deepAccent} />
           </Pressable>
 
           <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}>
             <View style={styles.menuItemLeft}>
               <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
-                <IconSymbol name="gear" size={20} color={deepAccent} />
+                <Ionicons name="settings" size={20} color={deepAccent} />
               </View>
               <Text style={[styles.menuItemText, { color: textPrimary }]}>Settings</Text>
             </View>
-            <IconSymbol name="chevron.right" size={20} color={deepAccent} />
+            <Ionicons name="chevron-forward" size={20} color={deepAccent} />
           </Pressable>
 
           <Pressable style={({ pressed }) => [styles.menuItem, styles.menuItemLast, pressed && styles.menuItemPressed]}>
             <View style={styles.menuItemLeft}>
               <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
-                <IconSymbol name="questionmark.circle.fill" size={20} color={deepAccent} />
+                <Ionicons name="help-circle" size={20} color={deepAccent} />
               </View>
               <Text style={[styles.menuItemText, { color: textPrimary }]}>Help & Support</Text>
             </View>
-            <IconSymbol name="chevron.right" size={20} color={deepAccent} />
+            <Ionicons name="chevron-forward" size={20} color={deepAccent} />
           </Pressable>
         </View>
 
