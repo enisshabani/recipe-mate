@@ -12,9 +12,11 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useRecipes } from '../contexts/RecipeContext';
 
 export default function CreateRecipeModal() {
   const params = useLocalSearchParams();
+  const { updateRecipe } = useRecipes();
   const [recipe, setRecipe] = useState({
     id: '',
     title: '',
@@ -81,14 +83,11 @@ export default function CreateRecipeModal() {
       instructions: recipe.instructions.trim(),
     };
 
-    router.push({
-      pathname: '/',
-      params: { recipeData: JSON.stringify(updatedRecipe) },
-    });
+    updateRecipe(updatedRecipe);
 
-    Alert.alert('Success!', 'Recipe saved successfully!', [
-      { text: 'OK', onPress: () => router.back() },
-    ]);
+    router.push('/');
+
+    Alert.alert('Success!', 'Recipe updated successfully!');
   };
 
   const handleInputChange = (field, value) => {

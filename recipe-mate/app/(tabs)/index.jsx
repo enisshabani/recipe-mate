@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,59 +10,15 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import RecipeCard from "../../components/recipeCard";
-import { useLocalSearchParams, useRouter, Link } from "expo-router";
+import { useRouter } from "expo-router";
+import { useRecipes } from "../../contexts/RecipeContext";
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { recipes } = useRecipes();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
-
-  const [recipes, setRecipes] = useState([
-    {
-      id: "1",
-      title: "Spaghetti",
-      time: "15 min",
-      servings: 2,
-      ingredients: ["Pasta", "Tomato", "Oil"],
-      instructions: "Boil pasta and mix with sauce.",
-      description: "A simple Italian classic.",
-    },
-  ]);
-
-  const params = useLocalSearchParams();
-
-  useEffect(() => {
-    const raw = params.recipeData;
-    if (!raw) return;
-
-    let incomingRecipe = null;
-    try {
-      incomingRecipe = JSON.parse(String(raw));
-    } catch {
-      return;
-    }
-
-    if (!incomingRecipe?.id) return;
-
-    setRecipes((prev) => {
-      const parsedIngredients = Array.isArray(incomingRecipe.ingredients)
-        ? incomingRecipe.ingredients
-        : String(incomingRecipe.ingredients || "").split("\n");
-
-      const exists = prev.some((r) => r.id === incomingRecipe.id);
-
-      if (exists) {
-        return prev.map((recipe) =>
-          recipe.id === incomingRecipe.id
-            ? { ...recipe, ...incomingRecipe, ingredients: parsedIngredients }
-            : recipe
-        );
-      }
-
-      return [...prev, { ...incomingRecipe, ingredients: parsedIngredients }];
-    });
-  }, [params.recipeData]);
 
   const filteredRecipes = recipes.filter((recipe) =>
     recipe.title.toLowerCase().includes(searchQuery.toLowerCase())

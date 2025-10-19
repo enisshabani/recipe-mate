@@ -11,6 +11,7 @@ import {
   Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useRecipes } from "../contexts/RecipeContext";
 
 export default function AddRecipeScreen() {
   const [recipeName, setRecipeName] = useState("");
@@ -20,6 +21,7 @@ export default function AddRecipeScreen() {
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
   const router = useRouter();
+  const { addRecipe } = useRecipes();
 
   const handleSaveRecipe = () => {
     if (!recipeName || !ingredients || !instructions) {
@@ -43,10 +45,7 @@ export default function AddRecipeScreen() {
       instructions: instructions.trim(),
     };
 
-    router.push({
-      pathname: "/",
-      params: { recipeData: JSON.stringify(recipe) },
-    });
+    addRecipe(recipe);
 
     Alert.alert("Success", "Recipe added successfully!");
     setRecipeName("");
@@ -55,6 +54,8 @@ export default function AddRecipeScreen() {
     setServings("");
     setIngredients("");
     setInstructions("");
+    
+    router.push("/");
   };
 
   return (

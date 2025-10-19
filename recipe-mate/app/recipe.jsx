@@ -11,12 +11,14 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRecipes } from "../contexts/RecipeContext";
 
 export default function RecipeScreen() {
   const router = useRouter();
   const { currentRecipe } = useLocalSearchParams();
   const [recipe, setRecipe] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const { deleteRecipe } = useRecipes();
 
   useEffect(() => {
     if (currentRecipe) {
@@ -51,6 +53,15 @@ export default function RecipeScreen() {
 
   const handleDelete = () => {
     if (!recipe) return;
+    
+      Alert.alert(
+        "Cannot Delete",
+        "The default Spaghetti recipe cannot be deleted.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+    
     Alert.alert(
       "Delete Recipe",
       `Are you sure you want to delete "${recipe.title}"?`,
@@ -63,7 +74,8 @@ export default function RecipeScreen() {
             try {
               await AsyncStorage.removeItem(`favorite_${recipe.id}`);
             } catch {}
-            router.back();
+            deleteRecipe(recipe.id);
+            router.replace("/");
           },
         },
       ]
