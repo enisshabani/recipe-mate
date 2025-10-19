@@ -110,7 +110,7 @@ const filteredRecipes = recipes.filter((recipe) =>
           style={styles.addButton}
           onPress={() => router.push("/add")} // Hap faqen add.jsx
         >
-          <Ionicons name="add" size={22} color="#fff" />
+          <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
       
@@ -195,11 +195,17 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: "#F8a91f", // Butoni i zi
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    paddingHorizontal: 22,
+    height: 40,
+    borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
+  },
+  addButtonText: {
+    color: "#fde3cf",
+    fontSize: 14,
+    fontWeight: "600",
+    letterSpacing: 0.5,
   },
   searchContainer: {
     flexDirection: "row",

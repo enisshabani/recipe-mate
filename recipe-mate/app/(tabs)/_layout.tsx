@@ -12,14 +12,23 @@ export default function Layout() {
       screenOptions={{
         headerShown: false, // Heq header default që na jep Expo
         tabBarStyle: {
-          backgroundColor: "#fff",
-          borderTopWidth: 0.5,
+          backgroundColor: "#ffffff",
+          borderTopWidth: 0,
           borderTopColor: "#ddd",
-          height: 60,
-          paddingBottom: 8,
+          height: 70,
+          paddingBottom: 10,
+          paddingTop: 6,
+          shadowColor: "#000",
+          shadowOpacity: 0.05,
+          shadowRadius: 4,
+          elevation: 6, // per Android
         },
-        tabBarActiveTintColor: "#8B4513", // ngjyrë kafe e butonit aktiv
-        tabBarInactiveTintColor: "#999",
+        tabBarActiveTintColor: "#2e573a", // ngjyra kryesore (e gjelbërt e errët)
+        tabBarInactiveTintColor: "#aaaaaa",
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "600",
+        },
       }}
       
     >
