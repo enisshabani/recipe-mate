@@ -67,38 +67,31 @@ export default function HomeScreen() {
     if (!incomingRecipe?.id) return;
 
     setRecipes((prev) => {
-      // Logic for editing an existing recipe
-      // Check if the recipe exists by originalId (if it's an edit) or by id (if it's a new recipe that was just saved)
-      const isExisting = prev.some((r) => r.id === incomingRecipe!.id);
-
-      if (isExisting) {
-        // Edit existing recipe
+      // GARANTO që INCOMING nuk është null dhe ka ID
+      if (!incomingRecipe || !incomingRecipe.id) return prev;
+    
+      //  Ingredients gjith si array
+      const parsedIngredients = Array.isArray(incomingRecipe.ingredients)
+        ? incomingRecipe.ingredients
+        : String(incomingRecipe.ingredients || "").split("\n");
+    
+      // Kontrollo nese ekziston tashme
+      const exists = prev.some((r) => r.id === incomingRecipe!.id);
+    
+      if (exists) {
+        // Perditsoje ekzistuesen
         return prev.map((recipe) =>
           recipe.id === incomingRecipe!.id
-            ? {
-                ...recipe,
-                ...incomingRecipe,
-                // Ensure ingredients remains an array of strings for consistency
-                ingredients: Array.isArray(incomingRecipe.ingredients)
-                  ? incomingRecipe.ingredients
-                  : (incomingRecipe.ingredients as unknown as string).split("\n"),
-              }
+            ? { ...recipe, ...incomingRecipe, ingredients: parsedIngredients }
             : recipe
         );
-      } else {
-        // Add new recipe
-        return [
-          ...prev,
-          {
-            ...incomingRecipe,
-            ingredients: Array.isArray(incomingRecipe.ingredients)
-              ? incomingRecipe.ingredients
-              : (incomingRecipe.ingredients as unknown as string).split("\n"),
-          },
-        ];
       }
+    
+      // Shto te re
+      return [...prev, { ...incomingRecipe, ingredients: parsedIngredients }];
     });
-  }, [params.recipeData]); // prej recipeData
+ }, [params.recipeData]); // prej recipeData
+
 
 
 const filteredRecipes = recipes.filter((recipe) =>
