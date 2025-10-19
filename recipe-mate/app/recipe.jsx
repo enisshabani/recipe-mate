@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function RecipeScreen() {
   const router = useRouter();
   const { currentRecipe } = useLocalSearchParams();
-  const [recipe, setRecipe] = useState<any>(null);
+  const [recipe, setRecipe] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {

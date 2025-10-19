@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "app/(tabs)/add.jsx"  ]
+, "app/(tabs)/add.jsx", "components/recipeCard.jsx", "app/(tabs)/_layout.jsx", "app/(tabs)/index.jsx", "app/(tabs)/profile.jsx", "app/recipe.jsx", "app/add.jsx"  ]
 }
