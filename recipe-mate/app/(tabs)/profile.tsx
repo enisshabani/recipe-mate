@@ -7,6 +7,7 @@ import IconSymbol from "@/components/ui/icon-symbol";
 
 export default function ProfileScreen() {
   const backgroundColor = "#FFFCFB";
+  const headerBackground = "#2e573a";
   const cardBackground = "#FFFFFF";
   const textPrimary = "#2e573a";
   const textSecondary = "#666666";
@@ -23,16 +24,16 @@ export default function ProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Profile Header */}
-        <View style={[styles.profileCard, { backgroundColor: cardBackground }]}>
-          <View style={[styles.avatar, { backgroundColor: deepAccent }]}>
-            <IconSymbol name="person.fill" size={48} color="#FFFCFB" />
+        <View style={[styles.profileCard, { backgroundColor: headerBackground }]}>
+          <View style={[styles.avatar, { backgroundColor: "#FFFFFF" }]}>
+            <IconSymbol name="person.fill" size={48} color={deepAccent} />
           </View>
-          <Text style={[styles.name, { color: textPrimary }]}>Recipe Chef</Text>
-          <Text style={[styles.subtitle, { color: textSecondary }]}>Cooking enthusiast since 2024</Text>
+          <Text style={[styles.name, { color: "#fde3cf" }]}>Recipe Chef</Text>
+          <Text style={[styles.subtitle, { color: "#fde3cf", opacity: 0.85 }]}>Cooking enthusiast since 2024</Text>
         </View>
 
         {/* Your Stats Section */}
-        <View style={[styles.statsCard, { backgroundColor: cardBackground }]}>
+  <View style={[styles.statsCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.sectionTitle, { color: textPrimary }]}>Your Stats</Text>
           
           <View style={styles.statsContainer}>
@@ -63,7 +64,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Menu Section */}
-        <View style={[styles.menuCard, { backgroundColor: cardBackground }]}>
+  <View style={[styles.menuCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.sectionTitle, { color: textPrimary }]}>Menu</Text>
           
           <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}>
@@ -98,7 +99,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Footer Section */}
-        <View style={[styles.footerCard, { backgroundColor: cardBackground }]}>
+  <View style={[styles.footerCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.footerTitle, { color: textPrimary }]}>Recipe Mate</Text>
           <Text style={[styles.footerVersion, { color: textSecondary }]}>Version 1.0.0</Text>
           <Text style={[styles.footerDescription, { color: textSecondary }]}>
@@ -146,8 +147,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   name: {
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 30,
+    fontWeight: '700',
     marginBottom: 4,
   },
   subtitle: {
@@ -164,10 +165,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
+    borderColor: '#2e573a',
+    borderWidth: 1,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
     marginBottom: 16,
   },
   statsContainer: {
@@ -208,6 +211,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
+    borderColor: '#2e573a',
+    borderWidth: 1,
   },
   menuItem: {
     flexDirection: 'row',
@@ -260,6 +265,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
+    borderColor: '#2e573a',
+    borderWidth: 1,
   },
   footerTitle: {
     fontSize: 18,
