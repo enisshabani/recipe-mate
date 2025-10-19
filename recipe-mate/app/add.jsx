@@ -109,7 +109,7 @@ export default function AddRecipeScreen() {
           />
         </View>
 
-\        <Text style={styles.sectionTitle}>Ingredients *</Text>
+        <Text style={styles.sectionTitle}>Ingredients *</Text>
         <Text style={styles.subText}>Enter each ingredient on a new line</Text>
         <TextInput
           placeholder="2 cups flour..."
