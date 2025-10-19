@@ -9,7 +9,7 @@ export default function Layout() {
      <StatusBar barStyle="dark-content" backgroundColor="#F8F5F2" />
     <Tabs
       screenOptions={{
-        headerShown: false, // Heq header default që na jep Expo
+        headerShown: false,
         tabBarStyle: {
           backgroundColor: "#ffffff",
           borderTopWidth: 0,
@@ -20,9 +20,9 @@ export default function Layout() {
           shadowColor: "#000",
           shadowOpacity: 0.05,
           shadowRadius: 4,
-          elevation: 6, // per Android
+          elevation: 6, 
         },
-        tabBarActiveTintColor: "#2e573a", // ngjyra kryesore (e gjelbërt e errët)
+        tabBarActiveTintColor: "#2e573a",
         tabBarInactiveTintColor: "#aaaaaa",
         tabBarLabelStyle: {
           fontSize: 12,
@@ -31,9 +31,8 @@ export default function Layout() {
       }}
       
     >
-      {/* Home Tab */}
       <Tabs.Screen
-        name="index" // kjo lidhet me index.tsx automatikisht
+        name="index"
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
@@ -42,7 +41,6 @@ export default function Layout() {
         }}
       />
       
-      {/*  Add Recipe Tab */}
       <Tabs.Screen
         name="add"
         options={{
@@ -52,9 +50,8 @@ export default function Layout() {
           ),
         }}
       />
-      {/*  Profile Tab */}
       <Tabs.Screen
-        name="profile" // file ende nuk ekziston - vetëm për UI prototip
+        name="profile" 
         options={{
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (

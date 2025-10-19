@@ -11,19 +11,6 @@ type IconMapping = Record<
 >;
 type IconSymbolName = keyof typeof MAPPING;
 
-/**
- * Shto këtu ikonat që do përputhen me Material Icons për Android/Web.
- */
-// const MAPPING = {
-//   "house": "home",
-//   "house.fill": "home",
-//   "person": "person-outline",
-//   "person.fill": "person",
-//   "paperplane.fill": "send",
-//   "chevron.left.forwardslash.chevron.right": "code",
-//   "chevron.right": "chevron-right",
-// } as IconMapping;
-
 const MAPPING = {
   "house": "home",
   "house.fill": "home",
@@ -40,9 +27,6 @@ const MAPPING = {
 } as IconMapping;
 
 
-/**
- * Një komponent universal për ikona në iOS/Android/Web.
- */
 export default function IconSymbol({
   name,
   size = 24,

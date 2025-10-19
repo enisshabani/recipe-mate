@@ -15,11 +15,9 @@ import { useLocalSearchParams, useRouter, Link } from "expo-router";
 export default function HomeScreen() {
   const router = useRouter();
 
-  // Search & history
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
 
-  // Lista e recetave
   const [recipes, setRecipes] = useState([
     {
       id: "1",
@@ -72,7 +70,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Recipe Mate</Text>
 
@@ -84,7 +81,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Ionicons name="search-outline" size={18} color="#777" style={{ marginRight: 6 }} />
         <TextInput
@@ -101,7 +97,6 @@ export default function HomeScreen() {
         />
       </View>
 
-      {/* Recent Searches */}
       {recentSearches.length > 0 && (
         <View style={styles.recentRow}>
           <Text style={styles.recentLabel}>Recent:</Text>
@@ -119,7 +114,6 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* Recipes List */}
       <FlatList
         data={filteredRecipes}
         keyExtractor={(item) => item.id}

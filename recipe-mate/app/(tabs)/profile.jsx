@@ -23,7 +23,6 @@ export default function ProfileScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Profile Header */}
         <View style={[styles.profileCard, { backgroundColor: headerBackground }]}>
           <View style={[styles.avatar, { backgroundColor: "#FFFFFF" }]}>
             <IconSymbol name="person.fill" size={48} color={deepAccent} />
@@ -32,7 +31,6 @@ export default function ProfileScreen() {
           <Text style={[styles.subtitle, { color: "#fde3cf", opacity: 0.85 }]}>Cooking enthusiast since 2024</Text>
         </View>
 
-        {/* Your Stats Section */}
   <View style={[styles.statsCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.sectionTitle, { color: textPrimary }]}>Your Stats</Text>
           
@@ -63,7 +61,6 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Menu Section */}
   <View style={[styles.menuCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.sectionTitle, { color: textPrimary }]}>Menu</Text>
           
@@ -98,7 +95,6 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        {/* Footer Section */}
   <View style={[styles.footerCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.footerTitle, { color: textPrimary }]}>Recipe Mate</Text>
           <Text style={[styles.footerVersion, { color: textSecondary }]}>Version 1.0.0</Text>
@@ -125,9 +121,7 @@ const styles = StyleSheet.create({
   contentContainerWithTabBar: {
     paddingBottom: 100,
   },
-  
-  // Profile Card
-  profileCard: {
+    profileCard: {
     borderRadius: 20,
     padding: 32,
     alignItems: 'center',
@@ -154,8 +148,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
   },
-
-  // Stats Card
   statsCard: {
     borderRadius: 20,
     padding: 20,
@@ -200,8 +192,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
-
-  // Menu Card
   menuCard: {
     borderRadius: 20,
     padding: 20,
@@ -254,8 +244,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#2e573a',
   },
-
-  // Footer Card
   footerCard: {
     borderRadius: 20,
     padding: 24,

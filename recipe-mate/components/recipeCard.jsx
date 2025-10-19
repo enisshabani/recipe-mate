@@ -1,4 +1,3 @@
-// Komponent UI i ndarë 
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,7 +6,6 @@ import { useRouter } from "expo-router";
 export default function RecipeCard({ recipe }) {
   const router = useRouter();
 
-  // Destructure properties from the recipe prop for cleaner usage
   const { id, title, time, servings, ingredients, category } = recipe;
 
   return (
@@ -22,12 +20,10 @@ export default function RecipeCard({ recipe }) {
         });
       }}
     >
-      {/* Titulli */}
       <View style={styles.headerRow}>
         <Text style={styles.title}>{title}</Text>
 
         <View style={styles.infoRow}>
-          {/* Ikona e kohës */}
           {time && (
             <View style={styles.infoRow}>
               <Ionicons name="time-outline" size={16} color="#555" />
@@ -35,7 +31,6 @@ export default function RecipeCard({ recipe }) {
             </View>
           )}
 
-          {/* Ikona e servings */}
           {servings && (
             <View style={styles.infoRow}>
               <Ionicons name="people-outline" size={16} color="#0077cc" />
@@ -43,7 +38,6 @@ export default function RecipeCard({ recipe }) {
             </View>
           )}
 
-          {/* Edit Button */}
           <TouchableOpacity
             style={styles.editButton}
             onPress={() =>
@@ -59,10 +53,8 @@ export default function RecipeCard({ recipe }) {
         </View>
       </View>
 
-      {/* Kategoria */}
       {category && <Text style={styles.category}>{category}</Text>}
 
-      {/* Ingredients link */}
       <Text style={styles.ingredientsText}>
         {ingredients.length} ingredients
       </Text>
@@ -70,7 +62,6 @@ export default function RecipeCard({ recipe }) {
   );
 }
 
-// 🎨 Stilizimi bazik i kartës
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",

@@ -6,7 +6,6 @@ import Animated, {
   withSpring,
   interpolate,
 } from 'react-native-reanimated';
-// import { BlurView } from 'expo-blur';
 import {
   View,
   Text,
@@ -17,7 +16,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, usePathname } from 'expo-router';
-// import { IconSymbol } from '@/components/ui/icon-symbol';
 import IconSymbol from "@/components/ui/icon-symbol";
 
 import { useTheme } from '@react-navigation/native';

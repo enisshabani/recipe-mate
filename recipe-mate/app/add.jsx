@@ -64,7 +64,6 @@ export default function AddRecipeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 20 }}
       >
-        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.closeButton}
@@ -78,7 +77,6 @@ export default function AddRecipeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Recipe Details */}
         <Text style={styles.sectionTitle}>Recipe Details</Text>
         <TextInput
           placeholder="Recipe Name *"
@@ -110,8 +108,7 @@ export default function AddRecipeScreen() {
           />
         </View>
 
-        {/* Ingredients */}
-        <Text style={styles.sectionTitle}>Ingredients *</Text>
+\        <Text style={styles.sectionTitle}>Ingredients *</Text>
         <Text style={styles.subText}>Enter each ingredient on a new line</Text>
         <TextInput
           placeholder="2 cups flour..."
@@ -121,7 +118,6 @@ export default function AddRecipeScreen() {
           multiline
         />
 
-        {/* Instructions */}
         <Text style={styles.sectionTitle}>Instructions *</Text>
         <TextInput
           placeholder="1. Mix dry ingredients..."
@@ -131,7 +127,6 @@ export default function AddRecipeScreen() {
           multiline
         />
 
-        {/* Save Button */}
         <TouchableOpacity style={styles.saveButton} onPress={handleSaveRecipe}>
           <Text style={styles.saveButtonText}>Save Recipe</Text>
         </TouchableOpacity>
