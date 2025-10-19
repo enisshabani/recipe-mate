@@ -1,4 +1,3 @@
-
 // Komponent UI i ndarë 
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -7,50 +6,66 @@ import { useRouter } from "expo-router";
 
 
 
-interface RecipeCardProps {
+interface Recipe {
   id: string;
   title: string;
-  time: string; // shembull: "15 min"
-  servings: number; // shembull: 2
-  ingredientsCount: number;
-  category?: string; // opsionale
+  time: string;
+  servings?: number | string;
+  ingredients: string[];
+  instructions?: string;
+  description?: string;
+  category?: string; 
+}
+
+interface RecipeCardProps {
+  recipe: Recipe;
 }
 
 const router = useRouter();
 
 const RecipeCard: React.FC<RecipeCardProps> = ({
-  id,
-  title,
-  time,
-  servings,
-  ingredientsCount,
-  category,
+  recipe,
 }) => {
+    // Destructure properties from the recipe prop for cleaner usage
+    const { id, title, time, servings, ingredients, category } = recipe;
+
+
   return (
     <TouchableOpacity style={styles.card}>
       {/* Titulli */}
       <View style={styles.headerRow}>
         <Text style={styles.title}>{title}</Text>
-
-        {/* Ikona e kohës */}
         <View style={styles.infoRow}>
-          <Ionicons name="time-outline" size={16} color="#555" />
-          <Text style={styles.infoText}>{time}</Text>
+          {/* Ikona e kohës */}
+          {time && (
+            <View style={styles.infoRow}>
+              <Ionicons name="time-outline" size={16} color="#555" />
+              <Text style={styles.infoText}>{time}</Text>
+            </View>
+          )}
+
+          {/* Ikona e servings */}
+          {servings && (
+            <View style={styles.infoRow}>
+              <Ionicons name="people-outline" size={16} color="#0077cc" />
+              <Text style={styles.infoText}>{servings}</Text>
+            </View>
+          )}
+
           {/* Edit Button */}
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => router.push(`/editRecipe?id=${id}`)}
+          onPress={() => 
+            router.push({
+                pathname: "/editRecipe",
+                params: { currentRecipe: JSON.stringify(recipe) },
+              })
+            }
         >
           <Ionicons name="create-outline" size={18} color="#8B4513" />
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
 
-        </View>
-
-        {/* Ikona e servings */}
-        <View style={styles.infoRow}>
-          <Ionicons name="people-outline" size={16} color="#0077cc" />
-          <Text style={styles.infoText}>{servings}</Text>
         </View>
       </View>
 
@@ -58,7 +73,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
       {category && <Text style={styles.category}>{category}</Text>}
 
       {/* Ingredients link */}
-      <Text style={styles.ingredientsText}>{ingredientsCount} ingredients</Text>
+      <Text style={styles.ingredientsText}>{ingredients.length} ingredients</Text>
     </TouchableOpacity>
 
     
@@ -115,7 +130,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    marginTop: 6,
+    marginLeft: 10, // Added margin for spacing
   },
   editButtonText: {
     color: "#8B4513",

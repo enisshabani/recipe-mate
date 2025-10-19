@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,23 +11,95 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router'; // Import useLocalSearchParams
+
+// Define the structure of the recipe data for consistency
+interface Recipe {
+  id: string;
+  title: string;
+  description: string;
+  time: string;
+  servings: string;
+  ingredients: string;
+  instructions: string;
+  category: string;
+}
+
+// Initial state for the recipe form
+const initialRecipeState: Recipe = {
+  id: '',
+  title: '',
+  description: '',
+  time: '',
+  servings: '',
+  ingredients: '',
+  instructions: '',
+  category: '',
+};
 
 export default function CreateRecipeModal() {
-  const [recipe, setRecipe] = useState({
-    name: '',
-    category: '',
-    time: '',
-    servings: '',
-    ingredients: '',
-    instructions: ''
-  });
+  const params = useLocalSearchParams();
+  const [recipe, setRecipe] = useState<Recipe>(initialRecipeState);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  // Load recipe data from parameters when the component mounts
+  useEffect(() => {
+    const rawRecipe = params.currentRecipe;
+    if (rawRecipe) {
+      try {
+        const currentRecipe = JSON.parse(String(rawRecipe));
+        
+        // Map the properties from the incoming recipe object to the form state
+        setRecipe({
+          id: currentRecipe.id || '',
+          title: currentRecipe.title || '',
+          description: currentRecipe.description || '',
+          category: currentRecipe.category || '',
+          // Remove " min" for editing purposes
+          time: currentRecipe.time ? currentRecipe.time.replace(' min', '') : '',
+          servings: String(currentRecipe.servings || ''),
+          // Convert array of ingredients back to a string with new lines
+          ingredients: Array.isArray(currentRecipe.ingredients) 
+            ? currentRecipe.ingredients.join('\n') 
+            : currentRecipe.ingredients || '',
+          instructions: currentRecipe.instructions || '',
+        });
+        setIsEditMode(true);
+      } catch (e) {
+        console.error("Error parsing currentRecipe:", e);
+        // Fallback to initial state if parsing fails
+        setRecipe(initialRecipeState);
+      }
+    }
+  }, [params.currentRecipe]);
+  
 
   const handleSave = () => {
-    if (!recipe.name.trim() || !recipe.ingredients.trim() || !recipe.instructions.trim()) {
-      Alert.alert('Error', 'Please fill in all required fields');
+    // Use recipe.title as it's the consistent name across the app
+    if (!recipe.title.trim() || !recipe.ingredients.trim() || !recipe.instructions.trim()) {
+      Alert.alert('Error', 'Please fill in Recipe Name, Ingredients, and Instructions');
       return;
     }
+    
+    // Create the final recipe object to send back
+    const updatedRecipe = {
+      id: recipe.id,
+      title: recipe.title.trim(),
+      description: recipe.description.trim(),
+      category: recipe.category.trim(),
+      // Add " min" back to time if it exists
+      time: recipe.time.trim() ? `${recipe.time.trim()} min` : '',
+      servings: Number(recipe.servings) || undefined,
+      // Convert ingredient string back to an array
+      ingredients: recipe.ingredients.trim().split('\n').filter(i => i.trim() !== ''),
+      instructions: recipe.instructions.trim(),
+    };
+
+    // Send the updated recipe data back to the Home page
+    router.push({
+      pathname: "/",
+      params: { recipeData: JSON.stringify(updatedRecipe) },
+    });
 
     Alert.alert(
       'Success!',
@@ -39,11 +111,9 @@ export default function CreateRecipeModal() {
         }
       ]
     );
-    
-    console.log('Saved recipe:', recipe);
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: keyof Recipe, value: string) => {
     setRecipe(prev => ({
       ...prev,
       [field]: value
@@ -63,7 +133,8 @@ export default function CreateRecipeModal() {
           <Ionicons name="close" size={24} color="#666" />
         </TouchableOpacity>
 
-        <Text style={styles.titleText}>Edit Recipe</Text>
+        {/* Change title based on mode */}
+        <Text style={styles.titleText}>{isEditMode ? 'Edit Recipe' : 'Create Recipe'}</Text>
       
         <TouchableOpacity 
           style={styles.saveButton}
@@ -83,11 +154,19 @@ export default function CreateRecipeModal() {
           <TextInput
             style={styles.input}
             placeholder="Recipe Name *"
-            value={recipe.name}
-            onChangeText={(text) => handleInputChange('name', text)}
+            value={recipe.title} // Changed from 'name' to 'title'
+            onChangeText={(text) => handleInputChange('title', text)}
             placeholderTextColor="#999"
           />
           
+          <TextInput
+            style={styles.input}
+            placeholder="Description (optional)"
+            value={recipe.description}
+            onChangeText={(text) => handleInputChange('description', text)}
+            placeholderTextColor="#999"
+          />
+
           <View style={styles.row}>
             <TextInput
               style={[styles.input, styles.halfInput]}
@@ -98,9 +177,10 @@ export default function CreateRecipeModal() {
             />
             <TextInput
               style={[styles.input, styles.halfInput]}
-              placeholder="Time (e.g., 15 min)"
+              placeholder="Time (e.g., 15)"
               value={recipe.time}
               onChangeText={(text) => handleInputChange('time', text)}
+              keyboardType='numeric' // Suggest numeric for time
               placeholderTextColor="#999"
             />
           </View>
@@ -117,7 +197,7 @@ export default function CreateRecipeModal() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>
-            Ingredients
+            Ingredients *
           </Text>
           <Text style={styles.subtitle}>Enter each ingredient on a new line</Text>
           
@@ -137,7 +217,7 @@ eggs..."
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>
-            Instructions
+            Instructions *
           </Text>
           
           <TextInput

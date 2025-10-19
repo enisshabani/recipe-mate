@@ -17,6 +17,19 @@ import { TextInput } from "react-native";
 
 const router = useRouter();
 
+// Define a consistent type for the recipe
+interface Recipe {
+  id: string;
+  title: string;
+  time: string;
+  servings?: number | string;
+  ingredients: string[];
+  instructions?: string; // Add instructions for consistency
+  description?: string; // Add description for consistency
+  category?: string;
+}
+
+
 export default function HomeScreen() {
   {/* Per histori te search*/ }
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,35 +39,64 @@ export default function HomeScreen() {
   const [addedOnce, setAddedOnce] = useState(false);
 
   // Shembull i ni recete statike
-  const [recipes, setRecipes] = useState([
+  const [recipes, setRecipes] = useState<Recipe[]>([
     {
       id: "1",
       title: "Spaghetti",
       time: "15 min",
       servings: 2,
       ingredients: ["Pasta", "Tomato", "Oil"],
+      instructions: "Boil pasta and mix with sauce.",
+      description: "A simple Italian classic.",
     },
   ]);
 
-  const params = useLocalSearchParams(); // Lexo nëse po vjen recetë e re
+  const params = useLocalSearchParams(); // Lexo nëse po vjen recetë e re ose e modifikuar
 
   useEffect(() => {
     const raw = params.recipeData;
     if (!raw) return;
 
-    let newRecipe: any = null;
+    let incomingRecipe: Recipe | null = null;
     try {
-      newRecipe = JSON.parse(String(raw));
+      incomingRecipe = JSON.parse(String(raw));
     } catch {
       return;
     }
 
-    if (!newRecipe?.id) return;
+    if (!incomingRecipe?.id) return;
 
     setRecipes((prev) => {
-      // nuk len duplikate (edhe mas reload)
-      if (prev.some((r) => r.id === newRecipe.id)) return prev;
-      return [...prev, newRecipe];
+      // Logic for editing an existing recipe
+      // Check if the recipe exists by originalId (if it's an edit) or by id (if it's a new recipe that was just saved)
+      const isExisting = prev.some((r) => r.id === incomingRecipe!.id);
+
+      if (isExisting) {
+        // Edit existing recipe
+        return prev.map((recipe) =>
+          recipe.id === incomingRecipe!.id
+            ? {
+                ...recipe,
+                ...incomingRecipe,
+                // Ensure ingredients remains an array of strings for consistency
+                ingredients: Array.isArray(incomingRecipe.ingredients)
+                  ? incomingRecipe.ingredients
+                  : (incomingRecipe.ingredients as unknown as string).split("\n"),
+              }
+            : recipe
+        );
+      } else {
+        // Add new recipe
+        return [
+          ...prev,
+          {
+            ...incomingRecipe,
+            ingredients: Array.isArray(incomingRecipe.ingredients)
+              ? incomingRecipe.ingredients
+              : (incomingRecipe.ingredients as unknown as string).split("\n"),
+          },
+        ];
+      }
     });
   }, [params.recipeData]); // prej recipeData
 
@@ -79,7 +121,7 @@ const filteredRecipes = recipes.filter((recipe) =>
         </TouchableOpacity>
       </View>
       
-      {/*  Search Bar */}
+      {/* Search Bar */}
 <View style={styles.searchContainer}>
   <Ionicons name="search-outline" size={18} color="#777" style={{ marginRight: 6 }} />
   <TextInput
@@ -116,18 +158,15 @@ const filteredRecipes = recipes.filter((recipe) =>
         data={filteredRecipes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
+          // Modified to pass the full recipe data as a string
           <RecipeCard
-            id={item.id}
-            title={item.title}
-            time={item.time}
-            servings={item.servings}
-            ingredientsCount={item.ingredients.length}
+            recipe={item} 
           />
         )}
         showsVerticalScrollIndicator={false}
       />
       <View> 
-      <Link href="/editRecipe" style = {{  marginVertical: 10, borderBottomWidth: 1,}} >Edit Page</Link>
+      {/* <Link href="/editRecipe" style = {{  marginVertical: 10, borderBottomWidth: 1,}} >Edit Page</Link> */}
       </View>
 
     </SafeAreaView>

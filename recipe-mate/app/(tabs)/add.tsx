@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   StyleSheet,
   StatusBar,
+  Alert,
 } from "react-native";
 import{ useRouter } from "expo-router";
 
@@ -22,16 +23,19 @@ export default function AddRecipeScreen() {
 
   const handleSaveRecipe = () => {
     if (!recipeName || !ingredients || !instructions) {
-      alert("Please fill all required fields!");
+      Alert.alert("Required Fields", "Please fill Recipe Name, Ingredients, and Instructions.");
       return;
     }
 
     const recipe = {
   id: Date.now().toString(), // gjenerojmë ID unike
-  title: recipeName,
-  time: cookingTime ? `${cookingTime} min` : "", // nëse user s'jep, mos shfaq
-  servings: servings || undefined,
-  ingredients: ingredients.split("\n"),
+  title: recipeName.trim(), // përdorim title për konsistencë
+  description: description.trim(), // Shtohet description
+  time: cookingTime.trim() ? `${cookingTime.trim()} min` : "", // nëse user s'jep, mos shfaq
+  servings: servings.trim() ? Number(servings.trim()) : undefined,
+  // Kthejme stringun ne array, duke hequr rreshtat bosh
+  ingredients: ingredients.trim().split("\n").filter(i => i.trim() !== ""), 
+  instructions: instructions.trim(), // Shtohet instructions
 };
 
 // Dërgojmë recetën në Home përmes params
@@ -40,6 +44,8 @@ router.push({
   params: { recipeData: JSON.stringify(recipe) },
 });
 
+// Reseton fushat pas dërgimit
+Alert.alert("Success", "Recipe added successfully!");
 setRecipeName("");
 setDescription("");
 setCookingTime("");
@@ -81,16 +87,18 @@ setInstructions("");
 
         <View style={styles.row}>
           <TextInput
-            placeholder="Cooking Time"
+            placeholder="Cooking Time (min)"
             style={[styles.input, { flex: 1, marginRight: 8 }]}
             value={cookingTime}
             onChangeText={setCookingTime}
+            keyboardType="numeric" // Për një input më të mirë
           />
           <TextInput
             placeholder="Servings"
             style={[styles.input, { flex: 1 }]}
             value={servings}
             onChangeText={setServings}
+            keyboardType="numeric" // Për një input më të mirë
           />
         </View>
 
@@ -190,4 +198,4 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16,
   },
-});  
+});
