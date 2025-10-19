@@ -31,7 +31,18 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 
 
   return (
-    <TouchableOpacity style={styles.card}>
+        <TouchableOpacity
+      style={styles.card}
+      onPress={() => {
+        router.push({
+          pathname: "/recipe",
+          params: {
+            currentRecipe: JSON.stringify(recipe),
+          },
+        });
+      }}
+    >
+
       {/* Titulli */}
       <View style={styles.headerRow}>
         <Text style={styles.title}>{title}</Text>
@@ -57,7 +68,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
           style={styles.editButton}
           onPress={() => 
             router.push({
-                pathname: "/editRecipe",
+                pathname: "/recipe",
                 params: { currentRecipe: JSON.stringify(recipe) },
               })
             }
