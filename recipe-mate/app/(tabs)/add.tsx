@@ -143,7 +143,7 @@ export default function AddRecipeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2E5630",
+    backgroundColor: "#FFFCFB",
   },
   header: {
     flexDirection: "row",
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#F4D6A0",
+    color: "#2e573a",
   },
   headerSave: {
     backgroundColor: "#F4A300",
@@ -176,14 +176,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   headerSaveText: {
-    color: "#333",
+    color: "#2e573a",
     fontWeight: "600",
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: "600",
     marginTop: 16,
-    color: "#F4D6A0",
+    color: "#2e573a",
   },
   subText: {
     fontSize: 12,
