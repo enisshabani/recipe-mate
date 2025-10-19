@@ -10,7 +10,7 @@ import {
   StatusBar,
   Alert,
 } from "react-native";
-import{ useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function AddRecipeScreen() {
   const [recipeName, setRecipeName] = useState("");
@@ -19,51 +19,59 @@ export default function AddRecipeScreen() {
   const [servings, setServings] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
-  const router=useRouter();
+  const router = useRouter();
 
   const handleSaveRecipe = () => {
     if (!recipeName || !ingredients || !instructions) {
-      Alert.alert("Required Fields", "Please fill Recipe Name, Ingredients, and Instructions.");
+      Alert.alert(
+        "Required Fields",
+        "Please fill Recipe Name, Ingredients, and Instructions."
+      );
       return;
     }
 
     const recipe = {
-  id: Date.now().toString(), // gjenerojmë ID unike
-  title: recipeName.trim(), // përdorim title për konsistencë
-  description: description.trim(), // Shtohet description
-  time: cookingTime.trim() ? `${cookingTime.trim()} min` : "", // nëse user s'jep, mos shfaq
-  servings: servings.trim() ? Number(servings.trim()) : undefined,
-  // Kthejme stringun ne array, duke hequr rreshtat bosh
-  ingredients: ingredients.trim().split("\n").filter(i => i.trim() !== ""), 
-  instructions: instructions.trim(), // Shtohet instructions
-};
+      id: Date.now().toString(),
+      title: recipeName.trim(),
+      description: description.trim(),
+      time: cookingTime.trim() ? `${cookingTime.trim()} min` : "",
+      servings: servings.trim() ? Number(servings.trim()) : undefined,
+      ingredients: ingredients
+        .trim()
+        .split("\n")
+        .filter((i) => i.trim() !== ""),
+      instructions: instructions.trim(),
+    };
 
-// Dërgojmë recetën në Home përmes params
-router.push({
-  pathname: "/",
-  params: { recipeData: JSON.stringify(recipe) },
-});
+    router.push({
+      pathname: "/",
+      params: { recipeData: JSON.stringify(recipe) },
+    });
 
-// Reseton fushat pas dërgimit
-Alert.alert("Success", "Recipe added successfully!");
-setRecipeName("");
-setDescription("");
-setCookingTime("");
-setServings("");
-setIngredients("");
-setInstructions("");
-
+    Alert.alert("Success", "Recipe added successfully!");
+    setRecipeName("");
+    setDescription("");
+    setCookingTime("");
+    setServings("");
+    setIngredients("");
+    setInstructions("");
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <ScrollView
-  showsVerticalScrollIndicator={false}
-  contentContainerStyle={{ paddingHorizontal: 20 }}
->
-
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 20 }}
+      >
         {/* Header */}
         <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => router.push("/")}
+          >
+            <Text style={styles.closeText}>×</Text>
+          </TouchableOpacity>
           <Text style={styles.headerTitle}>Add Recipe</Text>
           <TouchableOpacity style={styles.headerSave} onPress={handleSaveRecipe}>
             <Text style={styles.headerSaveText}>Save</Text>
@@ -91,14 +99,14 @@ setInstructions("");
             style={[styles.input, { flex: 1, marginRight: 8 }]}
             value={cookingTime}
             onChangeText={setCookingTime}
-            keyboardType="numeric" // Për një input më të mirë
+            keyboardType="numeric"
           />
           <TextInput
             placeholder="Servings"
             style={[styles.input, { flex: 1 }]}
             value={servings}
             onChangeText={setServings}
-            keyboardType="numeric" // Për një input më të mirë
+            keyboardType="numeric"
           />
         </View>
 
@@ -116,7 +124,7 @@ setInstructions("");
         {/* Instructions */}
         <Text style={styles.sectionTitle}>Instructions *</Text>
         <TextInput
-          placeholder="1.Mix dry ingredients..."
+          placeholder="1. Mix dry ingredients..."
           style={[styles.input, styles.textArea]}
           value={instructions}
           onChangeText={setInstructions}
@@ -133,15 +141,28 @@ setInstructions("");
 }
 
 const styles = StyleSheet.create({
- container: {
-  flex: 1,
-  backgroundColor: "#fdf8e7",
-},
+  container: {
+    flex: 1,
+    backgroundColor: "#fdf8e7",
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingTop: 35,
+  },
+  closeButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#f2f2f2",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closeText: {
+    fontSize: 22,
+    color: "#333",
+    marginTop: -2,
   },
   headerTitle: {
     fontSize: 22,

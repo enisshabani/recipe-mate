@@ -3,7 +3,6 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "react-native";
 
-
 export default function Layout() {
   return (
     <>
