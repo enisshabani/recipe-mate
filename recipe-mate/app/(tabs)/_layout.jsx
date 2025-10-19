@@ -41,15 +41,7 @@ export default function Layout() {
         }}
       />
       
-      <Tabs.Screen
-        name="add"
-        options={{
-          tabBarLabel: "Add",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-circle-outline" size={size} color={color} />
-          ),
-        }}
-      />
+  
       <Tabs.Screen
         name="profile" 
         options={{
