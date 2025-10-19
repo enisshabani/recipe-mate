@@ -4,15 +4,13 @@ import { View, Text, StyleSheet, ScrollView, Platform, Pressable } from "react-n
 import { SafeAreaView } from "react-native-safe-area-context";
 import IconSymbol from "@/components/ui/icon-symbol";
 
-import { useTheme } from "@react-navigation/native";
 
 export default function ProfileScreen() {
-  const theme = useTheme();
-  const backgroundColor = '#F5F5DC'; // Beige background
-  const cardBackground = '#FFFFFF';
-  const textPrimary = '#333333';
-  const textSecondary = '#666666';
-  const accentColor = '#A0522D'; // Brown accent
+  const backgroundColor = "#FFFCFB";
+  const cardBackground = "#FFFFFF";
+  const textPrimary = "#2e573a";
+  const textSecondary = "#666666";
+  const deepAccent = "#2e573a";
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
@@ -26,8 +24,8 @@ export default function ProfileScreen() {
       >
         {/* Profile Header */}
         <View style={[styles.profileCard, { backgroundColor: cardBackground }]}>
-          <View style={[styles.avatar, { backgroundColor: accentColor }]}>
-            <IconSymbol name="person.fill" size={48} color="#FFFFFF" />
+          <View style={[styles.avatar, { backgroundColor: deepAccent }]}>
+            <IconSymbol name="person.fill" size={48} color="#FFFCFB" />
           </View>
           <Text style={[styles.name, { color: textPrimary }]}>Recipe Chef</Text>
           <Text style={[styles.subtitle, { color: textSecondary }]}>Cooking enthusiast since 2024</Text>
@@ -39,24 +37,24 @@ export default function ProfileScreen() {
           
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
-              <View style={[styles.statIconContainer, { backgroundColor: '#FFF5E6' }]}>
-                <IconSymbol name="book.fill" size={24} color={accentColor} />
+              <View style={[styles.statIconContainer, { backgroundColor: "#fde3cf" }]}>
+                <IconSymbol name="book.fill" size={24} color={deepAccent} />
               </View>
               <Text style={[styles.statValue, { color: textPrimary }]}>3</Text>
               <Text style={[styles.statLabel, { color: textSecondary }]}>Total Recipes</Text>
             </View>
 
             <View style={styles.statItem}>
-              <View style={[styles.statIconContainer, { backgroundColor: '#FFE6E6' }]}>
-                <IconSymbol name="heart.fill" size={24} color="#D2691E" />
+              <View style={[styles.statIconContainer, { backgroundColor: "#fde3cf" }]}>
+                <IconSymbol name="heart.fill" size={24} color={deepAccent} />
               </View>
               <Text style={[styles.statValue, { color: textPrimary }]}>1</Text>
               <Text style={[styles.statLabel, { color: textSecondary }]}>Favorites</Text>
             </View>
 
             <View style={styles.statItem}>
-              <View style={[styles.statIconContainer, { backgroundColor: '#FFF5E6' }]}>
-                <IconSymbol name="clock.fill" size={24} color={accentColor} />
+              <View style={[styles.statIconContainer, { backgroundColor: "#fde3cf" }]}>
+                <IconSymbol name="clock.fill" size={24} color={deepAccent} />
               </View>
               <Text style={[styles.statValue, { color: textPrimary }]}>2h 15m</Text>
               <Text style={[styles.statLabel, { color: textSecondary }]}>Cooking Time</Text>
@@ -68,34 +66,34 @@ export default function ProfileScreen() {
         <View style={[styles.menuCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.sectionTitle, { color: textPrimary }]}>Menu</Text>
           
-          <Pressable style={styles.menuItem}>
+          <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}>
             <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIconContainer, { backgroundColor: '#FFE6E6' }]}>
-                <IconSymbol name="heart.fill" size={20} color="#D2691E" />
+              <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
+                <IconSymbol name="heart.fill" size={20} color={deepAccent} />
               </View>
               <Text style={[styles.menuItemText, { color: textPrimary }]}>My Favorites</Text>
             </View>
-            <IconSymbol name="chevron.right" size={20} color={textSecondary} />
+            <IconSymbol name="chevron.right" size={20} color={deepAccent} />
           </Pressable>
 
-          <Pressable style={styles.menuItem}>
+          <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}>
             <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIconContainer, { backgroundColor: '#FFF5E6' }]}>
-                <IconSymbol name="gear" size={20} color={accentColor} />
+              <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
+                <IconSymbol name="gear" size={20} color={deepAccent} />
               </View>
               <Text style={[styles.menuItemText, { color: textPrimary }]}>Settings</Text>
             </View>
-            <IconSymbol name="chevron.right" size={20} color={textSecondary} />
+            <IconSymbol name="chevron.right" size={20} color={deepAccent} />
           </Pressable>
 
-          <Pressable style={[styles.menuItem, styles.menuItemLast]}>
+          <Pressable style={({ pressed }) => [styles.menuItem, styles.menuItemLast, pressed && styles.menuItemPressed]}>
             <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIconContainer, { backgroundColor: '#FFF5E6' }]}>
-                <IconSymbol name="questionmark.circle.fill" size={20} color={accentColor} />
+              <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
+                <IconSymbol name="questionmark.circle.fill" size={20} color={deepAccent} />
               </View>
               <Text style={[styles.menuItemText, { color: textPrimary }]}>Help & Support</Text>
             </View>
-            <IconSymbol name="chevron.right" size={20} color={textSecondary} />
+            <IconSymbol name="chevron.right" size={20} color={deepAccent} />
           </Pressable>
         </View>
 
@@ -129,12 +127,15 @@ const styles = StyleSheet.create({
   
   // Profile Card
   profileCard: {
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 32,
     alignItems: 'center',
     marginBottom: 16,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 3,
   },
   avatar: {
     width: 80,
@@ -155,11 +156,14 @@ const styles = StyleSheet.create({
 
   // Stats Card
   statsCard: {
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 3,
   },
   sectionTitle: {
     fontSize: 18,
@@ -175,12 +179,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#f0d5ba',
   },
   statValue: {
     fontSize: 20,
@@ -194,47 +200,66 @@ const styles = StyleSheet.create({
 
   // Menu Card
   menuCard: {
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 3,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: '#FFFCFB',
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    paddingHorizontal: 20,
+    borderRadius: 50,
+    marginBottom: 12,
+    shadowColor: '#000',
+    borderColor: '#F4A300',
+    borderWidth: 3,
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  menuItemPressed: {
+    transform: [{ scale: 0.98 }],
   },
   menuItemLast: {
-    borderBottomWidth: 0,
+    marginBottom: 0,
   },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   menuIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   menuItemText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
+    color: '#2e573a',
   },
 
   // Footer Card
   footerCard: {
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 24,
     alignItems: 'center',
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 3,
   },
   footerTitle: {
     fontSize: 18,
