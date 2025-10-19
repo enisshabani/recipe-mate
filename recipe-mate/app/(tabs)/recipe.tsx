@@ -14,48 +14,74 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RecipeScreen() {
   const router = useRouter();
-  const { name, cookingTime, servings, ingredients, instructions } =
-    useLocalSearchParams();
-
+  const { currentRecipe } = useLocalSearchParams();
+  const [recipe, setRecipe] = useState<any>(null);
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    const loadFavorite = async () => {
+    if (currentRecipe) {
       try {
-        const value = await AsyncStorage.getItem(`favorite_${name}`);
+        const parsed = JSON.parse(String(currentRecipe));
+        setRecipe(parsed);
+      } catch (err) {
+        console.log("Error parsing recipe:", err);
+      }
+    }
+  }, [currentRecipe]);
+
+  useEffect(() => {
+    const loadFavorite = async () => {
+      if (!recipe) return;
+      try {
+        const value = await AsyncStorage.getItem(`favorite_${recipe.id}`);
         if (value === "true") setIsFavorite(true);
       } catch {}
     };
     loadFavorite();
-  }, [name]);
+  }, [recipe]);
 
   const toggleFavorite = async () => {
+    if (!recipe) return;
     try {
       const newValue = !isFavorite;
       setIsFavorite(newValue);
-      await AsyncStorage.setItem(`favorite_${name}`, newValue.toString());
+      await AsyncStorage.setItem(`favorite_${recipe.id}`, newValue.toString());
     } catch {}
   };
 
   const handleDelete = () => {
-    Alert.alert("Delete Recipe", `Are you sure you want to delete "${name}"?`, [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await AsyncStorage.removeItem(`favorite_${name}`);
-          } catch {}
-          router.back();
+    if (!recipe) return;
+    Alert.alert(
+      "Delete Recipe",
+      `Are you sure you want to delete "${recipe.title}"?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem(`favorite_${recipe.id}`);
+            } catch {}
+            router.back();
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
+
+  if (!recipe) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ color: "#fff", textAlign: "center", marginTop: 50 }}>
+          Loading Recipe...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      {/* Custom Header */}
       <View style={styles.header}>
         <Pressable onPress={() => router.back()} style={styles.headerLeft}>
           <Ionicons name="chevron-back" size={24} color="#F8F5F4" />
@@ -63,7 +89,12 @@ export default function RecipeScreen() {
         </Pressable>
 
         <Pressable
-          onPress={() => router.push(`/editRecipe?name=${name}`)}
+          onPress={() =>
+            router.push({
+              pathname: "/editRecipe",
+              params: { currentRecipe: JSON.stringify(recipe) },
+            })
+          }
           style={styles.headerRight}
         >
           <Ionicons name="create-outline" size={22} color="#F8F5F4" />
@@ -75,26 +106,30 @@ export default function RecipeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.mainCard}>
-          <Text style={styles.recipeTitle}>{name || "Pancake"}</Text>
-          <Text style={styles.optionalText}>Opt</Text>
+          <Text style={styles.recipeTitle}>{recipe.title}</Text>
+          {recipe.description ? (
+            <Text style={styles.optionalText}>{recipe.description}</Text>
+          ) : null}
 
           <View style={styles.infoRow}>
             <View style={styles.infoItem}>
               <Ionicons name="time-outline" color="#CA91A1" size={26} />
               <Text style={styles.infoLabel}>Cooking Time</Text>
-              <Text style={styles.infoValue}>{cookingTime || "15 min"}</Text>
+              <Text style={styles.infoValue}>{recipe.time || "N/A"}</Text>
             </View>
 
             <View style={styles.infoItem}>
               <Ionicons name="people-outline" color="#CA91A1" size={26} />
               <Text style={styles.infoLabel}>Servings</Text>
-              <Text style={styles.infoValue}>{servings || "2"}</Text>
+              <Text style={styles.infoValue}>{recipe.servings || "N/A"}</Text>
             </View>
 
             <View style={styles.infoItem}>
               <Ionicons name="list-outline" color="#CA91A1" size={26} />
               <Text style={styles.infoLabel}>Ingredients</Text>
-              <Text style={styles.infoValue}>1</Text>
+              <Text style={styles.infoValue}>
+                {recipe.ingredients?.length || "N/A"}
+              </Text>
             </View>
           </View>
         </View>
@@ -102,15 +137,15 @@ export default function RecipeScreen() {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Ingredients</Text>
           <Text style={styles.ingredientText}>
-            {ingredients || "2 cups flour..."}
+            {Array.isArray(recipe.ingredients)
+              ? recipe.ingredients.join("\n")
+              : recipe.ingredients}
           </Text>
         </View>
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Instructions</Text>
-          <Text style={styles.instructionText}>
-            {instructions || "Mix and fry."}
-          </Text>
+          <Text style={styles.instructionText}>{recipe.instructions}</Text>
         </View>
 
         <View style={styles.bottomRow}>
@@ -139,7 +174,6 @@ export default function RecipeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#EADFD8" },
-
   header: {
     backgroundColor: "#CA91A1",
     height: 60,
@@ -156,7 +190,6 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   headerRight: { padding: 4 },
-
   contentContainer: { padding: 16 },
   mainCard: {
     backgroundColor: "#293251",
@@ -191,11 +224,7 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 20, fontWeight: "700", color: "#F8F5F4", marginBottom: 10 },
   ingredientText: { fontSize: 16, color: "#F8F5F4", lineHeight: 22 },
   instructionText: { fontSize: 16, color: "#F8F5F4", lineHeight: 22 },
-  bottomRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 10,
-  },
+  bottomRow: { flexDirection: "row", justifyContent: "space-between", gap: 10 },
   favoriteButton: {
     flex: 1,
     backgroundColor: "#CA91A1",
