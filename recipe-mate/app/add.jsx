@@ -216,3 +216,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+// ska me neve
