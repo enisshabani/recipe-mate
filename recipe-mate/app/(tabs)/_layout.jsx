@@ -1,75 +1,38 @@
-import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "react-native";
+import { useEffect } from "react";
+import { Stack } from "expo-router";
+import { RecipeProvider } from "../contexts/RecipeContext";
+import { AuthProvider, useAuth } from "../contexts/AuthContext";
 
-export default function Layout() {
+function RootLayoutContent() {
+  const { isAuthenticated, loading } = useAuth();
+
+  // Show nothing while loading authentication state
+  if (loading) {
+    return null;
+  }
+
   return (
-    <>
-      <StatusBar barStyle="dark-content" backgroundColor="#F8F5F2" />
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarStyle: {
-            backgroundColor: "#ffffff",
-            borderTopWidth: 0,
-            borderTopColor: "#ddd",
-            height: 70,
-            paddingBottom: 10,
-            paddingTop: 6,
-            shadowColor: "#000",
-            shadowOpacity: 0.05,
-            shadowRadius: 4,
-            elevation: 6,
-          },
-          tabBarActiveTintColor: "#2e573a",
-          tabBarInactiveTintColor: "#aaaaaa",
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontWeight: "600",
-          },
-        }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            tabBarLabel: "Home",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home-outline" size={size} color={color} />
-            ),
-          }}
-        />
+    <RecipeProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        {isAuthenticated ? (
+          <>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="add" />
+            <Stack.Screen name="recipe" />
+            <Stack.Screen name="editRecipe" />
+          </>
+        ) : (
+          <Stack.Screen name="(auth)" />
+        )}
+      </Stack>
+    </RecipeProvider>
+  );
+}
 
-        <Tabs.Screen
-          name="searchMeal"
-          options={{
-            tabBarLabel: "Meals",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="search" size={size} color={color} />
-            ),
-          }}
-        />
-
-        {/* TIMER */}
-        <Tabs.Screen
-          name="timer"
-          options={{
-            tabBarLabel: "Timer",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="timer-outline" size={size} color={color} />
-            ),
-          }}
-        />
-
-        <Tabs.Screen
-          name="profile"
-          options={{
-            tabBarLabel: "Profile",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="person-outline" size={size} color={color} />
-            ),
-          }}
-        />
-      </Tabs>
-    </>
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <RootLayoutContent />
+    </AuthProvider>
   );
 }
