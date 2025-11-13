@@ -39,7 +39,6 @@ export default function MealDetails() {
     return <Text style={styles.loading}>Loading...</Text>;
   }
 
-  // Extract ingredients
   const ingredients = [];
   for (let i = 1; i <= 20; i++) {
     const ing = meal[`strIngredient${i}`];
@@ -84,11 +83,9 @@ export default function MealDetails() {
           </Text>
         ))}
 
-        {/* Keep scrolling content clean */}
         <View style={{ height: 100 }} />
       </ScrollView>
 
-      {/* ⭐ FIXED/STICKY SAVE BUTTON */}
       <View style={styles.stickyButtonContainer}>
         <TouchableOpacity
           style={styles.saveButton}
@@ -124,7 +121,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     backgroundColor: "#fff",
     padding: 6,
-    borderRadius: 20,
+    borderRadius: 10,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -136,8 +133,7 @@ const styles = StyleSheet.create({
   category: { fontSize: 16, color: "#777", marginBottom: 15 },
 
   infoRow: {
-    flexDirection: "column",
-    justifyContent: "space-between",
+    flexDirection: "row",
     marginVertical: 12,
   },
 
@@ -152,6 +148,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginBottom: 10,
     width: 120,
+    marginInline: 10,
+
   },
 
   infoText: { fontSize: 14, fontWeight: "600", color: "#333" },
@@ -159,7 +157,6 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, fontWeight: "700", marginBottom: 10 },
   ingredient: { fontSize: 15, color: "#444", marginBottom: 4 },
 
-  /* ⭐ FIX: STICKY FOOTER BUTTON */
   stickyButtonContainer: {
     backgroundColor: "#fff",
     position: "absolute",
