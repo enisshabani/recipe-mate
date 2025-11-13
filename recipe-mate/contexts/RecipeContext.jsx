@@ -1,65 +1,54 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { addRecipe, getAllRecipes, updateRecipe, deleteRecipe } from "../firebase/recipe";
+import React, { createContext, useState, useContext } from 'react';
 
 const RecipeContext = createContext();
 
-export const useRecipes = () => useContext(RecipeContext);
+export const useRecipes = () => {
+  const context = useContext(RecipeContext);
+  if (!context) {
+    throw new Error('useRecipes must be used within RecipeProvider');
+  }
+  return context;
+};
 
 export const RecipeProvider = ({ children }) => {
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [recipes, setRecipes] = useState([
+    {
+      id: "1",
+      title: "Spaghetti",
+      time: "15 min",
+      servings: 2,
+      ingredients: ["Pasta", "Tomato", "Oil"],
+      instructions: "Boil pasta and mix with sauce.",
+      description: "A simple Italian classic.",
+    },
+  ]);
 
-  // Ngarko recetat një herë në start
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const data = await getAllRecipes();
-        setRecipes(data);
-      } catch (err) {
-        console.log("Error loading recipes:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
- 
-
-  // wrapper për CRUD
-  const addRecipeWrapper = async (recipe) => {
-    const id = await addRecipe(recipe);
-    setRecipes((prev) => [...prev, { id, ...recipe }]);
+  const addRecipe = (recipe) => {
+    setRecipes((prev) => [...prev, recipe]);
   };
 
-  const updateRecipeWrapper = async (id, updatedFields) => {
-    await updateRecipe(id, updatedFields);
+  const updateRecipe = (updatedRecipe) => {
     setRecipes((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, ...updatedFields } : item))
+      prev.map((recipe) =>
+        recipe.id === updatedRecipe.id ? updatedRecipe : recipe
+      )
     );
   };
- 
 
-  const deleteRecipeWrapper = async (id) => {
-    try {
-      await deleteRecipe(id);
-  
-      // largojmë recetën nga state
-      setRecipes((prev) => prev.filter((item) => item.id !== id));
-      
-    } catch (err) {
-      console.log("Error deleting:", err);
+  const deleteRecipe = (recipeId) => {
+    if (recipeId === "1") {
+      return;
     }
+    setRecipes((prev) => prev.filter((recipe) => recipe.id !== recipeId));
   };
-  
+
   return (
     <RecipeContext.Provider
       value={{
         recipes,
-        loading,
-        addRecipe: addRecipeWrapper,
-        updateRecipe: updateRecipeWrapper,
-        deleteRecipe: deleteRecipeWrapper,
+        addRecipe,
+        updateRecipe,
+        deleteRecipe,
       }}
     >
       {children}

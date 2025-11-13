@@ -1,38 +1,43 @@
-import { useEffect } from "react";
-import { Stack } from "expo-router";
-import { RecipeProvider } from "../contexts/RecipeContext";
-import { AuthProvider, useAuth } from "../contexts/AuthContext";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import { Colors } from "../../constants/theme";
 
-function RootLayoutContent() {
-  const { isAuthenticated, loading } = useAuth();
-
-  // Show nothing while loading authentication state
-  if (loading) {
-    return null;
-  }
-
+export default function TabsLayout() {
   return (
-    <RecipeProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        {isAuthenticated ? (
-          <>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="add" />
-            <Stack.Screen name="recipe" />
-            <Stack.Screen name="editRecipe" />
-          </>
-        ) : (
-          <Stack.Screen name="(auth)" />
-        )}
-      </Stack>
-    </RecipeProvider>
-  );
-}
-
-export default function RootLayout() {
-  return (
-    <AuthProvider>
-      <RootLayoutContent />
-    </AuthProvider>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: Colors.light.tint,
+        headerShown: false,
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="home" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="searchMeal"
+        options={{
+          title: "Search",
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="search" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="timer"
+        options={{
+          title: "Timer",
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="timer" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="person" color={color} />,
+        }}
+      />
+    </Tabs>
   );
 }
