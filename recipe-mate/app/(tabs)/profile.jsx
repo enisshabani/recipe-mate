@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../contexts/AuthContext";
@@ -31,11 +31,15 @@ export default function ProfileScreen() {
         {
           text: "Logout",
           onPress: async () => {
-            const { error } = await logOut();
-            if (error) {
-              Alert.alert("Error", error);
-            } else {
-              router.replace("/(auth)/login");
+            try {
+              const { error } = await logOut();
+              if (error) {
+                Alert.alert("Error", "Failed to logout: " + error);
+              }
+              // The auth state change will automatically redirect via root layout
+            } catch (err) {
+              Alert.alert("Error", "An error occurred during logout");
+              console.log("Logout error:", err);
             }
           },
           style: "destructive",
@@ -62,9 +66,22 @@ export default function ProfileScreen() {
     return (
       <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
         <View style={styles.container}>
-          <Text style={{ color: textPrimary, fontSize: 18, textAlign: 'center', marginTop: 50 }}>
-            You need to be logged in to view your profile.
-          </Text>
+          <View style={styles.notAuthContainer}>
+            <Ionicons name="person-circle" size={80} color={textPrimary} />
+            <Text style={{ color: textPrimary, fontSize: 20, fontWeight: '600', marginTop: 20, marginBottom: 8 }}>
+              Not Logged In
+            </Text>
+            <Text style={{ color: textSecondary, fontSize: 14, textAlign: 'center', marginBottom: 32 }}>
+              You need to be logged in to view your profile.
+            </Text>
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={() => router.push("/(auth)/login")}
+            >
+              <Ionicons name="log-in" size={20} color="#fff" style={{ marginRight: 8 }} />
+              <Text style={styles.loginButtonText}>Go to Login</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     );
@@ -121,57 +138,65 @@ export default function ProfileScreen() {
   <View style={[styles.menuCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.sectionTitle, { color: textPrimary }]}>Menu</Text>
           
-          <Pressable 
+          <TouchableOpacity 
             onPress={handleFavorites}
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+            activeOpacity={0.7}
           >
-            <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
-                <Ionicons name="heart" size={20} color={deepAccent} />
+            <View style={styles.menuItem}>
+              <View style={styles.menuItemLeft}>
+                <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
+                  <Ionicons name="heart" size={20} color={deepAccent} />
+                </View>
+                <Text style={[styles.menuItemText, { color: textPrimary }]}>My Favorites</Text>
               </View>
-              <Text style={[styles.menuItemText, { color: textPrimary }]}>My Favorites</Text>
+              <Ionicons name="chevron-forward" size={20} color={deepAccent} />
             </View>
-            <Ionicons name="chevron-forward" size={20} color={deepAccent} />
-          </Pressable>
+          </TouchableOpacity>
 
-          <Pressable 
+          <TouchableOpacity 
             onPress={handleSettings}
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+            activeOpacity={0.7}
           >
-            <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
-                <Ionicons name="settings" size={20} color={deepAccent} />
+            <View style={styles.menuItem}>
+              <View style={styles.menuItemLeft}>
+                <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
+                  <Ionicons name="settings" size={20} color={deepAccent} />
+                </View>
+                <Text style={[styles.menuItemText, { color: textPrimary }]}>Settings</Text>
               </View>
-              <Text style={[styles.menuItemText, { color: textPrimary }]}>Settings</Text>
+              <Ionicons name="chevron-forward" size={20} color={deepAccent} />
             </View>
-            <Ionicons name="chevron-forward" size={20} color={deepAccent} />
-          </Pressable>
+          </TouchableOpacity>
 
-          <Pressable 
+          <TouchableOpacity 
             onPress={handleHelp}
-            style={({ pressed }) => [styles.menuItem, styles.menuItemLast, pressed && styles.menuItemPressed]}
+            activeOpacity={0.7}
           >
-            <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
-                <Ionicons name="help-circle" size={20} color={deepAccent} />
+            <View style={[styles.menuItem, styles.menuItemLast]}>
+              <View style={styles.menuItemLeft}>
+                <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
+                  <Ionicons name="help-circle" size={20} color={deepAccent} />
+                </View>
+                <Text style={[styles.menuItemText, { color: textPrimary }]}>Help & Support</Text>
               </View>
-              <Text style={[styles.menuItemText, { color: textPrimary }]}>Help & Support</Text>
+              <Ionicons name="chevron-forward" size={20} color={deepAccent} />
             </View>
-            <Ionicons name="chevron-forward" size={20} color={deepAccent} />
-          </Pressable>
+          </TouchableOpacity>
 
-          <Pressable 
+          <TouchableOpacity 
             onPress={handleLogout}
-            style={({ pressed }) => [styles.menuItem, styles.logoutItem, pressed && styles.menuItemPressed]}
+            activeOpacity={0.7}
           >
-            <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIconContainer, { backgroundColor: "#ffe6e6" }]}>
-                <Ionicons name="log-out" size={20} color="#d9534f" />
+            <View style={[styles.menuItem, styles.logoutItem]}>
+              <View style={styles.menuItemLeft}>
+                <View style={[styles.menuIconContainer, { backgroundColor: "#ffe6e6" }]}>
+                  <Ionicons name="log-out" size={20} color="#d9534f" />
+                </View>
+                <Text style={[styles.menuItemText, { color: "#d9534f" }]}>Logout</Text>
               </View>
-              <Text style={[styles.menuItemText, { color: "#d9534f" }]}>Logout</Text>
+              <Ionicons name="chevron-forward" size={20} color="#d9534f" />
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#d9534f" />
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
   <View style={[styles.footerCard, { backgroundColor: cardBackground }]}>
@@ -192,6 +217,31 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  notAuthContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  loginButton: {
+    flexDirection: 'row',
+    backgroundColor: '#2e573a',
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   contentContainer: {
     padding: 16,
