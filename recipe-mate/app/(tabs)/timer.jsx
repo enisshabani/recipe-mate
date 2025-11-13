@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,24 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { Audio } from "expo-av";
 
-const END_SOUND = require("../../assets/sounds/timer-end.mp3");
+// LISTA E TINGUJVE NË DISK
+const SOUND_OPTIONS = [
+  {
+    id: "classic",
+    label: "Classic",
+    file: require("../../assets/sounds/timer-end.mp3"),
+  },
+  {
+    id: "beep",
+    label: "Beep",
+    file: require("../../assets/sounds/timer-end1.mp3"),
+  },
+  {
+    id: "soft",
+    label: "Soft chime",
+    file: require("../../assets/sounds/timer-end2.mp3"),
+  },
+];
 
 export default function TimerScreen() {
   const [hours, setHours] = useState(0);
@@ -21,7 +38,7 @@ export default function TimerScreen() {
   const [remaining, setRemaining] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
 
-  const soundRef = useRef(null);
+  const [selectedSoundId, setSelectedSoundId] = useState(SOUND_OPTIONS[0].id);
 
   // audio mode
   useEffect(() => {
@@ -38,24 +55,22 @@ export default function TimerScreen() {
         console.log("Audio mode error:", e);
       }
     })();
-
-    return () => {
-      if (soundRef.current) {
-        soundRef.current.unloadAsync();
-      }
-    };
   }, []);
 
   const playEndSound = async () => {
     try {
-      console.log("Playing end sound...");
-      if (soundRef.current) {
-        await soundRef.current.replayAsync();
-      } else {
-        const { sound } = await Audio.Sound.createAsync(END_SOUND);
-        soundRef.current = sound;
-        await sound.playAsync();
-      }
+      const option =
+        SOUND_OPTIONS.find((o) => o.id === selectedSoundId) ||
+        SOUND_OPTIONS[0];
+
+      const { sound } = await Audio.Sound.createAsync(option.file);
+      await sound.playAsync();
+
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          sound.unloadAsync();
+        }
+      });
     } catch (error) {
       console.log("Error playing sound:", error);
     }
@@ -95,7 +110,7 @@ export default function TimerScreen() {
     setRemaining(0);
   };
 
-  
+  // koha për display
   let displayH, displayM, displayS;
 
   if (remaining === 0 && !isRunning) {
@@ -112,9 +127,9 @@ export default function TimerScreen() {
     displayS = String(secondsPart).padStart(2, "0");
   }
 
+  // ---- INPUTET (iOS: TextInput, Android/Web: Picker) ----
   const renderHourInput = () => {
     if (Platform.OS === "ios") {
-    
       return (
         <TextInput
           style={styles.inputBox}
@@ -130,14 +145,12 @@ export default function TimerScreen() {
       );
     }
 
-    
     return (
       <Picker
         selectedValue={hours}
         onValueChange={(value) => setHours(Number(value))}
         style={styles.picker}
         itemStyle={styles.pickerItem}
-        mode={Platform.OS === "android" ? "dropdown" : "dialog"}
       >
         {Array.from({ length: 24 }, (_, i) => (
           <Picker.Item key={i} label={`${i}`} value={i} />
@@ -169,7 +182,6 @@ export default function TimerScreen() {
         onValueChange={(value) => setMinutes(Number(value))}
         style={styles.picker}
         itemStyle={styles.pickerItem}
-        mode={Platform.OS === "android" ? "dropdown" : "dialog"}
       >
         {Array.from({ length: 60 }, (_, i) => (
           <Picker.Item key={i} label={`${i}`} value={i} />
@@ -201,7 +213,6 @@ export default function TimerScreen() {
         onValueChange={(value) => setSeconds(Number(value))}
         style={styles.picker}
         itemStyle={styles.pickerItem}
-        mode={Platform.OS === "android" ? "dropdown" : "dialog"}
       >
         {Array.from({ length: 60 }, (_, i) => (
           <Picker.Item key={i} label={`${i}`} value={i} />
@@ -222,6 +233,7 @@ export default function TimerScreen() {
         {displayH}:{displayM}:{displayS}
       </Text>
 
+      {/* Kutitë më të vogla dhe të qendruara */}
       <View style={styles.pickerRow}>
         <View style={styles.pickerContainer}>
           {renderHourInput()}
@@ -251,7 +263,28 @@ export default function TimerScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={{ marginTop: 16, paddingHorizontal: 20 }}>
+      {/* Zgjedhja e tingullit */}
+      <View style={styles.soundRow}>
+        <Text style={styles.soundLabel}>Timer sound</Text>
+        <View style={styles.soundPickerWrapper}>
+          <Picker
+            selectedValue={selectedSoundId}
+            onValueChange={(value) => setSelectedSoundId(value)}
+            style={styles.soundPicker}
+          >
+            {SOUND_OPTIONS.map((opt) => (
+              <Picker.Item
+                key={opt.id}
+                label={opt.label}
+                value={opt.id}
+              />
+            ))}
+          </Picker>
+        </View>
+      </View>
+
+      {/* Test sound */}
+      <View style={{ marginTop: 12, paddingHorizontal: 20 }}>
         <TouchableOpacity style={styles.testButton} onPress={handleTestSound}>
           <Text style={styles.testText}>Test sound</Text>
         </TouchableOpacity>
@@ -259,6 +292,8 @@ export default function TimerScreen() {
     </SafeAreaView>
   );
 }
+
+const BOX_WIDTH = 110; // gjerësi më e vogël e kutisë
 
 const styles = StyleSheet.create({
   container: {
@@ -282,42 +317,42 @@ const styles = StyleSheet.create({
   },
   pickerRow: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
-    paddingHorizontal: 10,
+    marginTop: 20,
   },
   pickerContainer: {
-    flex: 1,
+    width: BOX_WIDTH,
     alignItems: "center",
+    marginHorizontal: 8,
   },
-
+  // Picker për Android/Web
   picker: {
     width: "100%",
-    height: 160,
+    height: 80, // më e vogël
   },
   pickerItem: {
-    fontSize: 18,
+    fontSize: 20, // numri më i madh
   },
- 
+  // TextInput për iOS
   inputBox: {
-    width: "85%",
+    width: "100%",
     height: 60,
-    borderRadius: 18,
+    borderRadius: 16,
     backgroundColor: "#f4f1ee",
     textAlign: "center",
     fontSize: 24,
     color: "#2e573a",
   },
   pickerLabel: {
-    marginTop: 4,
+    marginTop: 6,
     fontSize: 14,
     color: "#777",
   },
   buttonsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 40,
+    marginTop: 32,
     paddingHorizontal: 20,
   },
   cancelButton: {
@@ -348,6 +383,27 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16,
     letterSpacing: 0.5,
+  },
+  soundRow: {
+    marginTop: 28,
+    paddingHorizontal: 20,
+  },
+  soundLabel: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#444",
+    marginBottom: 6,
+  },
+  soundPickerWrapper: {
+    borderRadius: 12,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#eee",
+    overflow: "hidden",
+  },
+  soundPicker: {
+    height: 44,
+    width: "100%",
   },
   testButton: {
     borderRadius: 999,
