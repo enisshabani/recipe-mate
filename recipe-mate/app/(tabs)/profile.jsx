@@ -35,8 +35,11 @@ export default function ProfileScreen() {
               const { error } = await logOut();
               if (error) {
                 Alert.alert("Error", "Failed to logout: " + error);
+                console.log("Logout error:", error);
+              } else {
+                console.log("Logout successful");
+                // The auth state change will automatically redirect via root layout
               }
-              // The auth state change will automatically redirect via root layout
             } catch (err) {
               Alert.alert("Error", "An error occurred during logout");
               console.log("Logout error:", err);
@@ -68,18 +71,27 @@ export default function ProfileScreen() {
         <View style={styles.container}>
           <View style={styles.notAuthContainer}>
             <Ionicons name="person-circle" size={80} color={textPrimary} />
-            <Text style={{ color: textPrimary, fontSize: 20, fontWeight: '600', marginTop: 20, marginBottom: 8 }}>
-              Not Logged In
+            <Text style={{ color: textPrimary, fontSize: 22, fontWeight: '700', marginTop: 20, marginBottom: 12 }}>
+              Welcome to RecipeMate
             </Text>
-            <Text style={{ color: textSecondary, fontSize: 14, textAlign: 'center', marginBottom: 32 }}>
-              You need to be logged in to view your profile.
+            <Text style={{ color: textSecondary, fontSize: 14, textAlign: 'center', marginBottom: 32, lineHeight: 20 }}>
+              Sign in to your account to view your profile, save recipes, and manage your favorites.
             </Text>
+            
             <TouchableOpacity
               style={styles.loginButton}
               onPress={() => router.push("/(auth)/login")}
             >
               <Ionicons name="log-in" size={20} color="#fff" style={{ marginRight: 8 }} />
-              <Text style={styles.loginButtonText}>Go to Login</Text>
+              <Text style={styles.loginButtonText}>Login</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.signupButton}
+              onPress={() => router.push("/(auth)/signup")}
+            >
+              <Ionicons name="person-add" size={20} color={textPrimary} style={{ marginRight: 8 }} />
+              <Text style={styles.signupButtonText}>Create Account</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -237,9 +249,31 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 5,
+    marginBottom: 12,
   },
   loginButtonText: {
     color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  signupButton: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#2e573a',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  signupButtonText: {
+    color: '#2e573a',
     fontSize: 16,
     fontWeight: '600',
   },
