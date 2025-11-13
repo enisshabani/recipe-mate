@@ -49,6 +49,17 @@ export default function Layout() {
           }}
         />
 
+        {/* TIMER */}
+        <Tabs.Screen
+          name="timer"
+          options={{
+            tabBarLabel: "Timer",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="timer-outline" size={size} color={color} />
+            ),
+          }}
+        />
+
         <Tabs.Screen
           name="profile"
           options={{
