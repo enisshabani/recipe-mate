@@ -3,6 +3,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  signInWithPopup,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  FacebookAuthProvider,
 } from "firebase/auth";
 import { auth } from "./firebase";
 
@@ -37,6 +41,39 @@ export const logOut = async () => {
     return { error: null };
   } catch (error) {
     return { error: error.message };
+  }
+};
+
+// Sign in with Google
+export const signInWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(auth, provider);
+    return { user: userCredential.user, error: null };
+  } catch (error) {
+    return { user: null, error: error.message };
+  }
+};
+
+// Sign in with GitHub
+export const signInWithGitHub = async () => {
+  try {
+    const provider = new GithubAuthProvider();
+    const userCredential = await signInWithPopup(auth, provider);
+    return { user: userCredential.user, error: null };
+  } catch (error) {
+    return { user: null, error: error.message };
+  }
+};
+
+// Sign in with Facebook
+export const signInWithFacebook = async () => {
+  try {
+    const provider = new FacebookAuthProvider();
+    const userCredential = await signInWithPopup(auth, provider);
+    return { user: userCredential.user, error: null };
+  } catch (error) {
+    return { user: null, error: error.message };
   }
 };
 
