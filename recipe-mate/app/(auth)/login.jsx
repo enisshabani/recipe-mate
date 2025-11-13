@@ -1,7 +1,7 @@
 import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { signIn } from "../../firebase/auth";
+import { signIn, signInWithGoogle, signInWithGitHub } from "../../firebase/auth";
 import { Colors } from "../../constants/theme";
 
 export default function LoginScreen() {
@@ -16,6 +16,13 @@ export default function LoginScreen() {
       return;
     }
 
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Error", "Please enter a valid email address");
+      return;
+    }
+
     setLoading(true);
     const { user, error } = await signIn(email, password);
 
@@ -23,6 +30,30 @@ export default function LoginScreen() {
       Alert.alert("Login Failed", error);
     } else {
       // Navigation happens automatically via root layout
+      router.replace("/(tabs)");
+    }
+    setLoading(false);
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    const { user, error } = await signInWithGoogle();
+    
+    if (error) {
+      Alert.alert("Google Login Failed", error);
+    } else {
+      router.replace("/(tabs)");
+    }
+    setLoading(false);
+  };
+
+  const handleGitHubLogin = async () => {
+    setLoading(true);
+    const { user, error } = await signInWithGitHub();
+    
+    if (error) {
+      Alert.alert("GitHub Login Failed", error);
+    } else {
       router.replace("/(tabs)");
     }
     setLoading(false);
@@ -63,6 +94,28 @@ export default function LoginScreen() {
           <Text style={styles.buttonText}>
             {loading ? "Logging in..." : "Login"}
           </Text>
+        </TouchableOpacity>
+
+        <View style={styles.dividerContainer}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>Or continue with</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        <TouchableOpacity
+          style={[styles.socialButton, styles.googleButton, loading && styles.buttonDisabled]}
+          onPress={handleGoogleLogin}
+          disabled={loading}
+        >
+          <Text style={styles.socialButtonText}>🔍 Google</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.socialButton, styles.githubButton, loading && styles.buttonDisabled]}
+          onPress={handleGitHubLogin}
+          disabled={loading}
+        >
+          <Text style={styles.socialButtonText}>⚫ GitHub</Text>
         </TouchableOpacity>
 
         <View style={styles.footer}>
@@ -140,5 +193,40 @@ const styles = StyleSheet.create({
     color: Colors.light.tint,
     fontSize: 14,
     fontWeight: "600",
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#ddd",
+  },
+  dividerText: {
+    paddingHorizontal: 12,
+    color: "#999",
+    fontSize: 12,
+  },
+  socialButton: {
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: "center",
+    marginBottom: 12,
+    borderWidth: 1,
+  },
+  googleButton: {
+    borderColor: Colors.light.tint,
+    backgroundColor: "#f9f9f9",
+  },
+  githubButton: {
+    borderColor: Colors.light.tint,
+    backgroundColor: "#1f1f1f",
+  },
+  socialButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
   },
 });
