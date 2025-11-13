@@ -20,7 +20,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="searchMeal"
         options={{
-          title: "Search",
+          title: "Meal",
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="search" color={color} />,
         }}
       />
