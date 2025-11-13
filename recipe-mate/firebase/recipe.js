@@ -20,17 +20,22 @@ import {
   export const addRecipe = async (recipe) => {
     try {
       const recipeToSave = {
-        ...recipe,
-        userId: null, // më vonë: auth.currentUser.uid
+        title: recipe.title.trim(),
+        description: recipe.description.trim(),
+        time: recipe.time ? `${recipe.time.trim()} min` : "",
+        servings: Number(recipe.servings),
+        ingredients: recipe.ingredients,    // array nga forma
+        instructions: recipe.instructions.trim(),
+        userId: null,
       };
-  
-      const docRef = await addDoc(collection(db, "recipes"), recipeToSave);
-      return docRef.id;
+       const docRef = await addDoc(collection(db, "recipes"), recipeToSave);
+       return docRef.id;
     } catch (error) {
       console.error("Error adding recipe:", error);
       throw error;
     }
   };
+ 
   
   // READ
   export const getAllRecipes = async () => {

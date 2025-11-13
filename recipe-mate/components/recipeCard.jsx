@@ -23,7 +23,7 @@ export default function RecipeCard({ recipe }) {
         style={{ flex: 1 }}
         onPress={() =>
           router.push({
-            pathname: "/editRecipe",
+            pathname: "/recipe",
             params: { currentRecipe: JSON.stringify(recipe) },
           })
         }

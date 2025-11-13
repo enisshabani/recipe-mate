@@ -24,6 +24,7 @@ export const RecipeProvider = ({ children }) => {
 
     loadData();
   }, []);
+ 
 
   // wrapper për CRUD
   const addRecipeWrapper = async (recipe) => {
@@ -37,6 +38,7 @@ export const RecipeProvider = ({ children }) => {
       prev.map((item) => (item.id === id ? { ...item, ...updatedFields } : item))
     );
   };
+ 
 
   const deleteRecipeWrapper = async (id) => {
     try {
