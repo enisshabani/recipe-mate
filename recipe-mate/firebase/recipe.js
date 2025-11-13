@@ -52,5 +52,26 @@ import {
     }
   };
   
+   // UPDATE
+ export const updateRecipe = async (id, updatedFields) => {
+   try {
+     const recipeRef = doc(db, "recipes", id);
+     await updateDoc(recipeRef, updatedFields);
+   } catch (error) {
+     console.error("Error updating recipe:", error);
+     throw error;
+   }
+ };
+  // DELETE
+ export const deleteRecipe = async (id) => {
+   try {
+     const recipeRef = doc(db, "recipes", id);
+     await deleteDoc(recipeRef);
+   } catch (error) {
+     console.error("Error deleting recipe:", error);
+     throw error;
+   }
+ };
+
 
   
