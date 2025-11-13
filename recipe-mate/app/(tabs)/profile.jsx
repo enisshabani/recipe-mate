@@ -1,8 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, Platform, Pressable } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../contexts/AuthContext";
+import { logOut } from "../../firebase/auth";
+import { useRouter } from "expo-router";
 
 
 export default function ProfileScreen() {
@@ -14,6 +16,33 @@ export default function ProfileScreen() {
   const deepAccent = "#2e573a";
 
   const {user, loading, isAuthenticated} = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: async () => {
+            const { error } = await logOut();
+            if (error) {
+              Alert.alert("Error", error);
+            } else {
+              router.replace("/(auth)/login");
+            }
+          },
+          style: "destructive",
+        },
+      ]
+    );
+  };
 
   console.log(user, loading, isAuthenticated, "<<< PROFILE AUTH CONTEXT");
 
@@ -108,6 +137,19 @@ export default function ProfileScreen() {
               <Text style={[styles.menuItemText, { color: textPrimary }]}>Help & Support</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color={deepAccent} />
+          </Pressable>
+
+          <Pressable 
+            onPress={handleLogout}
+            style={({ pressed }) => [styles.menuItem, styles.logoutItem, pressed && styles.menuItemPressed]}
+          >
+            <View style={styles.menuItemLeft}>
+              <View style={[styles.menuIconContainer, { backgroundColor: "#ffe6e6" }]}>
+                <Ionicons name="log-out" size={20} color="#d9534f" />
+              </View>
+              <Text style={[styles.menuItemText, { color: "#d9534f" }]}>Logout</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#d9534f" />
           </Pressable>
         </View>
 
@@ -242,6 +284,10 @@ const styles = StyleSheet.create({
   },
   menuItemLast: {
     marginBottom: 0,
+  },
+  logoutItem: {
+    marginTop: 12,
+    borderColor: "#d9534f",
   },
   menuItemLeft: {
     flexDirection: 'row',
