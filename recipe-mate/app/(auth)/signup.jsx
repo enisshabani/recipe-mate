@@ -1,8 +1,8 @@
-import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert } from "react-native";
+import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert, SafeAreaView } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { signUp } from "../../firebase/auth";
-import { Colors } from "../../constants/theme";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -51,10 +51,18 @@ export default function SignupScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={28} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>RecipeMate</Text>
+        <View style={{ width: 28 }} />
+      </View>
+
       <View style={styles.content}>
-        <Text style={styles.title}>RecipeMate</Text>
-        <Text style={styles.subtitle}>Create your account</Text>
+        <Text style={styles.title}>Create Account</Text>
+        <Text style={styles.subtitle}>Join us and start cooking</Text>
 
         <TextInput
           style={styles.input}
@@ -107,30 +115,43 @@ export default function SignupScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: "#FFFCFB",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: "#2e573a",
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#fff",
+  },
+  content: {
+    flex: 1,
     justifyContent: "center",
     padding: 20,
   },
-  content: {
-    width: "100%",
-  },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
-    color: Colors.light.text,
+    color: "#2e573a",
     marginBottom: 8,
     textAlign: "center",
   },
   subtitle: {
-    fontSize: 16,
-    color: Colors.light.tint,
+    fontSize: 14,
+    color: "#666",
     marginBottom: 32,
     textAlign: "center",
   },
@@ -142,12 +163,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 16,
     fontSize: 16,
-    color: Colors.light.text,
+    color: "#2e573a",
+    backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: Colors.light.tint,
+    backgroundColor: "#2e573a",
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 14,
     alignItems: "center",
     marginTop: 8,
   },
@@ -165,11 +187,11 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   footerText: {
-    color: Colors.light.text,
+    color: "#2e573a",
     fontSize: 14,
   },
   linkText: {
-    color: Colors.light.tint,
+    color: "#2e573a",
     fontSize: 14,
     fontWeight: "600",
   },
