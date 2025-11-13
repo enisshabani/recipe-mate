@@ -1,8 +1,8 @@
-
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, Platform, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../contexts/AuthContext";
 
 
 export default function ProfileScreen() {
@@ -12,6 +12,22 @@ export default function ProfileScreen() {
   const textPrimary = "#2e573a";
   const textSecondary = "#666666";
   const deepAccent = "#2e573a";
+
+  const {user, loading, isAuthenticated} = useAuth();
+
+  console.log(user, loading, isAuthenticated, "<<< PROFILE AUTH CONTEXT");
+
+  if (!isAuthenticated) {
+    return (
+      <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
+        <View style={styles.container}>
+          <Text style={{ color: textPrimary, fontSize: 18, textAlign: 'center', marginTop: 50 }}>
+            You need to be logged in to view your profile.
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
@@ -27,7 +43,7 @@ export default function ProfileScreen() {
           <View style={[styles.avatar, { backgroundColor: "#FFFFFF" }]}>
             <Ionicons name="person" size={48} color={deepAccent} />
           </View>
-          <Text style={[styles.name, { color: "#fde3cf" }]}>Recipe Chef</Text>
+          <Text style={[styles.name, { color: "#fde3cf" }]}>{isAuthenticated ? user.email : 'Recipe Chef'}</Text>
           <Text style={[styles.subtitle, { color: "#fde3cf", opacity: 0.85 }]}>Cooking enthusiast since 2024</Text>
         </View>
 
