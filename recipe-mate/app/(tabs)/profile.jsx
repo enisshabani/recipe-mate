@@ -44,6 +44,18 @@ export default function ProfileScreen() {
     );
   };
 
+  const handleFavorites = () => {
+    Alert.alert("My Favorites", "This feature is coming soon!");
+  };
+
+  const handleSettings = () => {
+    Alert.alert("Settings", "This feature is coming soon!");
+  };
+
+  const handleHelp = () => {
+    Alert.alert("Help & Support", "This feature is coming soon!");
+  };
+
   console.log(user, loading, isAuthenticated, "<<< PROFILE AUTH CONTEXT");
 
   if (!isAuthenticated) {
@@ -109,7 +121,10 @@ export default function ProfileScreen() {
   <View style={[styles.menuCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.sectionTitle, { color: textPrimary }]}>Menu</Text>
           
-          <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}>
+          <Pressable 
+            onPress={handleFavorites}
+            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+          >
             <View style={styles.menuItemLeft}>
               <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
                 <Ionicons name="heart" size={20} color={deepAccent} />
@@ -119,7 +134,10 @@ export default function ProfileScreen() {
             <Ionicons name="chevron-forward" size={20} color={deepAccent} />
           </Pressable>
 
-          <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}>
+          <Pressable 
+            onPress={handleSettings}
+            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+          >
             <View style={styles.menuItemLeft}>
               <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
                 <Ionicons name="settings" size={20} color={deepAccent} />
@@ -129,7 +147,10 @@ export default function ProfileScreen() {
             <Ionicons name="chevron-forward" size={20} color={deepAccent} />
           </Pressable>
 
-          <Pressable style={({ pressed }) => [styles.menuItem, styles.menuItemLast, pressed && styles.menuItemPressed]}>
+          <Pressable 
+            onPress={handleHelp}
+            style={({ pressed }) => [styles.menuItem, styles.menuItemLast, pressed && styles.menuItemPressed]}
+          >
             <View style={styles.menuItemLeft}>
               <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
                 <Ionicons name="help-circle" size={20} color={deepAccent} />
