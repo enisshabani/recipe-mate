@@ -11,6 +11,7 @@ import {
   Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useRecipes } from "../contexts/RecipeContext";
 
 export default function AddRecipeScreen() {
@@ -60,33 +61,30 @@ export default function AddRecipeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={28} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Add Recipe</Text>
+        <View style={{ width: 28 }} />
+      </View>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20 }}
+        contentContainerStyle={styles.scrollContent}
       >
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => router.push("/")}
-          >
-            <Text style={styles.closeText}>×</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Add Recipe</Text>
-          <TouchableOpacity style={styles.headerSave} onPress={handleSaveRecipe}>
-            <Text style={styles.headerSaveText}>Save</Text>
-          </TouchableOpacity>
-        </View>
 
         <Text style={styles.sectionTitle}>Recipe Details</Text>
         <TextInput
           placeholder="Recipe Name *"
+          placeholderTextColor="#999"
           style={styles.input}
           value={recipeName}
           onChangeText={setRecipeName}
         />
         <TextInput
           placeholder="Description (optional)"
+          placeholderTextColor="#999"
           style={styles.input}
           value={description}
           onChangeText={setDescription}
@@ -95,6 +93,7 @@ export default function AddRecipeScreen() {
         <View style={styles.row}>
           <TextInput
             placeholder="Cooking Time (min)"
+            placeholderTextColor="#999"
             style={[styles.input, { flex: 1, marginRight: 8 }]}
             value={cookingTime}
             onChangeText={setCookingTime}
@@ -102,6 +101,7 @@ export default function AddRecipeScreen() {
           />
           <TextInput
             placeholder="Servings"
+            placeholderTextColor="#999"
             style={[styles.input, { flex: 1 }]}
             value={servings}
             onChangeText={setServings}
@@ -113,6 +113,7 @@ export default function AddRecipeScreen() {
         <Text style={styles.subText}>Enter each ingredient on a new line</Text>
         <TextInput
           placeholder="2 cups flour..."
+          placeholderTextColor="#999"
           style={[styles.input, styles.textArea]}
           value={ingredients}
           onChangeText={setIngredients}
@@ -122,13 +123,19 @@ export default function AddRecipeScreen() {
         <Text style={styles.sectionTitle}>Instructions *</Text>
         <TextInput
           placeholder="1. Mix dry ingredients..."
+          placeholderTextColor="#999"
           style={[styles.input, styles.textArea]}
           value={instructions}
           onChangeText={setInstructions}
           multiline
         />
 
-        <TouchableOpacity style={styles.saveButton} onPress={handleSaveRecipe}>
+        <TouchableOpacity 
+          style={styles.saveButton} 
+          onPress={handleSaveRecipe}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="checkmark" size={20} color="#fff" style={{ marginRight: 8 }} />
           <Text style={styles.saveButtonText}>Save Recipe</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -145,73 +152,70 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingTop: 35,
-  },
-  closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#F4A300",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  closeText: {
-    fontSize: 22,
-    color: "#333",
-    marginTop: -2,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: "#2e573a",
   },
   headerTitle: {
     fontSize: 22,
-    fontWeight: "700",
-    color: "#2e573a",
+    fontWeight: "800",
+    color: "#fff",
   },
-  headerSave: {
-    backgroundColor: "#F4A300",
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 8,
-  },
-  headerSaveText: {
-    color: "#2e573a",
-    fontWeight: "600",
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    paddingBottom: 30,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginTop: 16,
+    fontSize: 18,
+    fontWeight: "700",
+    marginTop: 24,
+    marginBottom: 12,
     color: "#2e573a",
   },
   subText: {
-    fontSize: 12,
-    color: "#777",
-    marginBottom: 4,
+    fontSize: 13,
+    color: "#999",
+    marginBottom: 8,
   },
   input: {
     backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 8,
-    padding: 10,
-    marginBottom: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 12,
+    fontSize: 16,
+    color: "#2e573a",
   },
   textArea: {
-    height: 100,
+    height: 120,
     textAlignVertical: "top",
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 8,
   },
   saveButton: {
-    backgroundColor: "#F4A300",
-    padding: 14,
-    borderRadius: 10,
+    flexDirection: "row",
+    backgroundColor: "#2e573a",
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: "center",
-    marginTop: 20,
-    marginBottom: 30,
+    justifyContent: "center",
+    marginTop: 32,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 5,
   },
   saveButtonText: {
-    color: "#333",
+    color: "#fff",
     fontWeight: "700",
     fontSize: 16,
   },
