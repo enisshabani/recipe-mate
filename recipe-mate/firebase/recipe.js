@@ -10,10 +10,6 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-/**
-* Example for later when users are added:
-* const q = query(collection(db, "recipes"), where("userId", "==", user.uid));
-*/
 
 // CREATE — SAFE VERSION
 export const addRecipe = async (recipe) => {
@@ -27,7 +23,8 @@ export const addRecipe = async (recipe) => {
        ? recipe.ingredients
        : [],
      instructions: recipe.instructions?.trim() || "",
-     userId: null,
+     userId: recipe.userId || null, 
+     type: recipe.type || "manual",  
    };
 
    const docRef = await addDoc(collection(db, "recipes"), recipeToSave);
@@ -39,23 +36,35 @@ export const addRecipe = async (recipe) => {
 };
 
 // READ
-export const getAllRecipes = async () => {
- try {
-   const querySnapshot = await getDocs(collection(db, "recipes"));
-   const data = [];
+export const getAllRecipes = async (userId) => {
+  try {
+    if (!userId) return [];
 
-   querySnapshot.forEach((docSnap) => {
-     data.push({
-       id: docSnap.id,
-       ...docSnap.data(),
-     });
-   });
+    const recipes = [];
 
-   return data;
- } catch (error) {
-   console.error("Error getting recipes:", error);
-   throw error;
- }
+    const qUser = query(
+      collection(db, "recipes"),
+      where("userId", "==", userId)
+    );
+    const userSnap = await getDocs(qUser);
+    userSnap.forEach((docSnap) =>
+      recipes.push({ id: docSnap.id, ...docSnap.data() })
+    );
+
+    const qApi = query(
+      collection(db, "recipes"),
+      where("userId", "==", null) 
+    );
+    const apiSnap = await getDocs(qApi);
+    apiSnap.forEach((docSnap) =>
+      recipes.push({ id: docSnap.id, ...docSnap.data() })
+    );
+
+    return recipes;
+  } catch (error) {
+    console.error("Error getting recipes:", error);
+    throw error;
+  }
 };
 
 // UPDATE — SAFE VERSION

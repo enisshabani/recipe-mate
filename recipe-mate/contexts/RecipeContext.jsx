@@ -1,19 +1,29 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { addRecipe, getAllRecipes, updateRecipe, deleteRecipe } from "../firebase/recipe";
+import { useAuth } from "./AuthContext";
 
 const RecipeContext = createContext();
-
 export const useRecipes = () => useContext(RecipeContext);
 
+
 export const RecipeProvider = ({ children }) => {
+const { user } = useAuth();
 const [recipes, setRecipes] = useState([]);
 const [loading, setLoading] = useState(true);
 
 // Load recipes on app start
 useEffect(() => {
   const loadData = async () => {
+    // nese user sesht logu → ska receta personale
+    if (!user) {
+      setRecipes([]);
+      setLoading(false);
+      return;
+    }
+
     try {
-      const data = await getAllRecipes();
+      // lexon veq recetat e user-it + API recipes
+      const data = await getAllRecipes(user.uid);
       setRecipes(data);
     } catch (err) {
       console.log("Error loading recipes:", err);
@@ -23,23 +33,11 @@ useEffect(() => {
   };
 
   loadData();
-}, []);
+}, [user]); 
 
-// ADD RECIPE (from search meal or user)
+// ADD RECIPE 
 const addRecipeWrapper = async (recipe) => {
-  /**
-   recipe expected structure:
-   {
-     title: string,
-     image: string,
-     ingredients: array of strings,
-     category: string (optional)
-   }
-  */
-
-  const id = await addRecipe(recipe);  // Firebase returns the document ID
-
-  // Save locally in state
+  const id = await addRecipe(recipe);
   setRecipes((prev) => [...prev, { id, ...recipe }]);
 };
 
