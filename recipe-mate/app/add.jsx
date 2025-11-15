@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRecipes } from "../contexts/RecipeContext";
 import { useAuth } from "../contexts/AuthContext";
 
+
 export default function AddRecipeScreen() {
   const [recipeName, setRecipeName] = useState("");
   const [description, setDescription] = useState("");
@@ -79,6 +80,7 @@ export default function AddRecipeScreen() {
         <TextInput
           style={styles.input}
           placeholder="Recipe Name"
+          placeholderTextColor="#666"
           value={recipeName}
           onChangeText={setRecipeName}
         />
@@ -86,6 +88,8 @@ export default function AddRecipeScreen() {
         <TextInput
           style={styles.input}
           placeholder="Description"
+          placeholderTextColor="#666"
+
           value={description}
           onChangeText={setDescription}
         />
@@ -93,6 +97,7 @@ export default function AddRecipeScreen() {
         <TextInput
           style={styles.input}
           placeholder="Cooking Time (min)"
+          placeholderTextColor="#666"
           keyboardType="numeric"
           value={cookingTime}
           onChangeText={setCookingTime}
@@ -101,6 +106,7 @@ export default function AddRecipeScreen() {
         <TextInput
           style={styles.input}
           placeholder="Servings"
+          placeholderTextColor="#666"
           keyboardType="numeric"
           value={servings}
           onChangeText={setServings}
@@ -109,6 +115,7 @@ export default function AddRecipeScreen() {
         <TextInput
           style={[styles.input, styles.multi]}
           placeholder="Ingredients (one per line)"
+          placeholderTextColor="#666"
           multiline
           value={ingredients}
           onChangeText={setIngredients}
@@ -117,6 +124,7 @@ export default function AddRecipeScreen() {
         <TextInput
           style={[styles.input, styles.multi]}
           placeholder="Instructions"
+          placeholderTextColor="#666"
           multiline
           value={instructions}
           onChangeText={setInstructions}
