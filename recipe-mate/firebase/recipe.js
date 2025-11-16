@@ -11,7 +11,6 @@ import {
 import { db } from "./firebase";
 
 
-// CREATE — SAFE VERSION
 export const addRecipe = async (recipe) => {
  try {
    const recipeToSave = {
@@ -35,7 +34,7 @@ export const addRecipe = async (recipe) => {
  }
 };
 
-// READ
+
 export const getAllRecipes = async (userId) => {
   try {
     if (!userId) return [];
@@ -67,7 +66,6 @@ export const getAllRecipes = async (userId) => {
   }
 };
 
-// UPDATE — SAFE VERSION
 export const updateRecipe = async (id, updatedFields) => {
  try {
    const recipeRef = doc(db, "recipes", id);
@@ -102,7 +100,7 @@ export const updateRecipe = async (id, updatedFields) => {
  }
 };
 
-// DELETE
+
 export const deleteRecipe = async (id) => {
  try {
    const recipeRef = doc(db, "recipes", id);

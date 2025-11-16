@@ -10,15 +10,19 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRecipes } from "../contexts/RecipeContext";
 
 export default function RecipeScreen() {
   const router = useRouter();
   const { currentRecipe } = useLocalSearchParams();
   const [recipe, setRecipe] = useState(null);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const { deleteRecipe } = useRecipes();
+
+  const {
+    deleteRecipe,
+    addToFavorites,
+    removeFromFavorites,
+    isFavorite,
+  } = useRecipes();
 
   useEffect(() => {
     if (currentRecipe) {
@@ -31,29 +35,18 @@ export default function RecipeScreen() {
     }
   }, [currentRecipe]);
 
-  useEffect(() => {
-    const loadFavorite = async () => {
-      if (!recipe) return;
-      try {
-        const value = await AsyncStorage.getItem(`favorite_${recipe.id}`);
-        if (value === "true") setIsFavorite(true);
-      } catch {}
-    };
-    loadFavorite();
-  }, [recipe]);
-
-  const toggleFavorite = async () => {
+  const handleToggleFavorite = () => {
     if (!recipe) return;
-    try {
-      const newValue = !isFavorite;
-      setIsFavorite(newValue);
-      await AsyncStorage.setItem(`favorite_${recipe.id}`, newValue.toString());
-    } catch {}
+    if (isFavorite(recipe.id)) {
+      removeFromFavorites(recipe.id);
+    } else {
+      addToFavorites(recipe);
+    }
   };
 
   const handleDelete = () => {
     if (!recipe) return;
-    
+
     if (recipe.id === "1") {
       Alert.alert(
         "Cannot Delete",
@@ -62,7 +55,7 @@ export default function RecipeScreen() {
       );
       return;
     }
-    
+
     Alert.alert(
       "Delete Recipe",
       `Are you sure you want to delete "${recipe.title}"?`,
@@ -73,10 +66,11 @@ export default function RecipeScreen() {
           style: "destructive",
           onPress: async () => {
             try {
-              await AsyncStorage.removeItem(`favorite_${recipe.id}`);
-            } catch {}
-            deleteRecipe(recipe.id);
-            router.replace("/");
+              deleteRecipe(recipe.id);
+              router.replace("/");
+            } catch (err) {
+              console.log("Error deleting:", err);
+            }
           },
         },
       ]
@@ -92,6 +86,8 @@ export default function RecipeScreen() {
       </View>
     );
   }
+
+  const favorite = isFavorite(recipe.id);
 
   return (
     <View style={styles.container}>
@@ -163,14 +159,14 @@ export default function RecipeScreen() {
         </View>
 
         <View style={styles.bottomRow}>
-          <Pressable style={styles.favoriteButton} onPress={toggleFavorite}>
+          <Pressable style={styles.favoriteButton} onPress={handleToggleFavorite}>
             <Ionicons
-              name={isFavorite ? "heart" : "heart-outline"}
+              name={favorite ? "heart" : "heart-outline"}
               color="#2e573a"
               size={18}
             />
             <Text style={styles.favoriteText}>
-              {isFavorite ? "Remove Favorite" : "Add to Favorites"}
+              {favorite ? "Remove Favorite" : "Add to Favorites"}
             </Text>
           </Pressable>
 

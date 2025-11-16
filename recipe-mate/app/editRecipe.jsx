@@ -43,7 +43,7 @@ export default function EditRecipe() {
        description: r.description || "",
 
 
-       // FIX: Always convert time safely to string
+  
        time:
          typeof r.time === "string"
            ? r.time.replace(" min", "")
@@ -53,7 +53,7 @@ export default function EditRecipe() {
        servings: r.servings ? String(r.servings) : "",
 
 
-       // FIX: Ingredients always safe array → join into one string
+    
        ingredients: Array.isArray(r.ingredients)
          ? r.ingredients.join("\n")
          : r.ingredients || "",

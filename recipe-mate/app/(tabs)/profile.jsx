@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../contexts/AuthContext";
 import { logOut } from "../../firebase/auth";
 import { useRouter } from "expo-router";
+import { useRecipes } from "../../contexts/RecipeContext";
 
 
 export default function ProfileScreen() {
@@ -16,7 +17,20 @@ export default function ProfileScreen() {
   const deepAccent = "#2e573a";
 
   const {user, loading, isAuthenticated} = useAuth();
+  const { stats } = useRecipes();
   const router = useRouter();
+
+  const { totalRecipes, favoritesCount, totalCookingTimeMinutes } = stats || {
+    totalRecipes: 0,
+    favoritesCount: 0,
+    totalCookingTimeMinutes: 0,
+  };
+
+  const totalMinutes = totalCookingTimeMinutes || 0;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const cookingTimeLabel =
+    hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 
   const handleLogout = async () => {
     Alert.alert(
@@ -51,8 +65,8 @@ export default function ProfileScreen() {
     );
   };
 
-  const handleFavorites = () => {
-    Alert.alert("My Favorites", "This feature is coming soon!");
+const handleFavorites = () => {
+    router.push("/favorites");
   };
 
   const handleSettings = () => {
@@ -67,22 +81,47 @@ export default function ProfileScreen() {
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
+      <SafeAreaView
+        style={[styles.safeArea, { backgroundColor }]}
+        edges={["top"]}
+      >
         <View style={styles.container}>
           <View style={styles.notAuthContainer}>
             <Ionicons name="person-circle" size={80} color={textPrimary} />
-            <Text style={{ color: textPrimary, fontSize: 22, fontWeight: '700', marginTop: 20, marginBottom: 12 }}>
+            <Text
+              style={{
+                color: textPrimary,
+                fontSize: 22,
+                fontWeight: "700",
+                marginTop: 20,
+                marginBottom: 12,
+              }}
+            >
               Welcome to RecipeMate
             </Text>
-            <Text style={{ color: textSecondary, fontSize: 14, textAlign: 'center', marginBottom: 32, lineHeight: 20 }}>
-              Sign in to your account to view your profile, save recipes, and manage your favorites.
+            <Text
+              style={{
+                color: textSecondary,
+                fontSize: 14,
+                textAlign: "center",
+                marginBottom: 32,
+                lineHeight: 20,
+              }}
+            >
+              Sign in to your account to view your profile, save recipes, and
+              manage your favorites.
             </Text>
-            
+
             <TouchableOpacity
               style={styles.loginButton}
               onPress={() => router.push("/(auth)/login")}
             >
-              <Ionicons name="log-in" size={20} color="#fff" style={{ marginRight: 8 }} />
+              <Ionicons
+                name="log-in"
+                size={20}
+                color="#fff"
+                style={{ marginRight: 8 }}
+              />
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
 
@@ -90,7 +129,12 @@ export default function ProfileScreen() {
               style={styles.signupButton}
               onPress={() => router.push("/(auth)/signup")}
             >
-              <Ionicons name="person-add" size={20} color={textPrimary} style={{ marginRight: 8 }} />
+              <Ionicons
+                name="person-add"
+                size={20}
+                color={textPrimary}
+                style={{ marginRight: 8 }}
+              />
               <Text style={styles.signupButtonText}>Create Account</Text>
             </TouchableOpacity>
           </View>
@@ -100,96 +144,127 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
+    <SafeAreaView
+      style={[styles.safeArea, { backgroundColor }]}
+      edges={["top"]}
+    >
       <ScrollView
         style={styles.container}
         contentContainerStyle={[
           styles.contentContainer,
-          Platform.OS !== 'ios' && styles.contentContainerWithTabBar
+          Platform.OS !== "ios" && styles.contentContainerWithTabBar,
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.profileCard, { backgroundColor: headerBackground }]}>
+        <View
+          style={[
+            styles.profileCard,
+            { backgroundColor: "#2e573a" },
+          ]}
+        >
           <View style={[styles.avatar, { backgroundColor: "#FFFFFF" }]}>
             <Ionicons name="person" size={48} color={deepAccent} />
           </View>
-          <Text style={[styles.name, { color: "#fde3cf" }]}>{isAuthenticated ? user.email : 'Recipe Chef'}</Text>
-          <Text style={[styles.subtitle, { color: "#fde3cf", opacity: 0.85 }]}>Cooking enthusiast since 2024</Text>
+          <Text style={[styles.name, { color: "#fde3cf" }]}>
+            {isAuthenticated ? user.email : "Recipe Chef"}
+          </Text>
+          <Text
+            style={[
+              styles.subtitle,
+              { color: "#fde3cf", opacity: 0.85 },
+            ]}
+          >
+            Cooking enthusiast since 2024
+          </Text>
         </View>
 
-  <View style={[styles.statsCard, { backgroundColor: cardBackground }]}>
-          <Text style={[styles.sectionTitle, { color: textPrimary }]}>Your Stats</Text>
-          
+        <View
+          style={[styles.statsCard, { backgroundColor: cardBackground }]}
+        >
+          <Text style={[styles.sectionTitle, { color: textPrimary }]}>
+            Your Stats
+          </Text>
+
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
-              <View style={[styles.statIconContainer, { backgroundColor: "#fde3cf" }]}>
+              <View
+                style={[
+                  styles.statIconContainer,
+                  { backgroundColor: "#fde3cf" },
+                ]}
+              >
                 <Ionicons name="book" size={24} color={deepAccent} />
               </View>
-              <Text style={[styles.statValue, { color: textPrimary }]}>3</Text>
-              <Text style={[styles.statLabel, { color: textSecondary }]}>Total Recipes</Text>
+              <Text style={[styles.statValue, { color: textPrimary }]}>
+                {totalRecipes}
+              </Text>
+              <Text style={[styles.statLabel, { color: textSecondary }]}>
+                Total Recipes
+              </Text>
             </View>
 
             <View style={styles.statItem}>
-              <View style={[styles.statIconContainer, { backgroundColor: "#fde3cf" }]}>
+              <View
+                style={[
+                  styles.statIconContainer,
+                  { backgroundColor: "#fde3cf" },
+                ]}
+              >
                 <Ionicons name="heart" size={24} color={deepAccent} />
               </View>
-              <Text style={[styles.statValue, { color: textPrimary }]}>1</Text>
-              <Text style={[styles.statLabel, { color: textSecondary }]}>Favorites</Text>
+              <Text style={[styles.statValue, { color: textPrimary }]}>
+                {favoritesCount}
+              </Text>
+              <Text style={[styles.statLabel, { color: textSecondary }]}>
+                Favorites
+              </Text>
             </View>
 
             <View style={styles.statItem}>
-              <View style={[styles.statIconContainer, { backgroundColor: "#fde3cf" }]}>
+              <View
+                style={[
+                  styles.statIconContainer,
+                  { backgroundColor: "#fde3cf" },
+                ]}
+              >
                 <Ionicons name="time" size={24} color={deepAccent} />
               </View>
-              <Text style={[styles.statValue, { color: textPrimary }]}>2h 15m</Text>
-              <Text style={[styles.statLabel, { color: textSecondary }]}>Cooking Time</Text>
+              <Text style={[styles.statValue, { color: textPrimary }]}>
+                {cookingTimeLabel}
+              </Text>
+              <Text style={[styles.statLabel, { color: textSecondary }]}>
+                Cooking Time
+              </Text>
             </View>
           </View>
         </View>
 
-  <View style={[styles.menuCard, { backgroundColor: cardBackground }]}>
-          <Text style={[styles.sectionTitle, { color: textPrimary }]}>Menu</Text>
-          
-          <TouchableOpacity 
-            onPress={handleFavorites}
-            activeOpacity={0.7}
-          >
+        <View
+          style={[styles.menuCard, { backgroundColor: cardBackground }]}
+        >
+          <Text style={[styles.sectionTitle, { color: textPrimary }]}>
+            Menu
+          </Text>
+
+          <TouchableOpacity onPress={handleFavorites} activeOpacity={0.7}>
             <View style={styles.menuItem}>
               <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
+                <View
+                  style={[
+                    styles.menuIconContainer,
+                    { backgroundColor: "#FFFCFB" },
+                  ]}
+                >
                   <Ionicons name="heart" size={20} color={deepAccent} />
                 </View>
-                <Text style={[styles.menuItemText, { color: textPrimary }]}>My Favorites</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={deepAccent} />
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            onPress={handleSettings}
-            activeOpacity={0.7}
-          >
-            <View style={styles.menuItem}>
-              <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
-                  <Ionicons name="settings" size={20} color={deepAccent} />
-                </View>
-                <Text style={[styles.menuItemText, { color: textPrimary }]}>Settings</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={deepAccent} />
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            onPress={handleHelp}
-            activeOpacity={0.7}
-          >
-            <View style={[styles.menuItem, styles.menuItemLast]}>
-              <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
-                  <Ionicons name="help-circle" size={20} color={deepAccent} />
-                </View>
-                <Text style={[styles.menuItemText, { color: textPrimary }]}>Help & Support</Text>
+                <Text
+                  style={[
+                    styles.menuItemText,
+                    { color: textPrimary },
+                  ]}
+                >
+                  My Favorites
+                </Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color={deepAccent} />
             </View>

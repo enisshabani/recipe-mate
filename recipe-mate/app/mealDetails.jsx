@@ -15,7 +15,8 @@ export default function MealDetails() {
   const { id } = useLocalSearchParams();
   const [meal, setMeal] = useState(null);
   const router = useRouter();
-  const { addRecipe } = useRecipes();
+  const { addRecipe, addToFavorites, isFavorite, removeFromFavorites } =
+    useRecipes();
 
   useEffect(() => {
     const loadMeal = async () => {
@@ -48,8 +49,44 @@ export default function MealDetails() {
     }
   }
 
-  const cookingTime = "30 minutes";
+  const cookingTime = "30 min";
   const servings = 3;
+
+  const normalizedRecipe = {
+    id: meal.idMeal, 
+    title: meal.strMeal,
+    description: meal.strMeal,
+    image: meal.strMealThumb,
+    ingredients,
+    category: meal.strCategory,
+    servings,
+    time: cookingTime,
+    instructions: meal.strInstructions || "",
+  };
+
+  const favorite = isFavorite(normalizedRecipe.id);
+
+  const handleSaveToMyRecipes = async () => {
+    await addRecipe({
+      title: meal.strMeal,
+      description: meal.strMeal,
+      image: meal.strMealThumb,
+      ingredients,
+      category: meal.strCategory,
+      servings,
+      time: cookingTime,
+      instructions: meal.strInstructions || "",
+    });
+    router.push("/");
+  };
+
+  const handleToggleFavorite = () => {
+    if (favorite) {
+      removeFromFavorites(normalizedRecipe.id);
+    } else {
+      addToFavorites(normalizedRecipe);
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -83,27 +120,24 @@ export default function MealDetails() {
           </Text>
         ))}
 
-        <View style={{ height: 100 }} />
+        <View style={{ height: 120 }} />
       </ScrollView>
 
       <View style={styles.stickyButtonContainer}>
         <TouchableOpacity
-          style={styles.saveButton}
-          onPress={() => {
-            addRecipe({
-              title: meal.strMeal,
-              description: meal.strMeal,
-              image: meal.strMealThumb,
-              ingredients,
-              category: meal.strCategory,
-              servings,
-              time: cookingTime,
-              instructions: meal.strInstructions || "",
-            });
-            router.push("/");
-          }}
+          style={[styles.actionButton, styles.secondaryButton]}
+          onPress={handleSaveToMyRecipes}
         >
-          <Text style={styles.saveButtonText}>Save to My Recipes</Text>
+          <Text style={styles.actionButtonText}>Save to My Recipes</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton]}
+          onPress={handleToggleFavorite}
+        >
+          <Text style={styles.actionButtonText}>
+            {favorite ? "Remove Favorite" : "Add to Favorites"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -149,7 +183,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: 120,
     marginInline: 10,
-
   },
 
   infoText: { fontSize: 14, fontWeight: "600", color: "#333" },
@@ -163,16 +196,23 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: 20,
     right: 20,
+    flexDirection: "row",
+    gap: 10,
   },
 
-  saveButton: {
+  actionButton: {
+    flex: 1,
     backgroundColor: "#F4A300",
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: "center",
   },
 
-  saveButtonText: {
+  secondaryButton: {
+    backgroundColor: "#2e573a",
+  },
+
+  actionButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "700",

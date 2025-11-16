@@ -11,7 +11,6 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { Audio } from "expo-av";
 
-// LISTA E TINGUJVE NË DISK
 const SOUND_OPTIONS = [
   {
     id: "classic",
@@ -110,7 +109,7 @@ export default function TimerScreen() {
     setRemaining(0);
   };
 
-  // koha për display
+  
   let displayH, displayM, displayS;
 
   if (remaining === 0 && !isRunning) {
@@ -127,7 +126,7 @@ export default function TimerScreen() {
     displayS = String(secondsPart).padStart(2, "0");
   }
 
-  // ---- INPUTET (iOS: TextInput, Android/Web: Picker) ----
+
   const renderHourInput = () => {
     if (Platform.OS === "ios") {
       return (
@@ -293,7 +292,7 @@ export default function TimerScreen() {
   );
 }
 
-const BOX_WIDTH = 110; // gjerësi më e vogël e kutisë
+const BOX_WIDTH = 110; 
 
 const styles = StyleSheet.create({
   container: {
@@ -326,15 +325,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 8,
   },
-  // Picker për Android/Web
+
   picker: {
     width: "100%",
-    height: 80, // më e vogël
+    height: 80, 
   },
   pickerItem: {
-    fontSize: 20, // numri më i madh
+    fontSize: 20, 
   },
-  // TextInput për iOS
+
   inputBox: {
     width: "100%",
     height: 60,
