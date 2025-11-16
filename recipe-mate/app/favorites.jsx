@@ -9,7 +9,6 @@ import {
 import { useRouter } from "expo-router";
 import { useRecipes } from "../contexts/RecipeContext";
 
-
 export default function FavoritesScreen() {
   const { favoriteRecipes } = useRecipes();
   const router = useRouter();
@@ -25,9 +24,7 @@ export default function FavoritesScreen() {
       }
     >
       <Text style={styles.cardTitle}>{item.title}</Text>
-      {item.time ? (
-        <Text style={styles.cardSubtitle}>{item.time}</Text>
-      ) : null}
+      {item.time ? <Text style={styles.cardSubtitle}>{item.time}</Text> : null}
       <Text style={styles.cardSmall}>
         {item.ingredients ? `${item.ingredients.length} ingredients` : ""}
       </Text>
@@ -36,6 +33,12 @@ export default function FavoritesScreen() {
 
   return (
     <View style={styles.container}>
+      
+      {/* 🔙 BACK BUTTON */}
+      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <Text style={styles.backText}>← Back</Text>
+      </TouchableOpacity>
+
       <Text style={styles.title}>My Favorites</Text>
 
       {favoriteRecipes.length === 0 ? (
@@ -56,6 +59,18 @@ export default function FavoritesScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFCFB", padding: 16 },
+
+  backButton: {
+    marginBottom: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 2,
+  },
+  backText: {
+    fontSize: 18,
+    color: "#2e573a",
+    fontWeight: "600",
+  },
+
   title: {
     fontSize: 24,
     fontWeight: "700",
