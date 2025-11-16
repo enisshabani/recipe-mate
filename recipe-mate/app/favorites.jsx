@@ -34,7 +34,6 @@ export default function FavoritesScreen() {
   return (
     <View style={styles.container}>
       
-      {/* 🔙 BACK BUTTON */}
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
