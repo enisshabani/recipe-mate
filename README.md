@@ -16,11 +16,11 @@
 Në fazën e parë janë implementuar funksionalitetet bazë si: shtimi, listimi dhe editimi i recetave.
 
 Në fazën e dytë, aplikacioni është zgjeruar me funksione më të avancuara:
-- Autentifikim me Firebase
+1. Autentifikim me Firebase
     - Login me Email/Password dhe Google, validim inputesh, ridrejtim në Home dhe logout.
-- CRUD me Firebase Firestore
+2. CRUD me Firebase Firestore
     -Ruajtja e recetave në cloud me mundësi shtimi, përditësimi dhe fshirjeje, duke trajtuar gjendjet loading, error dhe success.
-- API e jashtme (opsionale)
+3. API e jashtme (opsionale)
     - Integrim me TheMealDB për kërkim të recetave shtesë.
-    - Navigim & UI të përmirësuar
+4. Navigim & UI të përmirësuar
     - Navigim me Expo Router, strukturë më e organizuar dhe ndërfaqe më moderne.
