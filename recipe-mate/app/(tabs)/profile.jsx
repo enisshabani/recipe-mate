@@ -33,6 +33,27 @@ export default function ProfileScreen() {
     hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 
   const handleLogout = async () => {
+    // On web, the native Alert may not behave as expected — use a confirm fallback
+    if (Platform.OS === "web") {
+      const confirmed = confirm("Are you sure you want to logout?");
+      if (!confirmed) return;
+      try {
+        const { error } = await logOut();
+        if (error) {
+          Alert.alert("Error", "Failed to logout: " + error);
+          console.log("Logout error:", error);
+        } else {
+          console.log("Logout successful");
+          // Ensure navigation on web — go to root so RootLayout will show auth stack
+          router.replace("/");
+        }
+      } catch (err) {
+        Alert.alert("Error", "An error occurred during logout");
+        console.log("Logout error:", err);
+      }
+      return;
+    }
+
     Alert.alert(
       "Logout",
       "Are you sure you want to logout?",
@@ -52,7 +73,7 @@ export default function ProfileScreen() {
                 console.log("Logout error:", error);
               } else {
                 console.log("Logout successful");
-                // The auth state change will automatically redirect via root layout
+                router.replace("/");
               }
             } catch (err) {
               Alert.alert("Error", "An error occurred during logout");
