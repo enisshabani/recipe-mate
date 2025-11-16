@@ -1,4 +1,4 @@
-import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert, SafeAreaView } from "react-native";
+import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert, SafeAreaView, Platform } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { signUp } from "../../firebase/auth";
@@ -40,12 +40,18 @@ export default function SignupScreen() {
     if (error) {
       Alert.alert("Sign Up Failed", error);
     } else {
-      Alert.alert("Success", "Account created! You are now logged in.", [
-        {
-          text: "OK",
-          onPress: () => router.replace("/(tabs)"),
-        },
-      ]);
+      // On web, Alert may not support callback, so navigate first then show message
+      if (Platform.OS === "web") {
+        router.replace("/");
+        Alert.alert("Success", "Account created! You are now logged in.");
+      } else {
+        Alert.alert("Success", "Account created! You are now logged in.", [
+          {
+            text: "OK",
+            onPress: () => router.replace("/"),
+          },
+        ]);
+      }
     }
     setLoading(false);
   };
