@@ -19,7 +19,7 @@ Në fazën e dytë, aplikacioni është zgjeruar me funksione më të avancuara:
 1. Autentifikim me Firebase
     - Login me Email/Password dhe Google, validim inputesh, ridrejtim në Home dhe logout.
 2. CRUD me Firebase Firestore
-    -Ruajtja e recetave në cloud me mundësi shtimi, përditësimi dhe fshirjeje, duke trajtuar gjendjet loading, error dhe success.
+    - Ruajtja e recetave në cloud me mundësi shtimi, përditësimi dhe fshirjeje, duke trajtuar gjendjet loading, error dhe success.
 3. API e jashtme (opsionale)
     - Integrim me TheMealDB për kërkim të recetave shtesë.
 4. Navigim & UI të përmirësuar
