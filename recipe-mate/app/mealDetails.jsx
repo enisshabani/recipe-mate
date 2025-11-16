@@ -53,7 +53,7 @@ export default function MealDetails() {
   const servings = 3;
 
   const normalizedRecipe = {
-    id: meal.idMeal, 
+    id: meal.idMeal,
     title: meal.strMeal,
     description: meal.strMeal,
     image: meal.strMealThumb,
@@ -91,9 +91,10 @@ export default function MealDetails() {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
-        {/* Back button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={26} color="#333" />
+
+        {/* 🔙 NEW BACK BUTTON */}
+        <TouchableOpacity style={styles.backButtonNew} onPress={() => router.back()}>
+          <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
 
         <Image source={{ uri: meal.strMealThumb }} style={styles.image} />
@@ -146,29 +147,54 @@ export default function MealDetails() {
 
 const styles = StyleSheet.create({
   loading: { marginTop: 40, textAlign: "center", fontSize: 18 },
-  container: { backgroundColor: "#fff", padding: 20, flex: 1 },
 
-  backButton: {
-    position: "absolute",
-    top: 20,
-    left: 10,
-    zIndex: 10,
+  container: {
     backgroundColor: "#fff",
-    padding: 6,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    flex: 1,
   },
 
-  image: { width: "100%", height: 260, borderRadius: 10, marginTop: 30 },
-  title: { fontSize: 26, fontWeight: "800", marginTop: 16, color: "#333" },
-  category: { fontSize: 16, color: "#777", marginBottom: 15 },
+  backButtonNew: {
+    marginBottom: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 2,
+    paddingLeft: 20,
+    backgroundColor: "#2e573a"
+  },
+
+  backText: {
+    fontSize: 18,
+    color: "#fde3cf",
+    fontWeight: "600",
+
+  },
+
+  image: {
+    height: 260,
+    borderRadius: 10,
+    marginTop: 10,
+    marginRight: 20,
+    marginLeft: 20,
+  },
+
+  title: {
+    fontSize: 26,
+    fontWeight: "800",
+    marginTop: 16,
+    color: "#333",
+    marginLeft: 20,
+  },
+
+  category: {
+    fontSize: 16,
+    color: "#777",
+    marginBottom: 15,
+    marginLeft: 20,
+  },
 
   infoRow: {
     flexDirection: "row",
     marginVertical: 12,
+    marginLeft: 10,
   },
 
   infoBox: {
@@ -182,13 +208,14 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginBottom: 10,
     width: 120,
-    marginInline: 10,
+    marginHorizontal: 10,
   },
 
   infoText: { fontSize: 14, fontWeight: "600", color: "#333" },
 
-  sectionTitle: { fontSize: 20, fontWeight: "700", marginBottom: 10 },
-  ingredient: { fontSize: 15, color: "#444", marginBottom: 4 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", marginBottom: 10, marginLeft: 20, },
+
+  ingredient: { fontSize: 15, color: "#444", marginBottom: 4, marginLeft: 20, },
 
   stickyButtonContainer: {
     backgroundColor: "#fff",
