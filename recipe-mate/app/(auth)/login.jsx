@@ -16,7 +16,6 @@ export default function LoginScreen() {
       return;
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert("Error", "Please enter a valid email address");
@@ -29,8 +28,7 @@ export default function LoginScreen() {
     if (error) {
       Alert.alert("Login Failed", error);
     } else {
-      // Navigation happens automatically via root layout
-      router.replace("/(tabs)");
+      router.replace("/");
     }
     setLoading(false);
   };
@@ -42,7 +40,7 @@ export default function LoginScreen() {
     if (error) {
       Alert.alert("Google Login Failed", error);
     } else {
-      router.replace("/(tabs)");
+      router.replace("/");
     }
     setLoading(false);
   };
@@ -54,7 +52,7 @@ export default function LoginScreen() {
     if (error) {
       Alert.alert("GitHub Login Failed", error);
     } else {
-      router.replace("/(tabs)");
+      router.replace("/");
     }
     setLoading(false);
   };
