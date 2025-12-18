@@ -8,6 +8,7 @@ import {
   Platform,
   TextInput,
   ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -230,7 +231,15 @@ export default function TimerScreen() {
         <Text style={styles.headerTitle}>Timer</Text>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
 
         <TouchableOpacity 
           style={styles.displayCard}
@@ -299,7 +308,8 @@ export default function TimerScreen() {
           </TouchableOpacity>
         </View>
 
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

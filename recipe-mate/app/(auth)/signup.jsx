@@ -1,4 +1,4 @@
-import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert, SafeAreaView, Platform } from "react-native";
+import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert, SafeAreaView, Platform, KeyboardAvoidingView, ScrollView } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { signUp } from "../../firebase/auth";
@@ -66,7 +66,16 @@ export default function SignupScreen() {
         <View style={{ width: 28 }} />
       </View>
 
-      <View style={styles.content}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.content}>
         <Text style={styles.title}>Create Account</Text>
         <Text style={styles.subtitle}>Join us and start cooking</Text>
 
@@ -120,7 +129,9 @@ export default function SignupScreen() {
             <Text style={styles.linkText}>Login</Text>
           </TouchableOpacity>
         </View>
-      </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -129,6 +140,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFCFB",
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   header: {
     flexDirection: "row",
