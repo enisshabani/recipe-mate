@@ -109,7 +109,7 @@ export default function AddRecipeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={28} color="#2e573a" />
+          <Ionicons name="chevron-back" size={28} color="#fde3cf" />
         </TouchableOpacity>
 
         <Text style={styles.headerTitle}>Add Recipe</Text>
@@ -222,14 +222,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 14,
-    backgroundColor: "#FFFCFB",
+    paddingTop: 38,
+    paddingVertical: 18,
+    backgroundColor: "#2e573a",
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#2e573a",
+    fontSize: 26,
+    fontWeight: "800",
+    color: "#fde3cf",
+    letterSpacing: 0.5,
   },
   wrapper: { padding: 20 },
   input: {

@@ -94,7 +94,7 @@ export default function RecipeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Pressable onPress={() => router.back()} style={styles.headerLeft}>
-          <Ionicons name="chevron-back" size={24} color="#fde3cf" />
+          <Ionicons name="chevron-back" size={28} color="#fde3cf" />
           <Text style={styles.headerTitle}>Recipe</Text>
         </Pressable>
 
@@ -107,7 +107,7 @@ export default function RecipeScreen() {
           }
           style={styles.headerRight}
         >
-          <Ionicons name="create-outline" size={22} color="#fde3cf" />
+          <Ionicons name="create-outline" size={26} color="#fde3cf" />
         </Pressable>
       </View>
 
@@ -185,19 +185,23 @@ export default function RecipeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFCFB" },
   header: {
-    backgroundColor: "#2e573a",
-    height: 60,
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 14,
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    paddingTop: 38,
+    backgroundColor: "#2e573a",
+    borderBottomWidth: 1,
+    borderBottomColor: "#2e573a",
   },
   headerLeft: { flexDirection: "row", alignItems: "center" },
   headerTitle: {
+    fontSize: 26,
+    fontWeight: "800",
     color: "#fde3cf",
-    fontSize: 20,
-    fontWeight: "700",
     marginLeft: 4,
+    letterSpacing: 0.5,
   },
   headerRight: { padding: 4 },
   contentContainer: { padding: 16 },

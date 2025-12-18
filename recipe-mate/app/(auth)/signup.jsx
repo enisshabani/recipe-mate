@@ -135,13 +135,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingTop: 38,
+    paddingVertical: 18,
     backgroundColor: "#2e573a",
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: "800",
-    color: "#fff",
+    color: "#fde3cf",
+    letterSpacing: 0.5,
   },
   content: {
     flex: 1,
