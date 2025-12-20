@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRecipes } from "../contexts/RecipeContext";
@@ -78,15 +79,23 @@ export default function EditRecipe() {
 
   return (
     <View style={styles.page}>
-      <View style={styles.navbar}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="close" size={24} color="#fff" />
+      <Animated.View entering={FadeIn.duration(400)} style={styles.navbar}>
+        <TouchableOpacity 
+          onPress={() => router.back()} 
+          style={styles.navButton}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={24} color="#fde3cf" />
         </TouchableOpacity>
         <Text style={styles.title}>Edit Recipe</Text>
-        <TouchableOpacity onPress={handleSave}>
-          <Text style={styles.save}>Save</Text>
+        <TouchableOpacity 
+          onPress={handleSave}
+          style={styles.saveButton}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="checkmark" size={24} color="#F8a91f" />
         </TouchableOpacity>
-      </View>
+      </Animated.View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -100,60 +109,105 @@ export default function EditRecipe() {
           showsVerticalScrollIndicator={false}
         >
         <View style={styles.content}>
-          <TextInput
-            style={styles.input}
-            placeholder="Recipe name"
-            value={recipe.title}
-            onChangeText={(t) => setRecipe({ ...recipe, title: t })}
-          />
+          <Animated.View entering={FadeInDown.delay(100).duration(500)} style={styles.inputContainer}>
+            <View style={styles.inputIconContainer}>
+              <Ionicons name="restaurant-outline" size={20} color="#2e573a" />
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Recipe name"
+              placeholderTextColor="#999"
+              value={recipe.title}
+              onChangeText={(t) => setRecipe({ ...recipe, title: t })}
+            />
+          </Animated.View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Description"
-            value={recipe.description}
-            onChangeText={(t) => setRecipe({ ...recipe, description: t })}
-          />
+          <Animated.View entering={FadeInDown.delay(150).duration(500)} style={styles.inputContainer}>
+            <View style={styles.inputIconContainer}>
+              <Ionicons name="document-text-outline" size={20} color="#2e573a" />
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Description"
+              placeholderTextColor="#999"
+              value={recipe.description}
+              onChangeText={(t) => setRecipe({ ...recipe, description: t })}
+            />
+          </Animated.View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Cooking time (minutes)"
-            keyboardType="numeric"
-            value={recipe.time}
-            onChangeText={(t) => setRecipe({ ...recipe, time: t })}
-          />
+          <View style={styles.row}>
+            <Animated.View entering={FadeInDown.delay(200).duration(500)} style={[styles.inputContainer, styles.halfInput]}>
+              <View style={styles.inputIconContainer}>
+                <Ionicons name="time-outline" size={20} color="#2e573a" />
+              </View>
+              <TextInput
+                style={styles.input}
+                placeholder="Time (min)"
+                placeholderTextColor="#999"
+                keyboardType="numeric"
+                value={recipe.time}
+                onChangeText={(t) => setRecipe({ ...recipe, time: t })}
+              />
+            </Animated.View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Servings"
-            keyboardType="numeric"
-            value={recipe.servings}
-            onChangeText={(t) => setRecipe({ ...recipe, servings: t })}
-          />
+            <Animated.View entering={FadeInDown.delay(250).duration(500)} style={[styles.inputContainer, styles.halfInput]}>
+              <View style={styles.inputIconContainer}>
+                <Ionicons name="people-outline" size={20} color="#2e573a" />
+              </View>
+              <TextInput
+                style={styles.input}
+                placeholder="Servings"
+                placeholderTextColor="#999"
+                keyboardType="numeric"
+                value={recipe.servings}
+                onChangeText={(t) => setRecipe({ ...recipe, servings: t })}
+              />
+            </Animated.View>
+          </View>
 
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Ingredients (one per line)"
-            multiline
-            value={recipe.ingredients}
-            onChangeText={(t) => setRecipe({ ...recipe, ingredients: t })}
-          />
+          <Animated.View entering={FadeInDown.delay(300).duration(500)} style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="list-outline" size={22} color="#2e573a" />
+              <Text style={styles.sectionTitle}>Ingredients</Text>
+            </View>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Enter ingredients, one per line"
+              placeholderTextColor="#999"
+              multiline
+              value={recipe.ingredients}
+              onChangeText={(t) => setRecipe({ ...recipe, ingredients: t })}
+            />
+          </Animated.View>
 
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Instructions"
-            multiline
-            value={recipe.instructions}
-            onChangeText={(t) => setRecipe({ ...recipe, instructions: t })}
-          />
+          <Animated.View entering={FadeInDown.delay(350).duration(500)} style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="create-outline" size={22} color="#2e573a" />
+              <Text style={styles.sectionTitle}>Instructions</Text>
+            </View>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Enter cooking instructions"
+              placeholderTextColor="#999"
+              multiline
+              value={recipe.instructions}
+              onChangeText={(t) => setRecipe({ ...recipe, instructions: t })}
+            />
+          </Animated.View>
         </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <View style={styles.stickyBar}>
-        <TouchableOpacity style={styles.stickyButton} onPress={handleSave}>
+      <Animated.View entering={FadeInDown.delay(400).duration(500)} style={styles.stickyBar}>
+        <TouchableOpacity 
+          style={styles.stickyButton} 
+          onPress={handleSave}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="checkmark-circle" size={22} color="#fff" />
           <Text style={styles.stickyText}>Save Changes</Text>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </View>
   );
 }
@@ -161,62 +215,149 @@ export default function EditRecipe() {
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFCFB",
   },
 
   navbar: {
     backgroundColor: "#2e573a",
-    paddingTop: 20,
-    paddingBottom: 15,
-    paddingHorizontal: 16,
+    paddingTop: 50,
+    paddingBottom: 16,
+    paddingHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
 
-  title: { color: "#fde3cf", fontSize: 20, fontWeight: "700" },
-  save: { color: "#F8a91f", fontSize: 16, fontWeight: "700" },
+  navButton: {
+    padding: 4,
+  },
+
+  saveButton: {
+    padding: 4,
+  },
+
+  title: { 
+    color: "#fde3cf", 
+    fontSize: 20, 
+    fontWeight: "700" 
+  },
 
   scroll: {
     flex: 1,
   },
 
   content: {
-    padding: 16,
+    padding: 20,
+  },
+
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+
+  inputIconContainer: {
+    marginRight: 10,
   },
 
   input: {
-    backgroundColor: "#fafafa",
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    marginVertical: 10,
+    flex: 1,
+    paddingVertical: 14,
+    fontSize: 16,
+    color: "#333",
+  },
+
+  row: {
+    flexDirection: "row",
+    gap: 12,
+  },
+
+  halfInput: {
+    flex: 1,
+  },
+
+  sectionContainer: {
+    marginBottom: 16,
+  },
+
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 12,
+  },
+
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#2e573a",
   },
 
   textArea: {
-    minHeight: 120,
+    minHeight: 140,
     textAlignVertical: "top",
+    paddingTop: 14,
+    paddingHorizontal: 14,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    fontSize: 16,
+    color: "#333",
+    lineHeight: 22,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
   },
 
   stickyBar: {
     width: "100%",
-    padding: 16,
-    backgroundColor: "#fff",
+    padding: 20,
+    backgroundColor: "#FFFCFB",
     borderTopWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#e0e0e0",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 8,
   },
 
   stickyButton: {
-    backgroundColor: "#F8a91f",
-    paddingVertical: 15,
-    borderRadius: 14,
+    backgroundColor: "#2e573a",
+    paddingVertical: 16,
+    borderRadius: 12,
     alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 10,
+    shadowColor: "#2e573a",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
 
   stickyText: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "700",
   },
 });
