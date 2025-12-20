@@ -370,6 +370,41 @@ const handleImagePicker = () => {
         </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Modal
+  visible={showImageModal}
+  transparent
+  animationType="fade"
+  onRequestClose={() => setShowImageModal(false)}
+>
+  <TouchableOpacity
+    style={styles.modalOverlay}
+    activeOpacity={1}
+    onPress={() => setShowImageModal(false)}
+  >
+    <View style={styles.modalContent}>
+      <Text style={styles.modalTitle}>Add Recipe Image</Text>
+
+      <TouchableOpacity style={styles.modalOption} onPress={takePhoto}>
+        <Ionicons name="camera" size={24} color="#2e573a" />
+        <Text style={styles.modalOptionText}>Take Photo</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.modalOption} onPress={pickImage}>
+        <Ionicons name="images" size={24} color="#2e573a" />
+        <Text style={styles.modalOptionText}>Choose from Gallery</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.modalCancelButton}
+        onPress={() => setShowImageModal(false)}
+      >
+        <Text style={styles.modalCancelText}>Cancel</Text>
+      </TouchableOpacity>
+    </View>
+  </TouchableOpacity>
+</Modal>
+</SafeAreaView>
+
     </SafeAreaView>
   );
 }
