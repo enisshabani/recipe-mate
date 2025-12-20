@@ -175,6 +175,7 @@ const handleImagePicker = () => {
         .map((i) => i.trim())
         .filter((i) => i !== ""),
       instructions: instructionsTrimmed,
+      imageUri: imageUri || null,
       userId: user?.uid,
       type: "manual",
     };
@@ -190,6 +191,7 @@ const handleImagePicker = () => {
     setServings("");
     setIngredients("");
     setInstructions("");
+    setImageUri(null);
     setErrorMessage("");
     setTimeError("");
     setServingsError("");
@@ -225,6 +227,20 @@ const handleImagePicker = () => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
+          <TouchableOpacity
+  style={styles.imagePickerButton}
+  onPress={handleImagePicker}
+>
+  {imageUri ? (
+    <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+  ) : (
+    <View style={styles.imagePickerPlaceholder}>
+      <Ionicons name="camera" size={40} color="#666" />
+      <Text style={styles.imagePickerText}>Add Recipe Image</Text>
+    </View>
+  )}
+</TouchableOpacity>
+
         <Animated.View entering={FadeInDown.delay(100).duration(500)} style={styles.inputContainer}>
           <View style={styles.inputIconContainer}>
             <Ionicons name="restaurant-outline" size={20} color="#2e573a" />
