@@ -1,11 +1,43 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Animated, { FadeIn, FadeInDown, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../contexts/AuthContext";
 import { logOut } from "../../firebase/auth";
 import { useRouter } from "expo-router";
 import { useRecipes } from "../../contexts/RecipeContext";
+
+// Animated Menu Button Component
+const AnimatedMenuButton = ({ onPress, children, delay = 0 }) => {
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const handlePressIn = () => {
+    scale.value = withSpring(0.95, { damping: 10, stiffness: 400 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1, { damping: 10, stiffness: 400 });
+  };
+
+  return (
+    <Animated.View entering={FadeInDown.delay(delay).duration(400)}>
+      <Pressable 
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        <Animated.View style={animatedStyle}>
+          {children}
+        </Animated.View>
+      </Pressable>
+    </Animated.View>
+  );
+};
 
 
 export default function ProfileScreen() {
@@ -107,9 +139,12 @@ const handleFavorites = () => {
         edges={["top"]}
       >
         <View style={styles.container}>
-          <View style={styles.notAuthContainer}>
-            <Ionicons name="person-circle" size={80} color={textPrimary} />
-            <Text
+          <Animated.View entering={FadeIn.duration(600)} style={styles.notAuthContainer}>
+            <Animated.View entering={FadeInDown.delay(100).duration(500)}>
+              <Ionicons name="person-circle" size={80} color={textPrimary} />
+            </Animated.View>
+            <Animated.Text
+              entering={FadeInDown.delay(200).duration(500)}
               style={{
                 color: textPrimary,
                 fontSize: 22,
@@ -119,8 +154,9 @@ const handleFavorites = () => {
               }}
             >
               Welcome to RecipeMate
-            </Text>
-            <Text
+            </Animated.Text>
+            <Animated.Text
+              entering={FadeInDown.delay(300).duration(500)}
               style={{
                 color: textSecondary,
                 fontSize: 14,
@@ -131,34 +167,40 @@ const handleFavorites = () => {
             >
               Sign in to your account to view your profile, save recipes, and
               manage your favorites.
-            </Text>
+            </Animated.Text>
 
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={() => router.push("/(auth)/login")}
-            >
-              <Ionicons
-                name="log-in"
-                size={20}
-                color="#fff"
-                style={{ marginRight: 8 }}
-              />
-              <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
+            <Animated.View entering={FadeInDown.delay(400).duration(500)} style={{width: '100%'}}>
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={() => router.push("/(auth)/login")}
+                activeOpacity={0.8}
+              >
+                <Ionicons
+                  name="log-in"
+                  size={20}
+                  color="#fff"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={styles.loginButtonText}>Login</Text>
+              </TouchableOpacity>
+            </Animated.View>
 
-            <TouchableOpacity
-              style={styles.signupButton}
-              onPress={() => router.push("/(auth)/signup")}
-            >
-              <Ionicons
-                name="person-add"
-                size={20}
-                color={textPrimary}
-                style={{ marginRight: 8 }}
-              />
-              <Text style={styles.signupButtonText}>Create Account</Text>
-            </TouchableOpacity>
-          </View>
+            <Animated.View entering={FadeInDown.delay(500).duration(500)} style={{width: '100%'}}>
+              <TouchableOpacity
+                style={styles.signupButton}
+                onPress={() => router.push("/(auth)/signup")}
+                activeOpacity={0.8}
+              >
+                <Ionicons
+                  name="person-add"
+                  size={20}
+                  color={textPrimary}
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={styles.signupButtonText}>Create Account</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </Animated.View>
         </View>
       </SafeAreaView>
     );
@@ -177,7 +219,8 @@ const handleFavorites = () => {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View
+        <Animated.View
+          entering={FadeInDown.delay(100).duration(500).springify()}
           style={[
             styles.profileCard,
             { backgroundColor: "#2e573a" },
@@ -197,9 +240,10 @@ const handleFavorites = () => {
           >
             Cooking enthusiast since 2024
           </Text>
-        </View>
+        </Animated.View>
 
-        <View
+        <Animated.View
+          entering={FadeInDown.delay(200).duration(500).springify()}
           style={[styles.statsCard, { backgroundColor: cardBackground }]}
         >
           <Text style={[styles.sectionTitle, { color: textPrimary }]}>
@@ -207,7 +251,7 @@ const handleFavorites = () => {
           </Text>
 
           <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
+            <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.statItem}>
               <View
                 style={[
                   styles.statIconContainer,
@@ -222,9 +266,9 @@ const handleFavorites = () => {
               <Text style={[styles.statLabel, { color: textSecondary }]}>
                 Total Recipes
               </Text>
-            </View>
+            </Animated.View>
 
-            <View style={styles.statItem}>
+            <Animated.View entering={FadeInDown.delay(350).duration(400)} style={styles.statItem}>
               <View
                 style={[
                   styles.statIconContainer,
@@ -239,9 +283,9 @@ const handleFavorites = () => {
               <Text style={[styles.statLabel, { color: textSecondary }]}>
                 Favorites
               </Text>
-            </View>
+            </Animated.View>
 
-            <View style={styles.statItem}>
+            <Animated.View entering={FadeInDown.delay(400).duration(400)} style={styles.statItem}>
               <View
                 style={[
                   styles.statIconContainer,
@@ -256,18 +300,19 @@ const handleFavorites = () => {
               <Text style={[styles.statLabel, { color: textSecondary }]}>
                 Cooking Time
               </Text>
-            </View>
+            </Animated.View>
           </View>
-        </View>
+        </Animated.View>
 
-        <View
+        <Animated.View
+          entering={FadeInDown.delay(450).duration(500).springify()}
           style={[styles.menuCard, { backgroundColor: cardBackground }]}
         >
           <Text style={[styles.sectionTitle, { color: textPrimary }]}>
             Menu
           </Text>
 
-          <TouchableOpacity onPress={handleFavorites} activeOpacity={0.7}>
+          <AnimatedMenuButton onPress={handleFavorites} delay={500}>
             <View style={styles.menuItem}>
               <View style={styles.menuItemLeft}>
                 <View
@@ -289,12 +334,9 @@ const handleFavorites = () => {
               </View>
               <Ionicons name="chevron-forward" size={20} color={deepAccent} />
             </View>
-          </TouchableOpacity>
+          </AnimatedMenuButton>
 
-          <TouchableOpacity 
-            onPress={handleLogout}
-            activeOpacity={0.7}
-          >
+          <AnimatedMenuButton onPress={handleLogout} delay={550}>
             <View style={[styles.menuItem, styles.logoutItem]}>
               <View style={styles.menuItemLeft}>
                 <View style={[styles.menuIconContainer, { backgroundColor: "#ffe6e6" }]}>
@@ -304,16 +346,19 @@ const handleFavorites = () => {
               </View>
               <Ionicons name="chevron-forward" size={20} color="#d9534f" />
             </View>
-          </TouchableOpacity>
-        </View>
+          </AnimatedMenuButton>
+        </Animated.View>
 
-  <View style={[styles.footerCard, { backgroundColor: cardBackground }]}>
+        <Animated.View 
+          entering={FadeInDown.delay(600).duration(500).springify()}
+          style={[styles.footerCard, { backgroundColor: cardBackground }]}
+        >
           <Text style={[styles.footerTitle, { color: textPrimary }]}>Recipe Mate</Text>
           <Text style={[styles.footerVersion, { color: textSecondary }]}>Version 1.0.0</Text>
           <Text style={[styles.footerDescription, { color: textSecondary }]}>
             Your personal recipe collection and cooking companion
           </Text>
-        </View>
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -330,48 +375,50 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 32,
   },
   loginButton: {
     flexDirection: 'row',
     backgroundColor: '#2e573a',
-    paddingVertical: 14,
+    paddingVertical: 16,
     paddingHorizontal: 32,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowColor: '#2e573a',
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
-    elevation: 5,
-    marginBottom: 12,
+    shadowRadius: 12,
+    elevation: 6,
+    marginBottom: 14,
+    width: '100%',
   },
   loginButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   signupButton: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    paddingVertical: 14,
+    paddingVertical: 16,
     paddingHorizontal: 32,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: '#2e573a',
     shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 3,
+    width: '100%',
   },
   signupButtonText: {
     color: '#2e573a',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   contentContainer: {
     padding: 16,
@@ -380,16 +427,16 @@ const styles = StyleSheet.create({
   contentContainerWithTabBar: {
     paddingBottom: 100,
   },
-    profileCard: {
+  profileCard: {
     borderRadius: 20,
     padding: 32,
     alignItems: 'center',
     marginBottom: 16,
     shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 12,
+    elevation: 5,
   },
   avatar: {
     width: 80,
@@ -439,8 +486,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#f0d5ba',
+    shadowColor: '#F4A300',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
   },
   statValue: {
     fontSize: 20,

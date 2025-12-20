@@ -16,14 +16,20 @@ import { useRecipes } from "../contexts/RecipeContext";
 export default function MealDetails() {
   const { id } = useLocalSearchParams();
   const [meal, setMeal] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
   const router = useRouter();
-  const { addRecipe, addToFavorites, isFavorite, removeFromFavorites } =
+  const { addRecipe, addToFavorites, isFavorite, removeFromFavorites, recipes } =
     useRecipes();
 
   const heartScale = useSharedValue(1);
+  const saveScale = useSharedValue(1);
 
   const heartAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: heartScale.value }],
+  }));
+
+  const saveAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: saveScale.value }],
   }));
 
   useEffect(() => {
@@ -43,6 +49,14 @@ export default function MealDetails() {
 
     loadMeal();
   }, [id]);
+
+  // Check if recipe is already saved
+  useEffect(() => {
+    if (meal && recipes) {
+      const saved = recipes.some(recipe => recipe.id === meal.idMeal || recipe.title === meal.strMeal);
+      setIsSaved(saved);
+    }
+  }, [meal, recipes]);
 
   if (!meal) {
     return (
@@ -80,17 +94,31 @@ export default function MealDetails() {
   const favorite = isFavorite(normalizedRecipe.id);
 
   const handleSaveToMyRecipes = async () => {
-    await addRecipe({
-      title: meal.strMeal,
-      description: meal.strMeal,
-      image: meal.strMealThumb,
-      ingredients,
-      category: meal.strCategory,
-      servings,
-      time: cookingTime,
-      instructions: meal.strInstructions || "",
-    });
-    router.push("/");
+    // Trigger bounce animation
+    saveScale.value = 1;
+    saveScale.value = withSequence(
+      withSpring(1.4, { damping: 6, stiffness: 500 }),
+      withSpring(1, { damping: 8, stiffness: 400 })
+    );
+
+    if (!isSaved) {
+      await addRecipe({
+        title: meal.strMeal,
+        description: meal.strMeal,
+        image: meal.strMealThumb,
+        ingredients,
+        category: meal.strCategory,
+        servings,
+        time: cookingTime,
+        instructions: meal.strInstructions || "",
+      });
+      setIsSaved(true);
+      
+      // Navigate to homepage after a short delay
+      setTimeout(() => {
+        router.push("/");
+      }, 500);
+    }
   };
 
   const handleToggleFavorite = () => {
@@ -190,12 +218,21 @@ export default function MealDetails() {
 
       <Animated.View entering={FadeInUp.delay(700).duration(500)} style={styles.stickyButtonContainer}>
         <TouchableOpacity
-          style={[styles.actionButton, styles.secondaryButton]}
+          style={[styles.actionButton, isSaved ? styles.savedButton : styles.secondaryButton]}
           onPress={handleSaveToMyRecipes}
           activeOpacity={0.8}
+          disabled={isSaved}
         >
-          <Ionicons name="add-circle-outline" size={20} color="#fde3cf" />
-          <Text style={styles.actionButtonText}>Save Recipe</Text>
+          <Animated.View style={saveAnimatedStyle}>
+            <Ionicons 
+              name={isSaved ? "checkmark-circle" : "add-circle-outline"} 
+              size={20} 
+              color="#fde3cf" 
+            />
+          </Animated.View>
+          <Text style={styles.actionButtonText}>
+            {isSaved ? "Saved" : "Save Recipe"}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -450,6 +487,11 @@ const styles = StyleSheet.create({
 
   secondaryButton: {
     backgroundColor: "#2e573a",
+  },
+
+  savedButton: {
+    backgroundColor: "#5a8a5a",
+    opacity: 0.8,
   },
 
   favoriteButton: {

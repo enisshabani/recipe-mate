@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: "#FFFCFB",
+    backgroundColor: "#2e573a",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -140,12 +140,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#2e573a",
+    color: "#fde3cf",
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 14,
-    color: "#777",
+    color: "#FFFCFB",
     marginTop: 2,
   },
   addButton: {
