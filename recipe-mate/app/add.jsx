@@ -538,4 +538,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
   },
+  
+imagePickerButton:{backgroundColor:"#fff",borderWidth:2,borderColor:"#ddd",borderRadius:8,borderStyle:"dashed",marginBottom:15,overflow:"hidden"},
+imagePickerPlaceholder:{height:200,justifyContent:"center",alignItems:"center"},
+imagePickerText:{marginTop:10,fontSize:16,color:"#666"},
+imagePreview:{width:"100%",height:200,resizeMode:"cover"},
+modalOverlay:{flex:1,backgroundColor:"rgba(0,0,0,0.5)",justifyContent:"center",alignItems:"center"},
+modalContent:{backgroundColor:"#FFFCFB",borderRadius:20,padding:20,width:"100%"},
+modalTitle:{fontSize:20,fontWeight:"700",color:"#2e573a",textAlign:"center",marginBottom:20},
+modalOption:{flexDirection:"row",alignItems:"center",padding:16,borderRadius:12,marginBottom:12,borderWidth:1,borderColor:"#ddd"},
+modalOptionText:{fontSize:16,fontWeight:"600",color:"#2e573a",marginLeft:12},
+modalCancelButton:{padding:16,borderRadius:12,borderWidth:2,borderColor:"#2e573a"},
+modalCancelText:{fontSize:16,fontWeight:"700",color:"#2e573a",textAlign:"center"},
+
 });
