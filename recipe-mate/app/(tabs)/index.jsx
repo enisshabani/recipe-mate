@@ -44,7 +44,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Animated.View entering={SlideInDown.duration(500).springify()} style={styles.header}>
+      <View style={styles.header}>
         <View>
           <Text style={styles.title}>Recipe Mate</Text>
           <Text style={styles.subtitle}>Discover delicious recipes</Text>
@@ -58,7 +58,7 @@ export default function HomeScreen() {
           <Ionicons name="add" size={20} color="#fde3cf" />
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
-      </Animated.View>
+      </View>
 
       <Animated.View entering={FadeIn.delay(200).duration(500)} style={styles.searchContainer}>
         <Ionicons name="search-outline" size={20} color="#777" style={{ marginRight: 8 }} />
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: "#FFFCFB",
+    backgroundColor: "#2e573a",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -140,12 +140,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#2e573a",
+    color: "#fde3cf",
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 14,
-    color: "#777",
+    color: "#FFFCFB",
     marginTop: 2,
   },
   addButton: {

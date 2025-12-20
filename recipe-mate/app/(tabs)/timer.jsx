@@ -14,6 +14,15 @@ import Animated, { FadeIn, FadeInDown, useSharedValue, useAnimatedStyle, withSpr
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const SOUND_OPTIONS = [
   { id: "classic", label: "Classic", file: require("../../assets/sounds/timer-end.mp3") },
@@ -29,6 +38,7 @@ export default function TimerScreen() {
   const [remaining, setRemaining] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [notificationId, setNotificationId] = useState(null);
 
   const [selectedSoundId, setSelectedSoundId] = useState(SOUND_OPTIONS[0].id);
   
@@ -53,11 +63,71 @@ export default function TimerScreen() {
           shouldDuckAndroid: true,
           playThroughEarpieceAndroid: false,
         });
+        
+        if (Platform.OS !== "web") {
+          const { status } = await Notifications.requestPermissionsAsync();
+          if (status !== "granted") {
+            console.log("Notification permission not granted");
+          }
+        }
       } catch (e) {
         console.log("Audio mode error:", e);
       }
     })();
   }, []);
+
+  const scheduleNotification = async () => {
+    if (Platform.OS === "web") return;
+    
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "⏱️ Timer Finished!",
+          body: "Your cooking timer has completed.",
+          sound: true,
+        },
+        trigger: null,
+      });
+    } catch (error) {
+      console.log("Error scheduling notification:", error);
+    }
+  };
+
+  const showOngoingNotification = async (remainingSeconds) => {
+    if (Platform.OS === "web") return;
+
+    const h = Math.floor(remainingSeconds / 3600);
+    const m = Math.floor((remainingSeconds % 3600) / 60);
+    const s = remainingSeconds % 60;
+    const timeString = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+
+    try {
+      const id = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "⏱️ Timer Running",
+          body: `Time remaining: ${timeString}`,
+          sound: false,
+          sticky: true,
+        },
+        trigger: null,
+      });
+      return id;
+    } catch (error) {
+      console.log("Error showing ongoing notification:", error);
+      return null;
+    }
+  };
+
+  const dismissOngoingNotification = async () => {
+    if (Platform.OS === "web" || !notificationId) return;
+    
+    try {
+      await Notifications.dismissNotificationAsync(notificationId);
+      setNotificationId(null);
+    } catch (error) {
+      console.log("Error dismissing notification:", error);
+    }
+  };
 
   const playEndSound = async () => {
     try {
@@ -87,6 +157,8 @@ export default function TimerScreen() {
     } else if (remaining === 0 && isRunning) {
       setIsRunning(false);
       playEndSound();
+      scheduleNotification();
+      dismissOngoingNotification();
       pulseScale.value = withSequence(
         withSpring(1.1, { damping: 10 }),
         withSpring(1, { damping: 10 })
@@ -95,6 +167,28 @@ export default function TimerScreen() {
     }
 
     return () => clearInterval(interval);
+  }, [isRunning, isPaused, remaining]);
+
+  useEffect(() => {
+    let notificationInterval;
+
+    if (isRunning && !isPaused && remaining > 0 && Platform.OS !== "web") {
+      showOngoingNotification(remaining).then(id => setNotificationId(id));
+
+      notificationInterval = setInterval(async () => {
+        if (notificationId) {
+          await Notifications.dismissNotificationAsync(notificationId);
+        }
+        const newId = await showOngoingNotification(remaining);
+        setNotificationId(newId);
+      }, 5000);
+    } else if (!isRunning || isPaused) {
+      dismissOngoingNotification();
+    }
+
+    return () => {
+      if (notificationInterval) clearInterval(notificationInterval);
+    };
   }, [isRunning, isPaused, remaining]);
 
   const handleStart = () => {
