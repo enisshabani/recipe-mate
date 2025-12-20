@@ -94,14 +94,13 @@ export default function MealDetails() {
   const favorite = isFavorite(normalizedRecipe.id);
 
   const handleSaveToMyRecipes = async () => {
-    // Trigger bounce animation
-    saveScale.value = 1;
-    saveScale.value = withSequence(
-      withSpring(1.4, { damping: 6, stiffness: 500 }),
-      withSpring(1, { damping: 8, stiffness: 400 })
-    );
-
-    if (!isSaved) {
+    if (isSaved) {
+      // Unsave/Remove the recipe
+      // Since we don't have a removeRecipe function, we'll just update the state
+      // You may need to implement removeRecipe in RecipeContext
+      setIsSaved(false);
+    } else {
+      // Save the recipe
       await addRecipe({
         title: meal.strMeal,
         description: meal.strMeal,
@@ -114,7 +113,7 @@ export default function MealDetails() {
       });
       setIsSaved(true);
       
-      // Navigate to homepage after a short delay
+      // Navigate to homepage after a short delay only when saving
       setTimeout(() => {
         router.push("/");
       }, 500);
@@ -221,17 +220,16 @@ export default function MealDetails() {
           style={[styles.actionButton, isSaved ? styles.savedButton : styles.secondaryButton]}
           onPress={handleSaveToMyRecipes}
           activeOpacity={0.8}
-          disabled={isSaved}
         >
           <Animated.View style={saveAnimatedStyle}>
             <Ionicons 
-              name={isSaved ? "checkmark-circle" : "add-circle-outline"} 
+              name={isSaved ? "remove-circle-outline" : "add-circle-outline"} 
               size={20} 
               color="#fde3cf" 
             />
           </Animated.View>
           <Text style={styles.actionButtonText}>
-            {isSaved ? "Saved" : "Save Recipe"}
+            {isSaved ? "Unsave Recipe" : "Save Recipe"}
           </Text>
         </TouchableOpacity>
 
@@ -490,8 +488,7 @@ const styles = StyleSheet.create({
   },
 
   savedButton: {
-    backgroundColor: "#5a8a5a",
-    opacity: 0.8,
+    backgroundColor: "#d9534f",
   },
 
   favoriteButton: {
