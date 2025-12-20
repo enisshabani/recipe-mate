@@ -12,12 +12,10 @@ import {
   Platform,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { Ionicons } from "@expo/vector-icons";
 import { searchMealByName } from "@api/mealAPI";
 import { useRouter } from "expo-router";
 
-/* ===========================
-   DEFAULT API MEALS (RESTORED)
-   =========================== */
 const defaultMeals = [
   {
     idMeal: "52772",
@@ -84,9 +82,7 @@ const defaultMeals = [
   },
 ];
 
-/* ===========================
-   CARD (SAME AS BEFORE)
-   =========================== */
+
 const ApiMealCard = React.memo(({ item, onPress, index }) => (
   <Animated.View
     entering={FadeInDown.delay(index * 100).duration(500).springify()}
@@ -114,10 +110,6 @@ export default function ApiRecipesScreen() {
     setLoading(false);
   }, [query]);
 
-  /* Same logic as before:
-     - show search results if they exist
-     - otherwise show default API meals
-  */
   const data = useMemo(
     () => (results.length > 0 ? results : defaultMeals),
     [results]
@@ -129,7 +121,15 @@ export default function ApiRecipesScreen() {
       style={{ flex: 1 }}
     >
       <View style={styles.container}>
-        <Text style={styles.header}>API Recipes</Text>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="#fde3cf" />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>API Recipes</Text>
+        </View>
 
         <View style={styles.searchSection}>
           <TextInput
@@ -179,19 +179,24 @@ export default function ApiRecipesScreen() {
   );
 }
 
-/* ===========================
-   STYLES (UNCHANGED)
-   =========================== */
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFDFB" },
   header: {
     backgroundColor: "#2e573a",
-    fontSize: 26,
-    fontWeight: "700",
-    color: "#fde3cf",
     paddingTop: 40,
     paddingBottom: 20,
     paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  backButton: {
+    marginRight: 12,
+  },
+  headerText: {
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#fde3cf",
   },
   searchSection: {
     flexDirection: "row",
