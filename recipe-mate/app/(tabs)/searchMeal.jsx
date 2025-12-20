@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../contexts/AuthContext";
 import { getCommunityRecipes } from "../../firebase/recipe";
@@ -53,23 +54,29 @@ export default function SearchScreen() {
   }, [user?.uid]);
 
   const renderCommunityCard = useCallback(
-    ({ item }) => (
-      <TouchableOpacity
+    ({ item, index }) => (
+      <Animated.View
+        entering={FadeInDown.delay(index * 100).duration(500).springify()}
         style={styles.apiLikeCard}
-        onPress={() => router.push(`/communityRecipe?id=${item.id}`)}
       >
-        <View style={styles.imagePlaceholder}>
-          <Text style={styles.imagePlaceholderText}>
-            {item.title?.charAt(0)?.toUpperCase()}
+        <TouchableOpacity
+          style={styles.cardTouchable}
+          onPress={() => router.push(`/communityRecipe?id=${item.id}`)}
+          activeOpacity={0.8}
+        >
+          <View style={styles.imagePlaceholder}>
+            <Text style={styles.imagePlaceholderText}>
+              {item.title?.charAt(0)?.toUpperCase()}
+            </Text>
+          </View>
+
+          <Text style={styles.cardTitle} numberOfLines={2}>
+            {item.title}
           </Text>
-        </View>
 
-        <Text style={styles.cardTitle} numberOfLines={2}>
-          {item.title}
-        </Text>
-
-        <Text style={styles.cardCategory}>Community Recipe</Text>
-      </TouchableOpacity>
+          <Text style={styles.cardCategory}>Community Recipe</Text>
+        </TouchableOpacity>
+      </Animated.View>
     ),
     [router]
   );
@@ -205,11 +212,15 @@ const styles = StyleSheet.create({
     width: "30%",
     borderRadius: 14,
     marginBottom: 18,
-    paddingBottom: 10,
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 6,
     elevation: 3,
+  },
+  
+  cardTouchable: {
+    width: "100%",
+    paddingBottom: 10,
     alignItems: "center",
   },
   

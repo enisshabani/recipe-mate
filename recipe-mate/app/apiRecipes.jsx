@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { searchMealByName } from "@api/mealAPI";
 import { useRouter } from "expo-router";
 
@@ -86,12 +87,17 @@ const defaultMeals = [
 /* ===========================
    CARD (SAME AS BEFORE)
    =========================== */
-const ApiMealCard = React.memo(({ item, onPress }) => (
-  <TouchableOpacity style={styles.card} onPress={onPress}>
-    <Image source={{ uri: item.strMealThumb }} style={styles.image} />
-    <Text style={styles.mealName}>{item.strMeal}</Text>
-    <Text style={styles.mealCategory}>{item.strCategory}</Text>
-  </TouchableOpacity>
+const ApiMealCard = React.memo(({ item, onPress, index }) => (
+  <Animated.View
+    entering={FadeInDown.delay(index * 100).duration(500).springify()}
+    style={styles.card}
+  >
+    <TouchableOpacity style={styles.cardTouchable} onPress={onPress}>
+      <Image source={{ uri: item.strMealThumb }} style={styles.image} />
+      <Text style={styles.mealName}>{item.strMeal}</Text>
+      <Text style={styles.mealCategory}>{item.strCategory}</Text>
+    </TouchableOpacity>
+  </Animated.View>
 ));
 
 export default function ApiRecipesScreen() {
@@ -153,9 +159,10 @@ export default function ApiRecipesScreen() {
             columnWrapperStyle={{ justifyContent: "space-between" }}
             keyExtractor={(item) => item.idMeal}
             keyboardShouldPersistTaps="handled"
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <ApiMealCard
                 item={item}
+                index={index}
                 onPress={() =>
                   router.push(`../mealDetails?id=${item.idMeal}`)
                 }
@@ -214,14 +221,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     width: "30%",
     borderRadius: 12,
-    alignItems: "center",
     marginBottom: 20,
-    padding: 6,
     shadowColor: "#000",
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 2,
+  },
+  cardTouchable: {
+    width: "100%",
+    alignItems: "center",
+    padding: 6,
   },
   image: { width: "100%", height: 160, borderRadius: 10 },
   mealName: {
