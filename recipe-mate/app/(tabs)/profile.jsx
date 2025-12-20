@@ -1,8 +1,10 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert, TouchableOpacity, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeIn, FadeInDown, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
+import * as Notifications from "expo-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../contexts/AuthContext";
 import { logOut } from "../../firebase/auth";
 import { useRouter } from "expo-router";
@@ -49,8 +51,84 @@ export default function ProfileScreen() {
   const deepAccent = "#2e573a";
 
   const {user, loading, isAuthenticated} = useAuth();
-  const { stats } = useRecipes();
+  const { stats, recipes } = useRecipes();
   const router = useRouter();
+  const [dailyReminderEnabled, setDailyReminderEnabled] = useState(false);
+
+  useEffect(() => {
+    loadReminderSettings();
+  }, []);
+
+  const loadReminderSettings = async () => {
+    try {
+      const enabled = await AsyncStorage.getItem('dailyReminderEnabled');
+      if (enabled !== null) {
+        setDailyReminderEnabled(JSON.parse(enabled));
+      }
+    } catch (error) {
+      console.log('Error loading reminder settings:', error);
+    }
+  };
+
+  const scheduleDailyReminder = async () => {
+    if (Platform.OS === "web") return;
+
+    try {
+      // Cancel existing notifications
+      await Notifications.cancelAllScheduledNotificationsAsync();
+
+      // Schedule daily at 6 PM
+      const trigger = {
+        hour: 18,
+        minute: 0,
+        repeats: true,
+      };
+
+      const randomRecipe = recipes.length > 0 
+        ? recipes[Math.floor(Math.random() * recipes.length)]
+        : null;
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "🍳 Time to Cook!",
+          body: randomRecipe 
+            ? `How about trying "${randomRecipe.title}" today?`
+            : "Time to cook something delicious!",
+          sound: true,
+        },
+        trigger,
+      });
+
+      console.log('Daily reminder scheduled for 6 PM');
+    } catch (error) {
+      console.log('Error scheduling daily reminder:', error);
+    }
+  };
+
+  const toggleDailyReminder = async (value) => {
+    if (Platform.OS === "web") {
+      Alert.alert("Not Available", "Daily reminders are only available on mobile devices.");
+      return;
+    }
+
+    setDailyReminderEnabled(value);
+    await AsyncStorage.setItem('dailyReminderEnabled', JSON.stringify(value));
+
+    if (value) {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status === 'granted') {
+        await scheduleDailyReminder();
+        Alert.alert("Reminder Set!", "You'll receive a daily cooking reminder at 6 PM.");
+      } else {
+        setDailyReminderEnabled(false);
+        await AsyncStorage.setItem('dailyReminderEnabled', 'false');
+        Alert.alert("Permission Denied", "Please enable notifications in settings.");
+      }
+    } else {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+      Alert.alert("Reminder Disabled", "Daily cooking reminders have been turned off.");
+    }
+  };
 
   const { totalRecipes, favoritesCount, totalCookingTimeMinutes } = stats || {
     totalRecipes: 0,
@@ -250,57 +328,106 @@ const handleFavorites = () => {
             Your Stats
           </Text>
 
-          <View style={styles.statsContainer}>
-            <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.statItem}>
-              <View
-                style={[
-                  styles.statIconContainer,
-                  { backgroundColor: "#fde3cf" },
-                ]}
-              >
-                <Ionicons name="book" size={24} color={deepAccent} />
-              </View>
+          <View style={styles.statRow}>
+            <View style={styles.statItem}>
+              <Ionicons name="restaurant" size={32} color={deepAccent} />
               <Text style={[styles.statValue, { color: textPrimary }]}>
                 {totalRecipes}
               </Text>
               <Text style={[styles.statLabel, { color: textSecondary }]}>
-                Total Recipes
+                Recipes
               </Text>
-            </Animated.View>
+            </View>
 
-            <Animated.View entering={FadeInDown.delay(350).duration(400)} style={styles.statItem}>
-              <View
-                style={[
-                  styles.statIconContainer,
-                  { backgroundColor: "#fde3cf" },
-                ]}
-              >
-                <Ionicons name="heart" size={24} color={deepAccent} />
-              </View>
+            <View style={styles.statItem}>
+              <Ionicons name="heart" size={32} color="#e74c3c" />
               <Text style={[styles.statValue, { color: textPrimary }]}>
                 {favoritesCount}
               </Text>
               <Text style={[styles.statLabel, { color: textSecondary }]}>
                 Favorites
               </Text>
-            </Animated.View>
+            </View>
 
-            <Animated.View entering={FadeInDown.delay(400).duration(400)} style={styles.statItem}>
-              <View
-                style={[
-                  styles.statIconContainer,
-                  { backgroundColor: "#fde3cf" },
-                ]}
-              >
-                <Ionicons name="time" size={24} color={deepAccent} />
-              </View>
+            <View style={styles.statItem}>
+              <Ionicons name="time" size={32} color={deepAccent} />
               <Text style={[styles.statValue, { color: textPrimary }]}>
                 {cookingTimeLabel}
               </Text>
               <Text style={[styles.statLabel, { color: textSecondary }]}>
-                Cooking Time
+                Cook Time
               </Text>
-            </Animated.View>
+            </View>
+          </View>
+        </Animated.View>
+
+        <Animated.View
+          entering={FadeInDown.delay(300).duration(500).springify()}
+          style={[styles.settingsCard, { backgroundColor: cardBackground }]}
+        >
+          <Text style={[styles.sectionTitle, { color: textPrimary }]}>
+            Settings
+          </Text>
+          
+          <View style={styles.settingItem}>
+            <View style={styles.settingLeft}>
+              <Ionicons name="notifications" size={24} color={deepAccent} />
+              <View style={styles.settingTextContainer}>
+                <Text style={[styles.settingTitle, { color: textPrimary }]}>
+                  Daily Cooking Reminder
+                </Text>
+                <Text style={[styles.settingSubtitle, { color: textSecondary }]}>
+                  Get reminded at 6 PM every day
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={dailyReminderEnabled}
+              onValueChange={toggleDailyReminder}
+              trackColor={{ false: "#d1d1d6", true: "#2e573a" }}
+              thumbColor="#ffffff"
+            />
+          </View>
+        </Animated.View>
+
+        <Animated.View
+          entering={FadeInDown.delay(300).duration(500).springify()}
+          style={[styles.statsCard, { backgroundColor: cardBackground }]}
+        >
+          <Text style={[styles.sectionTitle, { color: textPrimary }]}>
+            Your Stats
+          </Text>
+
+          <View style={styles.statRow}>
+            <View style={styles.statItem}>
+              <Ionicons name="restaurant" size={32} color={deepAccent} />
+              <Text style={[styles.statValue, { color: textPrimary }]}>
+                {totalRecipes}
+              </Text>
+              <Text style={[styles.statLabel, { color: textSecondary }]}>
+                Recipes
+              </Text>
+            </View>
+
+            <View style={styles.statItem}>
+              <Ionicons name="heart" size={32} color="#e74c3c" />
+              <Text style={[styles.statValue, { color: textPrimary }]}>
+                {favoritesCount}
+              </Text>
+              <Text style={[styles.statLabel, { color: textSecondary }]}>
+                Favorites
+              </Text>
+            </View>
+
+            <View style={styles.statItem}>
+              <Ionicons name="time" size={32} color={deepAccent} />
+              <Text style={[styles.statValue, { color: textPrimary }]}>
+                {cookingTimeLabel}
+              </Text>
+              <Text style={[styles.statLabel, { color: textSecondary }]}>
+                Cook Time
+              </Text>
+            </View>
           </View>
         </Animated.View>
 
@@ -459,40 +586,57 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 16,
     shadowColor: '#000',
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
-    borderColor: '#2e573a',
-    borderWidth: 1,
+  },
+  settingsCard: {
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  settingItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  settingLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  settingTextContainer: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  settingTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  settingSubtitle: {
+    fontSize: 13,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 16,
   },
-  statsContainer: {
+  statRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    marginTop: 10,
   },
   statItem: {
     flex: 1,
     alignItems: 'center',
-  },
-  statIconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-    borderWidth: 2,
-    borderColor: '#f0d5ba',
-    shadowColor: '#F4A300',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
   },
   statValue: {
     fontSize: 20,
