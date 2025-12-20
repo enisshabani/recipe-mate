@@ -13,6 +13,7 @@ import {
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import * as Notifications from "expo-notifications";
 import { useRecipes } from "../contexts/RecipeContext";
 
 export default function EditRecipe() {
@@ -54,6 +55,23 @@ export default function EditRecipe() {
     }
   }, [params.currentRecipe]);
 
+  const sendUpdateNotification = async (recipeName) => {
+    if (Platform.OS === "web") return;
+
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Recipe Updated!",
+          body: `"${recipeName}" has been successfully updated.`,
+          sound: true,
+        },
+        trigger: null,
+      });
+    } catch (error) {
+      console.log("Error sending notification:", error);
+    }
+  };
+
   const handleSave = async () => {
     if (!recipe.title.trim() || !recipe.ingredients.trim()) {
       Alert.alert("Missing fields", "Name, ingredients and instructions are required.");
@@ -74,6 +92,7 @@ export default function EditRecipe() {
 
     await updateRecipe(recipe.id, updated);
     Alert.alert("Success", "Recipe updated!");
+    sendUpdateNotification(recipe.title.trim());
     router.back();
   };
 

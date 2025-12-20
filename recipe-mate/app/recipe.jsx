@@ -11,6 +11,7 @@ import {
 import Animated, { FadeIn, FadeInDown, SlideInRight, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import * as Notifications from "expo-notifications";
 import { useRecipes } from "../contexts/RecipeContext";
 
 export default function RecipeScreen() {
@@ -41,15 +42,52 @@ export default function RecipeScreen() {
     }
   }, [currentRecipe]);
 
+  const sendFavoriteNotification = async (recipeName, isAdding) => {
+    if (Platform.OS === "web") return;
+
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: isAdding ? "Added to Favorites!" : "Removed from Favorites",
+          body: `"${recipeName}" has been ${isAdding ? "added to" : "removed from"} your favorites.`,
+          sound: true,
+        },
+        trigger: null,
+      });
+    } catch (error) {
+      console.log("Error sending notification:", error);
+    }
+  };
+
+  const sendDeleteNotification = async (recipeName) => {
+    if (Platform.OS === "web") return;
+
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "🗑️ Recipe Deleted",
+          body: `"${recipeName}" has been removed from your collection.`,
+          sound: true,
+        },
+        trigger: null,
+      });
+    } catch (error) {
+      console.log("Error sending notification:", error);
+    }
+  };
+
   const handleToggleFavorite = () => {
     if (!recipe) return;
     favoriteScale.value = withSpring(1.3, { damping: 10 }, () => {
       favoriteScale.value = withSpring(1);
     });
-    if (isFavorite(recipe.id)) {
+    const isCurrentlyFavorite = isFavorite(recipe.id);
+    if (isCurrentlyFavorite) {
       removeFromFavorites(recipe.id);
+      sendFavoriteNotification(recipe.title, false);
     } else {
       addToFavorites(recipe);
+      sendFavoriteNotification(recipe.title, true);
     }
   };
 
@@ -75,7 +113,9 @@ export default function RecipeScreen() {
           style: "destructive",
           onPress: async () => {
             try {
+              const recipeName = recipe.title;
               deleteRecipe(recipe.id);
+              sendDeleteNotification(recipeName);
               router.replace("/");
             } catch (err) {
               console.log("Error deleting:", err);
