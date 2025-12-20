@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useMemo } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { subscribeToAuthChanges } from "../firebase/auth";
 
 const AuthContext = createContext();
@@ -24,14 +24,11 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  const value = useMemo(
-    () => ({
-      user,
-      loading,
-      isAuthenticated: !!user,
-    }),
-    [user, loading]
-  );
+  const value = {
+    user,
+    loading,
+    isAuthenticated: !!user,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

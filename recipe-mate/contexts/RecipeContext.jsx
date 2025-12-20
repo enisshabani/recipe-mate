@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback,useMemo,} from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   addRecipe as addRecipeToDb,
@@ -17,19 +17,10 @@ export const RecipeProvider = ({ children }) => {
   const [recipes, setRecipes] = useState([]);
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
- /* ===========================
-     HELPERS
-     =========================== */
 
-     const getFavoritesKey = useCallback(
-      () => (user ? `favorites_${user.uid}` : "favorites_guest"),
-      [user]
-    );
-  
-      /* ===========================
-     LOAD DATA
-     =========================== */
-    useEffect(() => {
+  const getFavoritesKey = () => (user ? `favorites_${user.uid}` : "favorites_guest");
+
+  useEffect(() => {
     const loadData = async () => {
       if (!user) {
         setRecipes([]);
@@ -48,7 +39,11 @@ export const RecipeProvider = ({ children }) => {
         const stored = await AsyncStorage.getItem(favKey);
         if (stored) {
           const parsed = JSON.parse(stored);
-          setFavoriteRecipes(Array.isArray(parsed) ? parsed : []);
+          if (Array.isArray(parsed)) {
+            setFavoriteRecipes(parsed);
+          } else {
+            setFavoriteRecipes([]);
+          }
         } else {
           setFavoriteRecipes([]);
         }
@@ -60,150 +55,112 @@ export const RecipeProvider = ({ children }) => {
     };
 
     loadData();
-  }, [user, getFavoritesKey]);
+    
+  }, [user]);
 
-  const persistFavorites = useCallback(
-    async (nextFavorites) => {
-      try {
-        const favKey = getFavoritesKey();
-        await AsyncStorage.setItem(favKey, JSON.stringify(nextFavorites));
-      } catch (err) {
-        console.log("Error saving favorites:", err);
-      }
-    },
-    [getFavoritesKey]
-  );
+  const persistFavorites = async (nextFavorites) => {
+    try {
+      const favKey = getFavoritesKey();
+      await AsyncStorage.setItem(favKey, JSON.stringify(nextFavorites));
+    } catch (err) {
+      console.log("Error saving favorites:", err);
+    }
+  };
 
-  // ---------- CRUD per RECIPES (Firebase) ----------
+  // ---------- CRUD për RECIPES (Firebase) ----------
 
-  const addRecipe = useCallback( async (recipe) => {
+  const addRecipe = async (recipe) => {
     const id = await addRecipeToDb(recipe);
     const created = { id, ...recipe };
     setRecipes((prev) => [...prev, created]);
     return created;
-  }, []);
+  };
 
-  const updateRecipe = useCallback(async (id, updatedFields) => {
+  const updateRecipe = async (id, updatedFields) => {
     await updateRecipeInDb(id, updatedFields);
     setRecipes((prev) =>
-      prev.map((item) => 
-      (item.id === id ? { ...item, ...updatedFields } : item))
+      prev.map((item) => (item.id === id ? { ...item, ...updatedFields } : item))
     );
-  }, []);
+  };
 
-  const deleteRecipe =  useCallback(
-    async (id) => {
-      try {
-        await deleteRecipeFromDb(id);
-        setRecipes((prev) => prev.filter((item) => item.id !== id));
+  const deleteRecipe = async (id) => {
+    try {
+      await deleteRecipeFromDb(id);
+      setRecipes((prev) => prev.filter((item) => item.id !== id));
 
-        setFavoriteRecipes((prev) => {
-          const next = prev.filter((r) => r.id !== id);
-          persistFavorites(next);
-          return next;
-      });
-    } catch (err) {
-      console.log("Error deleting recipe:", err);
-    }
-    },
-    [persistFavorites]
-  );
-
-/* ===========================
-     FAVORITES
-     =========================== */
-
-  const addToFavorites = useCallback(
-    async (recipe) => {
-      if (!recipe || !recipe.id) return;
-
-      setFavoriteRecipes((prev) => {
-        const exists = prev.some((r) => r.id === recipe.id);
-        if (exists) return prev;
-
-        const next = [...prev, recipe];
-        persistFavorites(next);
-        return next;
-      });
-    },
-    [persistFavorites]
-  );
-
-  const removeFromFavorites = useCallback(
-    async (id) => {
       setFavoriteRecipes((prev) => {
         const next = prev.filter((r) => r.id !== id);
         persistFavorites(next);
         return next;
       });
-    },
-    [persistFavorites]
-  );
-
-
-  const isFavorite = useCallback(
-    (id) => favoriteRecipes.some((r) => r.id === id),
-    [favoriteRecipes]
-  );
-
-    /* ===========================
-     DERIVED DATA (STATS)
-     =========================== */
-
-     const stats = useMemo(() => {
-      const parseMinutes = (time) => {
-        if (!time) return 0;
-        const match = time.toString().match(/(\d+)/);
-        return match ? parseInt(match[1], 10) : 0;
-      };
-  
-      return {
-        totalRecipes: recipes.length,
-        favoritesCount: favoriteRecipes.length,
-        totalCookingTimeMinutes: favoriteRecipes.reduce(
-          (sum, r) => sum + parseMinutes(r.time),
-          0
-        ),
-      };
-    }, [recipes, favoriteRecipes]);
-  
-    /* ===========================
-       CONTEXT VALUE (MEMOIZED)
-       =========================== */
-  
-    const value = useMemo(
-      () => ({
-        recipes,
-        favoriteRecipes,
-        loading,
-  
-        addRecipe,
-        updateRecipe,
-        deleteRecipe,
-  
-        addToFavorites,
-        removeFromFavorites,
-        isFavorite,
-  
-        stats,
-      }),
-      [
-        recipes,
-        favoriteRecipes,
-        loading,
-        addRecipe,
-        updateRecipe,
-        deleteRecipe,
-        addToFavorites,
-        removeFromFavorites,
-        isFavorite,
-        stats,
-      ]
-    );
-  
-    return (
-      <RecipeContext.Provider value={value}>
-        {children}
-      </RecipeContext.Provider>
-    );
+    } catch (err) {
+      console.log("Error deleting recipe:", err);
+    }
   };
+
+
+  const addToFavorites = async (recipe) => {
+    if (!recipe || !recipe.id) return;
+
+    setFavoriteRecipes((prev) => {
+      const exists = prev.some((r) => r.id === recipe.id);
+      if (exists) return prev;
+
+      const next = [...prev, recipe];
+      persistFavorites(next);
+      return next;
+    });
+  };
+
+  const removeFromFavorites = async (id) => {
+    setFavoriteRecipes((prev) => {
+      const next = prev.filter((r) => r.id !== id);
+      persistFavorites(next);
+      return next;
+    });
+  };
+
+  const isFavorite = (id) => {
+    if (!id) return false;
+    return favoriteRecipes.some((r) => r.id === id);
+  };
+
+
+  const parseMinutes = (time) => {
+    if (!time) return 0;
+    const match = time.toString().match(/(\d+)/);
+    return match ? parseInt(match[1], 10) : 0;
+  };
+
+  const totalRecipes = recipes.length;
+  const favoritesCount = favoriteRecipes.length;
+  const totalCookingTimeMinutes = favoriteRecipes.reduce(
+    (sum, r) => sum + parseMinutes(r.time),
+    0
+  );
+
+  const value = {
+    recipes,
+    favoriteRecipes,
+    loading,
+
+    // CRUD
+    addRecipe,
+    updateRecipe,
+    deleteRecipe,
+
+    // favorites
+    addToFavorites,
+    removeFromFavorites,
+    isFavorite,
+
+    // stats
+    stats: {
+      totalRecipes,
+      favoritesCount,
+      totalCookingTimeMinutes,
+    },
+  };
+
+  return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>;
+};

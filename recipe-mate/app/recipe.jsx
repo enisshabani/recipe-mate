@@ -76,62 +76,6 @@ export default function RecipeScreen() {
     }
   };
 
-  const scheduleStepReminders = async () => {
-    if (Platform.OS === "web") {
-      Alert.alert("Not Available", "Step reminders are only available on mobile devices.");
-      return;
-    }
-
-    if (!recipe || !recipe.instructions) return;
-
-    try {
-      const { status } = await Notifications.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert("Permission Required", "Please enable notifications to use step reminders.");
-        return;
-      }
-
-      // Parse instructions into steps (split by period, newline, or numbered steps)
-      const steps = recipe.instructions
-        .split(/[\n.]+/)
-        .map(s => s.trim())
-        .filter(s => s.length > 10); // Filter out very short fragments
-
-      if (steps.length === 0) {
-        Alert.alert("No Steps", "This recipe doesn't have clear step-by-step instructions.");
-        return;
-      }
-
-      // Calculate time per step based on cooking time
-      const totalMinutes = parseInt(recipe.time) || 30;
-      const minutesPerStep = Math.floor(totalMinutes / steps.length);
-
-      // Schedule notifications for each step
-      let delay = 0;
-      for (let i = 0; i < Math.min(steps.length, 5); i++) { // Limit to 5 steps
-        delay += minutesPerStep * 60; // Convert to seconds
-        
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: `⏰ Step ${i + 1} of ${Math.min(steps.length, 5)}`,
-            body: steps[i].substring(0, 100), // Limit to 100 chars
-            sound: true,
-          },
-          trigger: { seconds: delay },
-        });
-      }
-
-      Alert.alert(
-        "Reminders Set!",
-        `You'll receive ${Math.min(steps.length, 5)} step reminders during cooking.`,
-        [{ text: "Start Cooking", style: "default" }]
-      );
-    } catch (error) {
-      console.log("Error scheduling step reminders:", error);
-      Alert.alert("Error", "Failed to schedule step reminders.");
-    }
-  };
-
   const handleToggleFavorite = () => {
     if (!recipe) return;
     favoriteScale.value = withSpring(1.3, { damping: 10 }, () => {
@@ -261,11 +205,6 @@ export default function RecipeScreen() {
         <Animated.View entering={FadeInDown.delay(300).duration(500)} style={styles.card}>
           <Text style={styles.cardTitle}>Instructions</Text>
           <Text style={styles.instructionText}>{recipe.instructions}</Text>
-          
-          <Pressable style={styles.startCookingButton} onPress={scheduleStepReminders}>
-            <Ionicons name="alarm" color="#fff" size={20} />
-            <Text style={styles.startCookingText}>Start Cooking with Reminders</Text>
-          </Pressable>
         </Animated.View>
 
         <Animated.View entering={FadeInDown.delay(400).duration(500)} style={styles.bottomRow}>
@@ -348,21 +287,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderColor: "#2e573a",
     borderWidth: 1,
-  },
-  startCookingButton: {
-    backgroundColor: "#2e573a",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 14,
-    borderRadius: 12,
-    marginTop: 16,
-    gap: 8,
-  },
-  startCookingText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "700",
   },
   cardTitle: {
     fontSize: 20,
