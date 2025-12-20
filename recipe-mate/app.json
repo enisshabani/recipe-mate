@@ -35,6 +35,18 @@
         }
       ],
       [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#2e573a",
+          "sounds": [
+            "./assets/sounds/timer-end.mp3",
+            "./assets/sounds/timer-end1.mp3",
+            "./assets/sounds/timer-end2.mp3"
+          ]
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",

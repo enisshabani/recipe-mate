@@ -14,6 +14,15 @@ import Animated, { FadeIn, FadeInDown, useSharedValue, useAnimatedStyle, withSpr
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const SOUND_OPTIONS = [
   { id: "classic", label: "Classic", file: require("../../assets/sounds/timer-end.mp3") },
@@ -53,11 +62,35 @@ export default function TimerScreen() {
           shouldDuckAndroid: true,
           playThroughEarpieceAndroid: false,
         });
+        
+        if (Platform.OS !== "web") {
+          const { status } = await Notifications.requestPermissionsAsync();
+          if (status !== "granted") {
+            console.log("Notification permission not granted");
+          }
+        }
       } catch (e) {
         console.log("Audio mode error:", e);
       }
     })();
   }, []);
+
+  const scheduleNotification = async () => {
+    if (Platform.OS === "web") return;
+    
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "⏱️ Timer Finished!",
+          body: "Your cooking timer has completed.",
+          sound: true,
+        },
+        trigger: null,
+      });
+    } catch (error) {
+      console.log("Error scheduling notification:", error);
+    }
+  };
 
   const playEndSound = async () => {
     try {
@@ -87,6 +120,7 @@ export default function TimerScreen() {
     } else if (remaining === 0 && isRunning) {
       setIsRunning(false);
       playEndSound();
+      scheduleNotification();
       pulseScale.value = withSequence(
         withSpring(1.1, { damping: 10 }),
         withSpring(1, { damping: 10 })
