@@ -1,5 +1,5 @@
 // app/add.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import {
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import * as Notifications from "expo-notifications";
 import { useRecipes } from "../contexts/RecipeContext";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -33,6 +34,31 @@ export default function AddRecipeScreen() {
   const router = useRouter();
   const { addRecipe } = useRecipes();
   const { user } = useAuth();
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        await Notifications.requestPermissionsAsync();
+      }
+    })();
+  }, []);
+
+  const sendSuccessNotification = async (recipeName) => {
+    if (Platform.OS === "web") return;
+
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "✅ Recipe Saved!",
+          body: `"${recipeName}" has been added to your collection.`,
+          sound: true,
+        },
+        trigger: null,
+      });
+    } catch (error) {
+      console.log("Error sending notification:", error);
+    }
+  };
 
   const handleSaveRecipe = () => {
     // reset error-at globale
@@ -92,6 +118,7 @@ export default function AddRecipeScreen() {
 
     addRecipe(recipe);
     Alert.alert("Success", "Recipe added successfully!");
+    sendSuccessNotification(nameTrimmed);
 
     // reset formën
     setRecipeName("");
