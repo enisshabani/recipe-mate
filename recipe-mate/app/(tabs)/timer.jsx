@@ -38,6 +38,7 @@ export default function TimerScreen() {
   const [remaining, setRemaining] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [notificationId, setNotificationId] = useState(null);
 
   const [selectedSoundId, setSelectedSoundId] = useState(SOUND_OPTIONS[0].id);
   
@@ -92,6 +93,42 @@ export default function TimerScreen() {
     }
   };
 
+  const showOngoingNotification = async (remainingSeconds) => {
+    if (Platform.OS === "web") return;
+
+    const h = Math.floor(remainingSeconds / 3600);
+    const m = Math.floor((remainingSeconds % 3600) / 60);
+    const s = remainingSeconds % 60;
+    const timeString = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+
+    try {
+      const id = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "⏱️ Timer Running",
+          body: `Time remaining: ${timeString}`,
+          sound: false,
+          sticky: true,
+        },
+        trigger: null,
+      });
+      return id;
+    } catch (error) {
+      console.log("Error showing ongoing notification:", error);
+      return null;
+    }
+  };
+
+  const dismissOngoingNotification = async () => {
+    if (Platform.OS === "web" || !notificationId) return;
+    
+    try {
+      await Notifications.dismissNotificationAsync(notificationId);
+      setNotificationId(null);
+    } catch (error) {
+      console.log("Error dismissing notification:", error);
+    }
+  };
+
   const playEndSound = async () => {
     try {
       const option = SOUND_OPTIONS.find(o => o.id === selectedSoundId) || SOUND_OPTIONS[0];
@@ -121,6 +158,7 @@ export default function TimerScreen() {
       setIsRunning(false);
       playEndSound();
       scheduleNotification();
+      dismissOngoingNotification();
       pulseScale.value = withSequence(
         withSpring(1.1, { damping: 10 }),
         withSpring(1, { damping: 10 })
@@ -129,6 +167,28 @@ export default function TimerScreen() {
     }
 
     return () => clearInterval(interval);
+  }, [isRunning, isPaused, remaining]);
+
+  useEffect(() => {
+    let notificationInterval;
+
+    if (isRunning && !isPaused && remaining > 0 && Platform.OS !== "web") {
+      showOngoingNotification(remaining).then(id => setNotificationId(id));
+
+      notificationInterval = setInterval(async () => {
+        if (notificationId) {
+          await Notifications.dismissNotificationAsync(notificationId);
+        }
+        const newId = await showOngoingNotification(remaining);
+        setNotificationId(newId);
+      }, 5000);
+    } else if (!isRunning || isPaused) {
+      dismissOngoingNotification();
+    }
+
+    return () => {
+      if (notificationInterval) clearInterval(notificationInterval);
+    };
   }, [isRunning, isPaused, remaining]);
 
   const handleStart = () => {
