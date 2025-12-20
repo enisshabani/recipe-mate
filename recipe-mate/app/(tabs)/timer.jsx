@@ -10,6 +10,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from "react-native";
+import Animated, { FadeIn, FadeInDown, useSharedValue, useAnimatedStyle, withSpring, withSequence } from "react-native-reanimated";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
@@ -30,6 +31,17 @@ export default function TimerScreen() {
   const [isPaused, setIsPaused] = useState(false);
 
   const [selectedSoundId, setSelectedSoundId] = useState(SOUND_OPTIONS[0].id);
+  
+  const pulseScale = useSharedValue(1);
+  const buttonScale = useSharedValue(1);
+
+  const pulseStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pulseScale.value }],
+  }));
+
+  const buttonAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+  }));
 
   useEffect(() => {
     (async () => {
@@ -67,10 +79,18 @@ export default function TimerScreen() {
     if (isRunning && !isPaused && remaining > 0) {
       interval = setInterval(() => {
         setRemaining(prev => prev - 1);
+        pulseScale.value = withSequence(
+          withSpring(1.02, { damping: 20 }),
+          withSpring(1, { damping: 20 })
+        );
       }, 1000);
     } else if (remaining === 0 && isRunning) {
       setIsRunning(false);
       playEndSound();
+      pulseScale.value = withSequence(
+        withSpring(1.1, { damping: 10 }),
+        withSpring(1, { damping: 10 })
+      );
       if (Platform.OS === "web") alert("⏱️ Timer finished!");
     }
 
@@ -241,23 +261,25 @@ export default function TimerScreen() {
           keyboardShouldPersistTaps="handled"
         >
 
-        <TouchableOpacity 
-          style={styles.displayCard}
-          activeOpacity={0.7}
-          onPress={handleTimePress}
-        >
-          <Text style={styles.timeText}>
-            {displayH}:{displayM}:{displayS}
-          </Text>
-        </TouchableOpacity>
+        <Animated.View entering={FadeIn.duration(500)} style={pulseStyle}>
+          <TouchableOpacity 
+            style={styles.displayCard}
+            activeOpacity={0.7}
+            onPress={handleTimePress}
+          >
+            <Text style={styles.timeText}>
+              {displayH}:{displayM}:{displayS}
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
 
-        <View style={styles.pickerRow}>
+        <Animated.View entering={FadeInDown.delay(200).duration(500)} style={styles.pickerRow}>
           <View style={styles.pickerContainer}>{renderHourInput()}<Text style={styles.pickerLabel}>hours</Text></View>
           <View style={styles.pickerContainer}>{renderMinuteInput()}<Text style={styles.pickerLabel}>min</Text></View>
           <View style={styles.pickerContainer}>{renderSecondInput()}<Text style={styles.pickerLabel}>sec</Text></View>
-        </View>
+        </Animated.View>
 
-        <View style={styles.buttonsRow}>
+        <Animated.View entering={FadeInDown.delay(300).duration(500)} style={styles.buttonsRow}>
 
           {isRunning && !isPaused ? (
             <TouchableOpacity style={styles.cancelButton} onPress={handleStop} activeOpacity={0.7}>
@@ -285,9 +307,9 @@ export default function TimerScreen() {
             </TouchableOpacity>
           ) : null}
 
-        </View>
+        </Animated.View>
 
-        <View style={styles.soundCard}>
+        <Animated.View entering={FadeInDown.delay(400).duration(500)} style={styles.soundCard}>
           <Text style={styles.soundLabel}>Timer sound</Text>
 
           <View style={styles.soundPickerWrapper}>
@@ -306,7 +328,7 @@ export default function TimerScreen() {
             <Ionicons name="volume-high" size={18} color="#fff" style={{ marginRight: 8 }} />
             <Text style={styles.testText}>Test sound</Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
 
         </ScrollView>
       </KeyboardAvoidingView>

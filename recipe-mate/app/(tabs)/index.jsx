@@ -7,7 +7,9 @@ import {
   FlatList,
   SafeAreaView,
   TextInput,
+  RefreshControl,
 } from "react-native";
+import Animated, { FadeIn, FadeInDown, SlideInDown } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import RecipeCard from "../../components/recipeCard";
 import { useRouter } from "expo-router";
@@ -19,26 +21,47 @@ export default function HomeScreen() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const filteredRecipes = recipes.filter((recipe) =>
     recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 1000);
+  }, []);
+
+  const EmptyState = () => (
+    <Animated.View entering={FadeIn.duration(600)} style={styles.emptyState}>
+      <Ionicons name="restaurant-outline" size={64} color="#ccc" />
+      <Text style={styles.emptyTitle}>No recipes found</Text>
+      <Text style={styles.emptyText}>
+        {searchQuery ? "Try a different search" : "Add your first recipe to get started"}
+      </Text>
+    </Animated.View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Recipe Mate</Text>
+      <Animated.View entering={SlideInDown.duration(500).springify()} style={styles.header}>
+        <View>
+          <Text style={styles.title}>Recipe Mate</Text>
+          <Text style={styles.subtitle}>Discover delicious recipes</Text>
+        </View>
 
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => router.push("/add")}
+          activeOpacity={0.8}
         >
+          <Ionicons name="add" size={20} color="#fde3cf" />
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
 
-      <View style={styles.searchContainer}>
-        <Ionicons name="search-outline" size={18} color="#777" style={{ marginRight: 6 }} />
+      <Animated.View entering={FadeIn.delay(200).duration(500)} style={styles.searchContainer}>
+        <Ionicons name="search-outline" size={20} color="#777" style={{ marginRight: 8 }} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search for a recipe"
@@ -51,10 +74,15 @@ export default function HomeScreen() {
             }
           }}
         />
-      </View>
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery("")}>
+            <Ionicons name="close-circle" size={20} color="#999" />
+          </TouchableOpacity>
+        )}
+      </Animated.View>
 
       {recentSearches.length > 0 && (
-        <View style={styles.recentRow}>
+        <Animated.View entering={FadeIn.duration(400)} style={styles.recentRow}>
           <Text style={styles.recentLabel}>Recent:</Text>
           <View style={styles.recentTagRow}>
             {recentSearches.map((term, index) => (
@@ -62,19 +90,30 @@ export default function HomeScreen() {
                 key={index}
                 style={styles.recentTag}
                 onPress={() => setSearchQuery(term)}
+                activeOpacity={0.7}
               >
                 <Text style={styles.recentTagText}>{term}</Text>
               </TouchableOpacity>
             ))}
           </View>
-        </View>
+        </Animated.View>
       )}
 
       <FlatList
         data={filteredRecipes}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <RecipeCard recipe={item} />}
+        renderItem={({ item, index }) => <RecipeCard recipe={item} index={index} />}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={filteredRecipes.length === 0 ? styles.emptyContainer : { paddingBottom: 20 }}
+        ListEmptyComponent={EmptyState}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#2e573a"
+            colors={["#2e573a"]}
+          />
+        }
       />
     </SafeAreaView>
   );
@@ -90,82 +129,119 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingVertical: 18,
-    paddingTop: 38,
-    backgroundColor: "#2e573a",
-    borderBottomWidth: 1,
-    borderBottomColor: "#2e573a",
+    paddingVertical: 20,
+    backgroundColor: "#FFFCFB",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   title: {
-    fontSize: 26,
-    fontWeight: "800",
-    color: "#fde3cf",
-    fontFamily: "System",
-    letterSpacing: 0.5,
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#2e573a",
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#777",
+    marginTop: 2,
   },
   addButton: {
-    backgroundColor: "#F8a91f",
-    paddingHorizontal: 22,
-    height: 40,
-    borderRadius: 50,
-    justifyContent: "center",
+    backgroundColor: "#2e573a",
+    borderRadius: 24,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    flexDirection: "row",
     alignItems: "center",
+    gap: 4,
+    shadowColor: "#2e573a",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   addButtonText: {
     color: "#fde3cf",
-    fontSize: 14,
-    fontWeight: "600",
-    letterSpacing: 0.5,
+    fontWeight: "700",
+    fontSize: 15,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    marginHorizontal: 16,
-    marginBottom: 12,
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: "#eee",
+    marginHorizontal: 20,
+    marginTop: 16,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: "#e5e5e5",
     shadowColor: "#000",
-    shadowOpacity: 0.03,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 2,
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
   searchInput: {
     flex: 1,
-    height: 40,
-    fontSize: 14,
+    paddingVertical: 14,
+    fontSize: 16,
     color: "#333",
   },
   recentRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: 16,
-    marginTop: 6,
-    gap: 8,
+    marginHorizontal: 20,
+    marginBottom: 16,
   },
   recentLabel: {
     fontSize: 14,
-    color: "#666",
+    fontWeight: "700",
+    color: "#2e573a",
+    marginBottom: 10,
+    letterSpacing: 0.3,
   },
   recentTagRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 6,
+    gap: 8,
   },
   recentTag: {
-    backgroundColor: "#f7f7f7",
-    borderRadius: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    backgroundColor: "#2e573a",
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    shadowColor: "#2e573a",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
   },
   recentTagText: {
+    color: "#fde3cf",
     fontSize: 13,
-    color: "#333",
+    fontWeight: "600",
+  },
+  emptyState: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 80,
+    paddingHorizontal: 40,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#2e573a",
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyText: {
+    fontSize: 15,
+    color: "#666",
+    textAlign: "center",
+    lineHeight: 22,
+  },
+  emptyContainer: {
+    flexGrow: 1,
   },
 });

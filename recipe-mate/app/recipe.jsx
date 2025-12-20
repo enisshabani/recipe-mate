@@ -8,6 +8,7 @@ import {
   Platform,
   Alert,
 } from "react-native";
+import Animated, { FadeIn, FadeInDown, SlideInRight, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useRecipes } from "../contexts/RecipeContext";
@@ -16,6 +17,7 @@ export default function RecipeScreen() {
   const router = useRouter();
   const { currentRecipe } = useLocalSearchParams();
   const [recipe, setRecipe] = useState(null);
+  const favoriteScale = useSharedValue(1);
 
   const {
     deleteRecipe,
@@ -23,6 +25,10 @@ export default function RecipeScreen() {
     removeFromFavorites,
     isFavorite,
   } = useRecipes();
+
+  const favoriteAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: favoriteScale.value }],
+  }));
 
   useEffect(() => {
     if (currentRecipe) {
@@ -37,6 +43,9 @@ export default function RecipeScreen() {
 
   const handleToggleFavorite = () => {
     if (!recipe) return;
+    favoriteScale.value = withSpring(1.3, { damping: 10 }, () => {
+      favoriteScale.value = withSpring(1);
+    });
     if (isFavorite(recipe.id)) {
       removeFromFavorites(recipe.id);
     } else {
@@ -115,7 +124,7 @@ export default function RecipeScreen() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.mainCard}>
+        <Animated.View entering={FadeIn.duration(500)} style={styles.mainCard}>
           <Text style={styles.recipeTitle}>{recipe.title}</Text>
           {recipe.description ? (
             <Text style={styles.optionalText}>{recipe.description}</Text>
@@ -142,29 +151,31 @@ export default function RecipeScreen() {
               </Text>
             </View>
           </View>
-        </View>
+        </Animated.View>
 
-        <View style={styles.card}>
+        <Animated.View entering={FadeInDown.delay(200).duration(500)} style={styles.card}>
           <Text style={styles.cardTitle}>Ingredients</Text>
           <Text style={styles.ingredientText}>
             {Array.isArray(recipe.ingredients)
               ? recipe.ingredients.join("\n")
               : recipe.ingredients}
           </Text>
-        </View>
+        </Animated.View>
 
-        <View style={styles.card}>
+        <Animated.View entering={FadeInDown.delay(300).duration(500)} style={styles.card}>
           <Text style={styles.cardTitle}>Instructions</Text>
           <Text style={styles.instructionText}>{recipe.instructions}</Text>
-        </View>
+        </Animated.View>
 
-        <View style={styles.bottomRow}>
-          <Pressable style={styles.favoriteButton} onPress={handleToggleFavorite}>
-            <Ionicons
-              name={favorite ? "heart" : "heart-outline"}
-              color="#2e573a"
-              size={18}
-            />
+        <Animated.View entering={FadeInDown.delay(400).duration(500)} style={styles.bottomRow}>
+          <Pressable style={[styles.favoriteButton, favoriteAnimatedStyle]} onPress={handleToggleFavorite}>
+            <Animated.View style={favoriteAnimatedStyle}>
+              <Ionicons
+                name={favorite ? "heart" : "heart-outline"}
+                color="#2e573a"
+                size={18}
+              />
+            </Animated.View>
             <Text style={styles.favoriteText}>
               {favorite ? "Remove Favorite" : "Add to Favorites"}
             </Text>
@@ -174,7 +185,7 @@ export default function RecipeScreen() {
             <Ionicons name="trash-outline" color="#2e573a" size={18} />
             <Text style={styles.deleteButtonText}>Delete Recipe</Text>
           </Pressable>
-        </View>
+        </Animated.View>
 
         <View style={styles.bottomSpacer} />
       </ScrollView>

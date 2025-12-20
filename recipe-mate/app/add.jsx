@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useRecipes } from "../contexts/RecipeContext";
@@ -130,97 +131,111 @@ export default function AddRecipeScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-        <TextInput
-          style={styles.input}
-          placeholder="Recipe Name"
-          placeholderTextColor="#666"
-          value={recipeName}
-          onChangeText={(text) => {
-            setRecipeName(text);
-            setErrorMessage("");
-          }}
-        />
+        <Animated.View entering={FadeInDown.duration(500)}>
+          <TextInput
+            style={styles.input}
+            placeholder="Recipe Name"
+            placeholderTextColor="#666"
+            value={recipeName}
+            onChangeText={(text) => {
+              setRecipeName(text);
+              setErrorMessage("");
+            }}
+          />
+        </Animated.View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Description"
-          placeholderTextColor="#666"
-          value={description}
-          onChangeText={(text) => {
-            setDescription(text);
-            setErrorMessage("");
-          }}
-        />
+        <Animated.View entering={FadeInDown.delay(100).duration(500)}>
+          <TextInput
+            style={styles.input}
+            placeholder="Description"
+            placeholderTextColor="#666"
+            value={description}
+            onChangeText={(text) => {
+              setDescription(text);
+              setErrorMessage("");
+            }}
+          />
+        </Animated.View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Cooking Time (min)"
-          placeholderTextColor="#666"
-          keyboardType="numeric"
-          value={cookingTime}
-          onChangeText={(text) => {
-            // lejo vetëm numra
-            const onlyDigits = text.replace(/[^0-9]/g, "");
-            if (text !== onlyDigits) {
-              setTimeError("Cooking time must contain numbers only.");
-            } else {
-              setTimeError("");
-            }
-            setCookingTime(onlyDigits);
+        <Animated.View entering={FadeInDown.delay(200).duration(500)}>
+          <TextInput
+            style={styles.input}
+            placeholder="Cooking Time (min)"
+            placeholderTextColor="#666"
+            keyboardType="numeric"
+            value={cookingTime}
+            onChangeText={(text) => {
+              // lejo vetëm numra
+              const onlyDigits = text.replace(/[^0-9]/g, "");
+              if (text !== onlyDigits) {
+                setTimeError("Cooking time must contain numbers only.");
+              } else {
+                setTimeError("");
+              }
+              setCookingTime(onlyDigits);
             setErrorMessage("");
           }}
         />
+        </Animated.View>
         {timeError ? <Text style={styles.error}>{timeError}</Text> : null}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Servings"
-          placeholderTextColor="#666"
-          keyboardType="numeric"
-          value={servings}
-          onChangeText={(text) => {
-            const onlyDigits = text.replace(/[^0-9]/g, "");
-            if (text !== onlyDigits) {
-              setServingsError("Servings must be numeric.");
-            } else {
-              setServingsError("");
-            }
-            setServings(onlyDigits);
-            setErrorMessage("");
-          }}
-        />
+        <Animated.View entering={FadeInDown.delay(300).duration(500)}>
+          <TextInput
+            style={styles.input}
+            placeholder="Servings"
+            placeholderTextColor="#666"
+            keyboardType="numeric"
+            value={servings}
+            onChangeText={(text) => {
+              const onlyDigits = text.replace(/[^0-9]/g, "");
+              if (text !== onlyDigits) {
+                setServingsError("Servings must be numeric.");
+              } else {
+                setServingsError("");
+              }
+              setServings(onlyDigits);
+              setErrorMessage("");
+            }}
+          />
+        </Animated.View>
         {servingsError ? <Text style={styles.error}>{servingsError}</Text> : null}
 
-        <TextInput
-          style={[styles.input, styles.multi]}
-          placeholder="Ingredients (one per line)"
-          placeholderTextColor="#666"
-          multiline
-          value={ingredients}
-          onChangeText={(text) => {
-            setIngredients(text);
-            setErrorMessage("");
-          }}
-        />
+        <Animated.View entering={FadeInDown.delay(400).duration(500)}>
+          <TextInput
+            style={[styles.input, styles.multi]}
+            placeholder="Ingredients (one per line)"
+            placeholderTextColor="#666"
+            multiline
+            value={ingredients}
+            onChangeText={(text) => {
+              setIngredients(text);
+              setErrorMessage("");
+            }}
+          />
+        </Animated.View>
 
-        <TextInput
-          style={[styles.input, styles.multi]}
-          placeholder="Instructions"
-          placeholderTextColor="#666"
-          multiline
-          value={instructions}
-          onChangeText={(text) => {
-            setInstructions(text);
-            setErrorMessage("");
-          }}
-        />
+        <Animated.View entering={FadeInDown.delay(500).duration(500)}>
+          <TextInput
+            style={[styles.input, styles.multi]}
+            placeholder="Instructions"
+            placeholderTextColor="#666"
+            multiline
+            value={instructions}
+            onChangeText={(text) => {
+              setInstructions(text);
+              setErrorMessage("");
+            }}
+          />
+        </Animated.View>
 
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
-        <TouchableOpacity style={styles.button} onPress={handleSaveRecipe}>
-          <Ionicons name="checkmark" size={20} color="#fff" />
-          <Text style={styles.buttonText}>Save</Text>
-        </TouchableOpacity>
+        <Animated.View entering={FadeInDown.delay(600).duration(500)}>
+          <TouchableOpacity style={styles.button} onPress={handleSaveRecipe} activeOpacity={0.8}>
+            <Ionicons name="checkmark" size={20} color="#fff" />
+            <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
+        </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

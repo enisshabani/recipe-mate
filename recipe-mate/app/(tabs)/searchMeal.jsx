@@ -1,191 +1,247 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import {
-View,
-TextInput,
-TouchableOpacity,
-FlatList,
-Text,
-Image,
-StyleSheet,
-ActivityIndicator,
-KeyboardAvoidingView,
-Platform,
+  View,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import { searchMealByName } from "@api/mealAPI";
 import { useRouter } from "expo-router";
-
-// REAL meals with working IDs
-const defaultMeals = [
-{
-  idMeal: "52772",
-  strMeal: "Teriyaki Chicken Casserole",
-  strMealThumb: "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
-  strCategory: "Chicken",
-},
-{
-  idMeal: "52804",
-  strMeal: "Poutine",
-  strMealThumb: "https://www.themealdb.com/images/media/meals/uuyrrx1487327597.jpg",
-  strCategory: "Canadian",
-},
-{
-  idMeal: "52844",
-  strMeal: "Lasagna",
-  strMealThumb: "https://www.themealdb.com/images/media/meals/wtsvxx1511296896.jpg",
-  strCategory: "Pasta",
-},
-{
-  idMeal: "52959",
-  strMeal: "Baked Salmon with Fennel",
-  strMealThumb: "https://www.themealdb.com/images/media/meals/1548772327.jpg",
-  strCategory: "Seafood",
-},
-{
-  idMeal: "52819",
-  strMeal: "Katsu Chicken Curry",
-  strMealThumb: "https://www.themealdb.com/images/media/meals/vwrpps1503068729.jpg",
-  strCategory: "Japanese",
-},
-{
-  idMeal: "52940",
-  strMeal: "Thai Green Curry",
-  strMealThumb: "https://www.themealdb.com/images/media/meals/sstssx1487349585.jpg",
-  strCategory: "Thai",
-},
-{
-  idMeal: "53006",
-  strMeal: "Chocolate Gateau",
-  strMealThumb: "https://www.themealdb.com/images/media/meals/tqtywx1468317395.jpg",
-  strCategory: "Dessert",
-},
-{
-  idMeal: "52980",
-  strMeal: "Honey Teriyaki Salmon",
-  strMealThumb: "https://www.themealdb.com/images/media/meals/xxyupu1468262513.jpg",
-  strCategory: "Seafood",
-},
-{
-  idMeal: "52823",
-  strMeal: "Lamb Rogan Josh",
-  strMealThumb: "https://www.themealdb.com/images/media/meals/vvstvq1487342592.jpg",
-  strCategory: "Lamb",
-},
-];
-
+import { useAuth } from "../../contexts/AuthContext";
+import { getCommunityRecipes } from "../../firebase/recipe";
 
 export default function SearchScreen() {
-const [query, setQuery] = useState("");
-const [results, setResults] = useState([]);
-const [loading, setLoading] = useState(false);
-const router = useRouter();
+  const [communityRecipes, setCommunityRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const handleSearch = async () => {
-  if (!query.trim()) return;
-  setLoading(true);
-  const data = await searchMealByName(query);
-  setResults(data || []);
-  setLoading(false);
-};
+  // 🔹 LIVE SEARCH TEXT
+  const [searchText, setSearchText] = useState("");
 
-return (
-  <KeyboardAvoidingView
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    style={{ flex: 1 }}
-  >
-    <View style={styles.container}>
-      <Text style={styles.header}>Search for a meal</Text>
+  const { user } = useAuth();
+  const router = useRouter();
 
-      <View style={styles.searchSection}>
-        <TextInput
-          placeholder="Search for a meal..."
-          value={query}
-          onChangeText={setQuery}
-          style={styles.input}
-          placeholderTextColor="#999"
-        />
-        <TouchableOpacity style={styles.button} onPress={handleSearch}>
-          <Text style={styles.buttonText}>Search</Text>
-        </TouchableOpacity>
-      </View>
+  // 🔹 LIVE FILTERING (PA ENTER)
+  const filteredRecipes = useMemo(() => {
+    if (!searchText.trim()) return communityRecipes;
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#F4A300" style={{ marginTop: 30 }} />
-      ) : results.length === 0 && query ? (
-        <Text style={styles.noResults}>No meals found 😕</Text>
-      ) : (
-        <FlatList
-          data={results.length > 0 ? results : defaultMeals}
-          numColumns={3}
-          columnWrapperStyle={{ justifyContent: "space-between" }}
-          keyExtractor={(item) => item.idMeal}
-          keyboardShouldPersistTaps="handled"
-          renderItem={({ item }) => (
+    return communityRecipes.filter((recipe) =>
+      recipe.title
+        ?.toLowerCase()
+        .includes(searchText.toLowerCase())
+    );
+  }, [searchText, communityRecipes]);
+
+  useEffect(() => {
+    const loadCommunityRecipes = async () => {
+      if (!user?.uid) {
+        setCommunityRecipes([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      const data = await getCommunityRecipes(user.uid);
+      setCommunityRecipes(data);
+      setLoading(false);
+    };
+
+    loadCommunityRecipes();
+  }, [user?.uid]);
+
+  const renderCommunityCard = useCallback(
+    ({ item }) => (
+      <TouchableOpacity
+        style={styles.apiLikeCard}
+        onPress={() => router.push(`/communityRecipe?id=${item.id}`)}
+      >
+        <View style={styles.imagePlaceholder}>
+          <Text style={styles.imagePlaceholderText}>
+            {item.title?.charAt(0)?.toUpperCase()}
+          </Text>
+        </View>
+
+        <Text style={styles.cardTitle} numberOfLines={2}>
+          {item.title}
+        </Text>
+
+        <Text style={styles.cardCategory}>Community Recipe</Text>
+      </TouchableOpacity>
+    ),
+    [router]
+  );
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <Text style={styles.header}>Search Recipes</Text>
+
+        {/* API NAVIGATION BUTTON */}
+        <View style={styles.apiButtonWrapper}>
           <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push(`../mealDetails?id=${item.idMeal}`)}
+            style={styles.apiButton}
+            onPress={() => router.push("/apiRecipes")}
           >
-            <Image source={{ uri: item.strMealThumb }} style={styles.image} />
-            <Text style={styles.mealName}>{item.strMeal}</Text>
-            <Text style={styles.mealCategory}>{item.strCategory}</Text>
+            <Text style={styles.apiButtonText}>Explore API Recipes</Text>
           </TouchableOpacity>
+        </View>
+
+        {/* 🔹 LIVE SEARCH INPUT */}
+        <View style={styles.searchSection}>
+          <TextInput
+            placeholder="Search for a recipe..."
+            value={searchText}
+            onChangeText={setSearchText}
+            style={styles.input}
+            placeholderTextColor="#999"
+          />
+        </View>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#F4A300" />
+        ) : (
+          <FlatList
+            contentContainerStyle={styles.listContainer}
+            data={filteredRecipes}   // ✅ KJO ËSHTË KYÇI
+            numColumns={3}
+            keyExtractor={(item) => item.id}
+            columnWrapperStyle={{ justifyContent: "space-between" }}
+            renderItem={renderCommunityCard}
+            keyboardShouldPersistTaps="handled"
+          />
         )}
-        contentContainerStyle={styles.listContainer}
-      />
-    )}
-    </View>
-  </KeyboardAvoidingView>
-);
+      </View>
+    </KeyboardAvoidingView>
+  );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFDFB" },
   header: {
-  backgroundColor: "#2e573a",
-  fontSize: 26,
-  fontWeight: "700",
-  color: "#fde3cf",
-  paddingTop: 40,
-  paddingBottom: 20,
-  paddingHorizontal: 20,
+    backgroundColor: "#2e573a",
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#fde3cf",
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+  },
+  apiButtonWrapper: {
+    paddingHorizontal: 20,
+    paddingTop: 14,
+  },
+  apiButton: {
+    backgroundColor: "#2e573a",
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  apiButtonText: {
+    color: "#fff",
+    fontWeight: "700",
   },
   searchSection: {
-    flexDirection: "row",
-    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 18,
   },
   input: {
-    flex: 1,
     borderWidth: 1,
     borderColor: "#F4A300",
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 12,
     backgroundColor: "#fff",
-    marginRight: 8,
   },
-  button: {
-    backgroundColor: "#F4A300",
-    paddingVertical: 8,
-    paddingHorizontal: 18,
-    borderRadius: 10,
+  listContainer: {
+    paddingHorizontal: 20,   
+    paddingTop: 16,          
+    paddingBottom: 100,      
   },
-  buttonText: { color: "#fff", fontWeight: "700" },
-  listContainer: { paddingHorizontal: 16 },
-  card: {
+  
+  recipeCard: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: "#eee",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  cardHeader: {
+    marginBottom: 6,
+  },
+  recipeTitle: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: "#2e573a",
+  },
+  recipeDescription: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 6,
+  },
+  cardMeta: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 10,
+  },
+  metaText: {
+    fontSize: 13,
+    color: "#666",
+  },
+  apiLikeCard: {
     backgroundColor: "#fff",
     width: "30%",
-    borderRadius: 10,
+    borderRadius: 14,
+    marginBottom: 18,
+    paddingBottom: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 3,
     alignItems: "center",
-    marginBottom: 20,
-    padding: 6,
   },
-  image: { width: "100%", height: 160, borderRadius: 10 },
-  mealName: { fontSize: 12, fontWeight: "700", marginTop: 4, textAlign: "center" },
-  mealCategory: { color: "#777", fontSize: 11 },
-  noResults: { textAlign: "center", marginTop: 20, color: "#777" },
+  
+  imagePlaceholder: {
+    width: "100%",
+    height: 150,
+    backgroundColor: "#2e573a",
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  
+  imagePlaceholderText: {
+    fontSize: 42,
+    fontWeight: "800",
+    color: "#fde3cf",
+  },
+  
+  cardTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#2e573a",
+    textAlign: "center",
+    marginTop: 6,
+    paddingHorizontal: 6,
+  },
+  
+  cardCategory: {
+    fontSize: 11,
+    color: "#888",
+    marginTop: 2,
+  },
+  
 });
-
-
-
-

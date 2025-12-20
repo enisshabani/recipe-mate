@@ -111,4 +111,23 @@ export const deleteRecipe = async (id) => {
  }
 };
 
+export const getCommunityRecipes = async (currentUserId) => {
+  if (!currentUserId) return [];
 
+  const q = query(
+    collection(db, "recipes"),
+    where("type", "==", "manual")
+  );
+
+  const snap = await getDocs(q);
+  const all = [];
+
+  snap.forEach((docSnap) => {
+    all.push({ id: docSnap.id, ...docSnap.data() });
+  });
+
+  // Exclude logged-in user's recipes
+  return all.filter(
+    (r) => r.userId && r.userId !== currentUserId
+  );
+};
