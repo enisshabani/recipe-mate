@@ -11,13 +11,7 @@ import {
   Switch,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Animated, {
-  FadeIn,
-  FadeInDown,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from "react-native-reanimated";
+import Animated, { FadeIn, FadeInDown, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -47,12 +41,19 @@ const AnimatedMenuButton = ({ onPress, children, delay = 0 }) => {
 
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(400)}>
-      <Pressable onPress={onPress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-        <Animated.View style={animatedStyle}>{children}</Animated.View>
+      <Pressable 
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        <Animated.View style={animatedStyle}>
+          {children}
+        </Animated.View>
       </Pressable>
     </Animated.View>
   );
 };
+
 
 export default function ProfileScreen() {
   const backgroundColor = "#FFFCFB";
@@ -150,14 +151,14 @@ export default function ProfileScreen() {
   const totalMinutes = totalCookingTimeMinutes || 0;
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
-  const cookingTimeLabel = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+  const cookingTimeLabel =
+    hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 
   const handleLogout = async () => {
     // WEB confirm
     if (Platform.OS === "web") {
       const confirmed = confirm("Are you sure you want to logout?");
       if (!confirmed) return;
-
       try {
         // reset onboarding so it can show next app start
         await resetOnboarding();
@@ -209,7 +210,7 @@ export default function ProfileScreen() {
     ]);
   };
 
-  const handleFavorites = () => {
+const handleFavorites = () => {
     router.push("/favorites");
   };
 
@@ -217,7 +218,10 @@ export default function ProfileScreen() {
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={["top"]}>
+      <SafeAreaView
+        style={[styles.safeArea, { backgroundColor }]}
+        edges={["top"]}
+      >
         <View style={styles.container}>
           <Animated.View entering={FadeIn.duration(600)} style={styles.notAuthContainer}>
             <Animated.View entering={FadeInDown.delay(100).duration(500)}>
@@ -247,7 +251,8 @@ export default function ProfileScreen() {
                 lineHeight: 20,
               }}
             >
-              Sign in to your account to view your profile, save recipes, and manage your favorites.
+              Sign in to your account to view your profile, save recipes, and
+              manage your favorites.
             </Animated.Text>
 
             <Animated.View
@@ -259,7 +264,12 @@ export default function ProfileScreen() {
                 onPress={() => router.push("/(auth)/login")}
                 activeOpacity={0.8}
               >
-                <Ionicons name="log-in" size={20} color="#fff" style={{ marginRight: 8 }} />
+                <Ionicons
+                  name="log-in"
+                  size={20}
+                  color="#fff"
+                  style={{ marginRight: 8 }}
+                />
                 <Text style={styles.loginButtonText}>Login</Text>
               </TouchableOpacity>
             </Animated.View>
@@ -279,6 +289,12 @@ export default function ProfileScreen() {
                   color={textPrimary}
                   style={{ marginRight: 8 }}
                 />
+                <Ionicons
+                  name="person-add"
+                  size={20}
+                  color={textPrimary}
+                  style={{ marginRight: 8 }}
+                />
                 <Text style={styles.signupButtonText}>Create Account</Text>
               </TouchableOpacity>
             </Animated.View>
@@ -289,7 +305,10 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={["top"]}>
+    <SafeAreaView
+      style={[styles.safeArea, { backgroundColor }]}
+      edges={["top"]}
+    >
       <ScrollView
         style={styles.container}
         contentContainerStyle={[
@@ -300,7 +319,10 @@ export default function ProfileScreen() {
       >
         <Animated.View
           entering={FadeInDown.delay(100).duration(500).springify()}
-          style={[styles.profileCard, { backgroundColor: "#2e573a" }]}
+          style={[
+            styles.profileCard,
+            { backgroundColor: "#2e573a" },
+          ]}
         >
           <View style={[styles.avatar, { backgroundColor: "#FFFFFF" }]}>
             <Ionicons name="person" size={48} color={deepAccent} />
@@ -316,7 +338,9 @@ export default function ProfileScreen() {
           entering={FadeInDown.delay(200).duration(500).springify()}
           style={[styles.statsCard, { backgroundColor: cardBackground }]}
         >
-          <Text style={[styles.sectionTitle, { color: textPrimary }]}>Your Stats</Text>
+          <Text style={[styles.sectionTitle, { color: textPrimary }]}>
+            Your Stats
+          </Text>
 
           <View style={styles.statRow}>
             <View style={styles.statItem}>
@@ -372,15 +396,29 @@ export default function ProfileScreen() {
           entering={FadeInDown.delay(450).duration(500).springify()}
           style={[styles.menuCard, { backgroundColor: cardBackground }]}
         >
-          <Text style={[styles.sectionTitle, { color: textPrimary }]}>Menu</Text>
+          <Text style={[styles.sectionTitle, { color: textPrimary }]}>
+            Menu
+          </Text>
 
           <AnimatedMenuButton onPress={handleFavorites} delay={500}>
             <View style={styles.menuItem}>
               <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIconContainer, { backgroundColor: "#FFFCFB" }]}>
+                <View
+                  style={[
+                    styles.menuIconContainer,
+                    { backgroundColor: "#FFFCFB" },
+                  ]}
+                >
                   <Ionicons name="heart" size={20} color={deepAccent} />
                 </View>
-                <Text style={[styles.menuItemText, { color: textPrimary }]}>My Favorites</Text>
+                <Text
+                  style={[
+                    styles.menuItemText,
+                    { color: textPrimary },
+                  ]}
+                >
+                  My Favorites
+                </Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color={deepAccent} />
             </View>
@@ -399,7 +437,7 @@ export default function ProfileScreen() {
           </AnimatedMenuButton>
         </Animated.View>
 
-        <Animated.View
+        <Animated.View 
           entering={FadeInDown.delay(600).duration(500).springify()}
           style={[styles.footerCard, { backgroundColor: cardBackground }]}
         >
@@ -420,8 +458,8 @@ const styles = StyleSheet.create({
 
   notAuthContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 32,
   },
 
@@ -431,9 +469,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#2e573a",
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#2e573a',
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 12,
@@ -450,11 +488,11 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 2,
-    borderColor: "#2e573a",
-    shadowColor: "#000",
+    borderColor: '#2e573a',
+    shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
@@ -470,9 +508,9 @@ const styles = StyleSheet.create({
   profileCard: {
     borderRadius: 20,
     padding: 32,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 16,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 6 },
     shadowRadius: 12,
@@ -482,8 +520,8 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 16,
   },
   name: { fontSize: 30, fontWeight: "700", marginBottom: 4 },
@@ -533,26 +571,26 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
-    borderColor: "#2e573a",
+    borderColor: '#2e573a',
     borderWidth: 1,
   },
 
   menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#FFFCFB",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFCFB',
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderRadius: 50,
     marginBottom: 12,
-    shadowColor: "#000",
-    borderColor: "#F4A300",
+    shadowColor: '#000',
+    borderColor: '#F4A300',
     borderWidth: 3,
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 4 },
@@ -567,8 +605,8 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 12,
   },
   menuItemText: { fontSize: 16, fontWeight: "600", color: "#2e573a" },
@@ -576,16 +614,27 @@ const styles = StyleSheet.create({
   footerCard: {
     borderRadius: 20,
     padding: 24,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
-    borderColor: "#2e573a",
+    borderColor: '#2e573a',
     borderWidth: 1,
   },
-  footerTitle: { fontSize: 18, fontWeight: "600", marginBottom: 4 },
-  footerVersion: { fontSize: 12, marginBottom: 8 },
-  footerDescription: { fontSize: 13, textAlign: "center", lineHeight: 18 },
+  footerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  footerVersion: {
+    fontSize: 12,
+    marginBottom: 8,
+  },
+  footerDescription: {
+    fontSize: 13,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
 });
