@@ -507,8 +507,8 @@ const styles = StyleSheet.create({
   loginButton: {
     flexDirection: 'row',
     backgroundColor: '#2e573a',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
     marginBottom: 14,
-    width: '100%',
+    alignSelf: 'center',
   },
   loginButtonText: {
     color: '#fff',
@@ -528,8 +528,8 @@ const styles = StyleSheet.create({
   signupButton: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
-    width: '100%',
+    alignSelf: 'center',
   },
   signupButtonText: {
     color: '#2e573a',
