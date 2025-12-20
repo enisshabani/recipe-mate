@@ -66,6 +66,63 @@ export default function AddRecipeScreen() {
     }
   };
 
+  const requestPermissions = async () => {
+  if (Platform.OS !== "web") {
+    const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+    const mediaStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (
+      cameraStatus.status !== "granted" ||
+      mediaStatus.status !== "granted"
+    ) {
+      Alert.alert(
+        "Permissions Required",
+        "Please grant camera and photo library permissions to add images."
+      );
+      return false;
+    }
+  }
+  return true;
+};
+
+const pickImage = async () => {
+  setShowImageModal(false);
+  const ok = await requestPermissions();
+  if (!ok) return;
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 0.8,
+  });
+
+  if (!result.canceled && result.assets?.length) {
+    setImageUri(result.assets[0].uri);
+  }
+};
+
+const takePhoto = async () => {
+  setShowImageModal(false);
+  const ok = await requestPermissions();
+  if (!ok) return;
+
+  const result = await ImagePicker.launchCameraAsync({
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 0.8,
+  });
+
+  if (!result.canceled && result.assets?.length) {
+    setImageUri(result.assets[0].uri);
+  }
+};
+
+const handleImagePicker = () => {
+  Platform.OS === "web" ? pickImage() : setShowImageModal(true);
+};
+
+
   const handleSaveRecipe = () => {
     // reset error-at globale
     setErrorMessage("");
