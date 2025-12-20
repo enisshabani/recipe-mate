@@ -11,6 +11,9 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Image,
+  Modal,
+
 } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useRouter } from "expo-router";
@@ -26,6 +29,9 @@ export default function AddRecipeScreen() {
   const [servings, setServings] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [imageUri, setImageUri] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+
 
   const [errorMessage, setErrorMessage] = useState("");
   const [timeError, setTimeError] = useState("");
