@@ -103,7 +103,7 @@ export default function FloatingTabBar({
               activeOpacity={0.7}
             >
               <IconSymbol
-                name={isActive && tab.activeIcon ? tab.activeIcon : tab.icon}
+                name={(isActive && tab.activeIcon ? tab.activeIcon : tab.icon) as any}
                 size={24}
                 color={iconColor}
               />
