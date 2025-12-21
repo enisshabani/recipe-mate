@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ export default function FavoritesScreen() {
   const { favoriteRecipes } = useRecipes();
   const router = useRouter();
 
-  const renderItem = ({ item, index }) => (
+  const renderItem = useCallback(({ item, index }) => (
     <Animated.View entering={FadeInDown.delay(index * 100).duration(500)}>
       <TouchableOpacity
         style={styles.card}
@@ -39,7 +39,7 @@ export default function FavoritesScreen() {
         </View>
       </TouchableOpacity>
     </Animated.View>
-  );
+  ), [router]);
 
   return (
     <View style={styles.container}>
@@ -65,6 +65,11 @@ export default function FavoritesScreen() {
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           contentContainerStyle={{ paddingVertical: 8 }}
+          removeClippedSubviews
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={7}
+          updateCellsBatchingPeriod={50}
         />
       )}
     </View>

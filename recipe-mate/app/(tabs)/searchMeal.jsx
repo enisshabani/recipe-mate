@@ -117,10 +117,15 @@ export default function SearchScreen() {
             contentContainerStyle={styles.listContainer}
             data={filteredRecipes}   // ✅ KJO ËSHTË KYÇI
             numColumns={3}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => String(item.id)}
             columnWrapperStyle={{ justifyContent: "space-between" }}
             renderItem={renderCommunityCard}
             keyboardShouldPersistTaps="handled"
+            removeClippedSubviews
+            initialNumToRender={12}
+            maxToRenderPerBatch={12}
+            windowSize={7}
+            updateCellsBatchingPeriod={50}
           />
         )}
       </View>
