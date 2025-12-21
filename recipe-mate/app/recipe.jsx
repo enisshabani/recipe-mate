@@ -7,6 +7,7 @@ import {
   Pressable,
   Platform,
   Alert,
+  Image,
 } from "react-native";
 import Animated, { FadeIn, FadeInDown, SlideInRight, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
@@ -164,6 +165,12 @@ export default function RecipeScreen() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
+        {recipe.imageUri && (
+          <Animated.View entering={FadeIn.duration(400)} style={styles.imageContainer}>
+            <Image source={{ uri: recipe.imageUri }} style={styles.recipeImage} resizeMode="cover" />
+          </Animated.View>
+        )}
+
         <Animated.View entering={FadeIn.duration(500)} style={styles.mainCard}>
           <Text style={styles.recipeTitle}>{recipe.title}</Text>
           {recipe.description ? (
@@ -256,6 +263,19 @@ const styles = StyleSheet.create({
   },
   headerRight: { padding: 4 },
   contentContainer: { padding: 16 },
+  imageContainer: {
+    width: "100%",
+    height: 250,
+    borderRadius: 18,
+    overflow: "hidden",
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: "#2e573a",
+  },
+  recipeImage: {
+    width: "100%",
+    height: "100%",
+  },
   mainCard: {
     backgroundColor: "#2e573a",
     borderRadius: 18,
