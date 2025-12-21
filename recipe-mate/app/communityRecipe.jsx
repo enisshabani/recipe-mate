@@ -6,6 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
+  Modal,
 } from "react-native";
 import Animated, { FadeIn, FadeInDown, useSharedValue, useAnimatedStyle, withSequence, withSpring } from "react-native-reanimated";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -20,6 +22,7 @@ export default function CommunityRecipeScreen() {
 
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showImagePreview, setShowImagePreview] = useState(false);
 
   const { addToFavorites, isFavorite, removeFromFavorites } = useRecipes();
   const heartScale = useSharedValue(1);
@@ -89,6 +92,18 @@ export default function CommunityRecipeScreen() {
           <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
       </Animated.View>
+
+      {/* RECIPE IMAGE */}
+      {recipe.imageUri && (
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => setShowImagePreview(true)}
+        >
+          <Animated.View entering={FadeIn.duration(400)} style={styles.imageContainer}>
+            <Image source={{ uri: recipe.imageUri }} style={styles.recipeImage} resizeMode="cover" />
+          </Animated.View>
+        </TouchableOpacity>
+      )}
 
       {/* MAIN CARD */}
       <Animated.View entering={FadeInDown.delay(100).duration(500).springify()} style={styles.mainCard}>
@@ -173,6 +188,38 @@ export default function CommunityRecipeScreen() {
           </Text>
         </TouchableOpacity>
       </Animated.View>
+
+      {/* Image Preview Modal */}
+      {recipe.imageUri && (
+        <Modal
+          visible={showImagePreview}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setShowImagePreview(false)}
+        >
+          <View style={styles.modalContainer}>
+            <TouchableOpacity
+              style={styles.modalOverlay}
+              activeOpacity={1}
+              onPress={() => setShowImagePreview(false)}
+            >
+              <View style={styles.modalContent}>
+                <Image
+                  source={{ uri: recipe.imageUri }}
+                  style={styles.fullImage}
+                  resizeMode="contain"
+                />
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setShowImagePreview(false)}
+                >
+                  <Ionicons name="close-circle" size={40} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      )}
     </ScrollView>
   );
 }
@@ -369,6 +416,58 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: "700",
       color: "#fff",
+    },
+
+    imageContainer: {
+      width: "100%",
+      height: 250,
+      borderRadius: 18,
+      overflow: "hidden",
+      marginHorizontal: 16,
+      marginTop: 16,
+      marginBottom: 16,
+      borderWidth: 2,
+      borderColor: "#2e573a",
+      alignSelf: "center",
+      maxWidth: "92%",
+    },
+
+    recipeImage: {
+      width: "100%",
+      height: "100%",
+    },
+
+    modalContainer: {
+      flex: 1,
+      backgroundColor: "rgba(0, 0, 0, 0.95)",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+
+    modalOverlay: {
+      flex: 1,
+      width: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+
+    modalContent: {
+      width: "100%",
+      height: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+
+    fullImage: {
+      width: "100%",
+      height: "80%",
+    },
+
+    closeButton: {
+      position: "absolute",
+      top: 50,
+      right: 20,
+      zIndex: 10,
     },
   });
   
