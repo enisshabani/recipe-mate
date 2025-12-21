@@ -205,7 +205,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#2e573a",
     borderRadius: 8,
     paddingVertical: 14,
+    paddingHorizontal: 32,
     alignItems: "center",
+    alignSelf: "center",
     marginTop: 8,
   },
   buttonDisabled: {
@@ -248,7 +250,9 @@ const styles = StyleSheet.create({
   socialButton: {
     borderRadius: 8,
     paddingVertical: 12,
+    paddingHorizontal: 24,
     alignItems: "center",
+    alignSelf: "center",
     marginBottom: 12,
     borderWidth: 1.5,
   },

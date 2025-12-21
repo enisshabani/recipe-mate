@@ -192,7 +192,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#2e573a",
     borderRadius: 8,
     paddingVertical: 14,
+    paddingHorizontal: 32,
     alignItems: "center",
+    alignSelf: "center",
     marginTop: 8,
   },
   buttonDisabled: {
