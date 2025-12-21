@@ -1,9 +1,33 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, Image, View } from "react-native";
 import { Colors } from "../../constants/theme";
+import { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function TabsLayout() {
+  const [profileImage, setProfileImage] = useState(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    loadProfileImage();
+  }, [user]);
+
+  const loadProfileImage = async () => {
+    try {
+      const savedImage = await AsyncStorage.getItem('profileImage');
+      if (savedImage) {
+        setProfileImage(savedImage);
+      } else {
+        setProfileImage(null);
+      }
+    } catch (error) {
+      console.log('Error loading profile image:', error);
+      setProfileImage(null);
+    }
+  };
+
   return (
     <Tabs
       screenOptions={{
@@ -92,14 +116,34 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons 
-              size={focused ? 28 : 24} 
-              name={focused ? "person" : "person-outline"} 
-              color={color}
-              style={{
-                transform: [{ scale: focused ? 1.1 : 1 }],
-              }}
-            />
+            user && profileImage ? (
+              <View style={{
+                width: focused ? 28 : 24,
+                height: focused ? 28 : 24,
+                borderRadius: (focused ? 28 : 24) / 2,
+                overflow: 'hidden',
+                borderWidth: focused ? 2 : 0,
+                borderColor: color,
+              }}>
+                <Image 
+                  source={{ uri: profileImage }}
+                  style={{ 
+                    width: '100%', 
+                    height: '100%',
+                  }}
+                  resizeMode="cover"
+                />
+              </View>
+            ) : (
+              <Ionicons 
+                size={focused ? 28 : 24} 
+                name={focused ? "person" : "person-outline"} 
+                color={color}
+                style={{
+                  transform: [{ scale: focused ? 1.1 : 1 }],
+                }}
+              />
+            )
           ),
         }}
       />

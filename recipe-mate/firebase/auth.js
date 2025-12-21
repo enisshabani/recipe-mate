@@ -62,8 +62,29 @@ export const signInWithGoogle = async () => {
     if (Platform.OS === "web") {
       // Web-based OAuth flow
       const provider = new GoogleAuthProvider();
-      const userCredential = await signInWithPopup(auth, provider);
-      return { user: userCredential.user, error: null };
+      
+      // Add custom parameters to help with popup issues
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
+      
+      try {
+        const userCredential = await signInWithPopup(auth, provider);
+        return { user: userCredential.user, error: null };
+      } catch (popupError) {
+        console.error("Google sign-in popup error:", popupError);
+        
+        // If popup fails, provide helpful error message
+        if (popupError.code === 'auth/popup-closed-by-user') {
+          return { user: null, error: "Sign-in cancelled. Please try again." };
+        } else if (popupError.code === 'auth/popup-blocked') {
+          return { user: null, error: "Popup was blocked by your browser. Please allow popups for this site and try again." };
+        } else if (popupError.code === 'auth/unauthorized-domain') {
+          return { user: null, error: "This domain is not authorized for OAuth. Please add it in Firebase Console > Authentication > Settings > Authorized domains." };
+        }
+        
+        return { user: null, error: popupError.message || "Failed to sign in with Google" };
+      }
     } else {
       // Mobile OAuth flow using expo-auth-session
       // Use Expo's auth proxy which is already trusted by Google
@@ -156,8 +177,29 @@ export const signInWithGitHub = async () => {
     if (Platform.OS === "web") {
       // Web-based OAuth flow
       const provider = new GithubAuthProvider();
-      const userCredential = await signInWithPopup(auth, provider);
-      return { user: userCredential.user, error: null };
+      
+      // Add custom parameters
+      provider.setCustomParameters({
+        allow_signup: 'true'
+      });
+      
+      try {
+        const userCredential = await signInWithPopup(auth, provider);
+        return { user: userCredential.user, error: null };
+      } catch (popupError) {
+        console.error("GitHub sign-in popup error:", popupError);
+        
+        // If popup fails, provide helpful error message
+        if (popupError.code === 'auth/popup-closed-by-user') {
+          return { user: null, error: "Sign-in cancelled. Please try again." };
+        } else if (popupError.code === 'auth/popup-blocked') {
+          return { user: null, error: "Popup was blocked by your browser. Please allow popups for this site and try again." };
+        } else if (popupError.code === 'auth/unauthorized-domain') {
+          return { user: null, error: "This domain is not authorized for OAuth. Please add it in Firebase Console > Authentication > Settings > Authorized domains." };
+        }
+        
+        return { user: null, error: popupError.message || "Failed to sign in with GitHub" };
+      }
     } else {
       // Mobile OAuth flow using expo-auth-session
       // Use Expo's auth proxy
