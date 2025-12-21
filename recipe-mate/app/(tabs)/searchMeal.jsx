@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     paddingTop: 14,
   },
   apiButton: {
-    backgroundColor: "#2e573a",
+    backgroundColor: "#F4A300",
     paddingVertical: 10,
     paddingHorizontal: 32,
     borderRadius: 12,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   apiButtonHovered: {
-    backgroundColor: "#234528",
+    backgroundColor: "#D48F00",
   },
   apiButtonText: {
     color: "#fff",
