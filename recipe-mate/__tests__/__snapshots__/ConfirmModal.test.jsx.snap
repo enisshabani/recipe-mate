@@ -1,0 +1,162 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmModal renders correctly 1`] = `
+<Modal
+  animationType="fade"
+  transparent={true}
+  visible={true}
+>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "rgba(0,0,0,0.4)",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "white",
+            "borderRadius": 12,
+            "borderWidth": 2,
+            "maxWidth": 400,
+            "minWidth": 300,
+            "padding": 20,
+          },
+          {
+            "borderColor": "#28a745",
+          },
+        ]
+      }
+    >
+      <Text
+        style={
+          [
+            {
+              "fontSize": 18,
+              "fontWeight": "bold",
+              "marginBottom": 10,
+            },
+            {
+              "color": "#28a745",
+            },
+          ]
+        }
+      >
+        Success
+      </Text>
+      <Text
+        style={
+          {
+            "fontSize": 16,
+            "marginBottom": 20,
+            "textAlign": "center",
+          }
+        }
+      >
+        Are you sure?
+      </Text>
+      <View
+        style={
+          {
+            "flexDirection": "row",
+            "justifyContent": "center",
+          }
+        }
+      >
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "backgroundColor": "#28a745",
+              "borderRadius": 8,
+              "marginHorizontal": 5,
+              "opacity": 1,
+              "paddingHorizontal": 25,
+              "paddingVertical": 8,
+            }
+          }
+        >
+          <Text>
+            Yes
+          </Text>
+        </View>
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "backgroundColor": "gray",
+              "borderRadius": 8,
+              "marginHorizontal": 5,
+              "opacity": 1,
+              "paddingHorizontal": 25,
+              "paddingVertical": 8,
+            }
+          }
+        >
+          <Text>
+            Cancel
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</Modal>
+`;
