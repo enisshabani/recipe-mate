@@ -57,6 +57,7 @@ export default function ProfileScreen() {
   const [dailyReminderEnabled, setDailyReminderEnabled] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [showImagePreview, setShowImagePreview] = useState(false);
 
   useEffect(() => {
     loadReminderSettings();
@@ -142,7 +143,11 @@ export default function ProfileScreen() {
   };
 
   const handleProfileImagePress = () => {
-    Platform.OS === "web" ? pickProfileImage() : setShowImageModal(true);
+    if (profileImage) {
+      setShowImagePreview(true);
+    } else {
+      Platform.OS === "web" ? pickProfileImage() : setShowImageModal(true);
+    }
   };
 
   const scheduleDailyReminder = async () => {
@@ -450,6 +455,42 @@ const handleFavorites = () => {
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
             </Animated.View>
+          </View>
+        </Modal>
+
+        <Modal
+          visible={showImagePreview}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowImagePreview(false)}
+        >
+          <View style={styles.imagePreviewOverlay}>
+            <TouchableOpacity
+              style={styles.imagePreviewClose}
+              onPress={() => setShowImagePreview(false)}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="close" size={28} color="#fff" />
+            </TouchableOpacity>
+            
+            <Image
+              source={{ uri: profileImage }}
+              style={styles.fullScreenProfileImage}
+            />
+
+            <View style={styles.previewActions}>
+              <TouchableOpacity
+                style={styles.previewButton}
+                onPress={() => {
+                  setShowImagePreview(false);
+                  Platform.OS === "web" ? pickProfileImage() : setShowImageModal(true);
+                }}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="camera" size={18} color="#fff" />
+                <Text style={styles.previewButtonText}>Change</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Modal>
 
@@ -882,6 +923,55 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textAlign: 'center',
     lineHeight: 18,
+  },
+  imagePreviewOverlay: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 40,
+    paddingBottom: 40,
+  },
+  fullScreenProfileImage: {
+    width: 280,
+    height: 280,
+    borderRadius: 140,
+    resizeMode: 'cover',
+    borderWidth: 4,
+    borderColor: '#F4A300',
+  },
+  imagePreviewClose: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    zIndex: 10,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 24,
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  previewActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 24,
+  },
+  previewButton: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#2e573a',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  previewButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
   },
   modalOverlay: {
     flex: 1,
