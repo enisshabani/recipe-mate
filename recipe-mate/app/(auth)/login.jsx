@@ -8,6 +8,9 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loginButtonHovered, setLoginButtonHovered] = useState(false);
+  const [googleButtonHovered, setGoogleButtonHovered] = useState(false);
+  const [githubButtonHovered, setGithubButtonHovered] = useState(false);
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -102,9 +105,11 @@ export default function LoginScreen() {
         />
 
         <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
+          style={[styles.button, loading && styles.buttonDisabled, loginButtonHovered && !loading && styles.buttonHovered]}
           onPress={handleLogin}
           disabled={loading}
+          onMouseEnter={() => !loading && setLoginButtonHovered(true)}
+          onMouseLeave={() => setLoginButtonHovered(false)}
         >
           <Text style={styles.buttonText}>
             {loading ? "Logging in..." : "Login"}
@@ -118,17 +123,21 @@ export default function LoginScreen() {
         </View>
 
         <TouchableOpacity
-          style={[styles.socialButton, styles.googleButton, loading && styles.buttonDisabled]}
+          style={[styles.socialButton, styles.googleButton, loading && styles.buttonDisabled, googleButtonHovered && !loading && styles.googleButtonHovered]}
           onPress={handleGoogleLogin}
           disabled={loading}
+          onMouseEnter={() => !loading && setGoogleButtonHovered(true)}
+          onMouseLeave={() => setGoogleButtonHovered(false)}
         >
           <Text style={styles.socialButtonText}>🔍 Google</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.socialButton, styles.githubButton, loading && styles.buttonDisabled]}
+          style={[styles.socialButton, styles.githubButton, loading && styles.buttonDisabled, githubButtonHovered && !loading && styles.githubButtonHovered]}
           onPress={handleGitHubLogin}
           disabled={loading}
+          onMouseEnter={() => !loading && setGithubButtonHovered(true)}
+          onMouseLeave={() => setGithubButtonHovered(false)}
         >
           <Text style={styles.socialButtonText}>⚫ GitHub</Text>
         </TouchableOpacity>
@@ -200,6 +209,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#2e573a",
     backgroundColor: "#fff",
+    maxWidth: 400,
+    width: "100%",
+    alignSelf: "center",
   },
   button: {
     backgroundColor: "#2e573a",
@@ -209,6 +221,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     marginTop: 8,
+  },
+  buttonHovered: {
+    backgroundColor: "#234528",
   },
   buttonDisabled: {
     opacity: 0.6,
@@ -260,9 +275,15 @@ const styles = StyleSheet.create({
     borderColor: "#2e573a",
     backgroundColor: "#f9f9f9",
   },
+  googleButtonHovered: {
+    backgroundColor: "#E8E8E8",
+  },
   githubButton: {
     borderColor: "#2e573a",
     backgroundColor: "#f9f9f9",
+  },
+  githubButtonHovered: {
+    backgroundColor: "#E8E8E8",
   },
   socialButtonText: {
     fontSize: 16,

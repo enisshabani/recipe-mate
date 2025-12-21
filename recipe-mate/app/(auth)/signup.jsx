@@ -9,6 +9,7 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [signupButtonHovered, setSignupButtonHovered] = useState(false);
   const router = useRouter();
 
   const handleSignUp = async () => {
@@ -111,9 +112,11 @@ export default function SignupScreen() {
         />
 
         <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
+          style={[styles.button, loading && styles.buttonDisabled, signupButtonHovered && !loading && styles.buttonHovered]}
           onPress={handleSignUp}
           disabled={loading}
+          onMouseEnter={() => !loading && setSignupButtonHovered(true)}
+          onMouseLeave={() => setSignupButtonHovered(false)}
         >
           <Text style={styles.buttonText}>
             {loading ? "Creating account..." : "Sign Up"}
@@ -187,6 +190,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#2e573a",
     backgroundColor: "#fff",
+    maxWidth: 400,
+    width: "100%",
+    alignSelf: "center",
   },
   button: {
     backgroundColor: "#2e573a",
@@ -196,6 +202,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     marginTop: 8,
+  },
+  buttonHovered: {
+    backgroundColor: "#234528",
   },
   buttonDisabled: {
     opacity: 0.6,

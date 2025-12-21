@@ -33,6 +33,7 @@ export default function AddRecipeScreen() {
   const [imageUri, setImageUri] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showImagePreview, setShowImagePreview] = useState(false);
+  const [saveButtonHovered, setSaveButtonHovered] = useState(false);
 
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -405,7 +406,13 @@ const handleImagePicker = () => {
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
         <Animated.View entering={FadeInDown.delay(400).duration(500)}>
-          <TouchableOpacity style={styles.button} onPress={handleSaveRecipe} activeOpacity={0.8}>
+          <TouchableOpacity 
+            style={[styles.button, saveButtonHovered && styles.buttonHovered]} 
+            onPress={handleSaveRecipe} 
+            activeOpacity={0.8}
+            onMouseEnter={() => setSaveButtonHovered(true)}
+            onMouseLeave={() => setSaveButtonHovered(false)}
+          >
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
             <Text style={styles.buttonText}>Save Recipe</Text>
           </TouchableOpacity>
@@ -567,6 +574,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 4,
+  },
+  buttonHovered: {
+    backgroundColor: "#234528",
   },
   buttonText: { 
     color: "#fff", 

@@ -58,6 +58,8 @@ export default function ProfileScreen() {
   const [profileImage, setProfileImage] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showImagePreview, setShowImagePreview] = useState(false);
+  const [loginButtonHovered, setLoginButtonHovered] = useState(false);
+  const [signupButtonHovered, setSignupButtonHovered] = useState(false);
 
   useEffect(() => {
     loadReminderSettings();
@@ -329,9 +331,11 @@ const handleFavorites = () => {
 
             <Animated.View entering={FadeInDown.delay(400).duration(500)} style={{width: '100%'}}>
               <TouchableOpacity
-                style={styles.loginButton}
+                style={[styles.loginButton, loginButtonHovered && styles.loginButtonHovered]}
                 onPress={() => router.push("/(auth)/login")}
                 activeOpacity={0.8}
+                onMouseEnter={() => setLoginButtonHovered(true)}
+                onMouseLeave={() => setLoginButtonHovered(false)}
               >
                 <Ionicons
                   name="log-in"
@@ -345,9 +349,11 @@ const handleFavorites = () => {
 
             <Animated.View entering={FadeInDown.delay(500).duration(500)} style={{width: '100%'}}>
               <TouchableOpacity
-                style={styles.signupButton}
+                style={[styles.signupButton, signupButtonHovered && styles.signupButtonHovered]}
                 onPress={() => router.push("/(auth)/signup")}
                 activeOpacity={0.8}
+                onMouseEnter={() => setSignupButtonHovered(true)}
+                onMouseLeave={() => setSignupButtonHovered(false)}
               >
                 <Ionicons
                   name="person-add"
@@ -694,6 +700,9 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     alignSelf: 'center',
   },
+  loginButtonHovered: {
+    backgroundColor: '#234528',
+  },
   loginButtonText: {
     color: '#fff',
     fontSize: 16,
@@ -715,6 +724,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
     alignSelf: 'center',
+  },
+  signupButtonHovered: {
+    backgroundColor: '#F5F5F5',
   },
   signupButtonText: {
     color: '#2e573a',
