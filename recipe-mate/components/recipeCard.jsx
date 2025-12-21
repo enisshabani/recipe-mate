@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, { FadeInDown, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 import { useRecipes } from "../contexts/RecipeContext";
 import ConfirmModal from "./ConfirmModal";
 
-export default function RecipeCard({ recipe, index = 0 }) {
+function RecipeCard({ recipe, index = 0 }) {
   const router = useRouter();
   const { deleteRecipe } = useRecipes();
 
@@ -108,3 +108,5 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
+
+export default memo(RecipeCard);
