@@ -136,7 +136,7 @@ export default function SearchScreen() {
             data={filteredRecipes}  
             numColumns={3}
             keyExtractor={(item) => String(item.id)}
-            columnWrapperStyle={{ justifyContent: "space-between" }}
+            columnWrapperStyle={{ justifyContent: "flex-start", gap: 16 }}
             renderItem={renderCommunityCard}
             keyboardShouldPersistTaps="handled"
             removeClippedSubviews
