@@ -279,7 +279,7 @@ const handleImagePicker = () => {
 
         <Animated.View entering={FadeInDown.delay(100).duration(500)} style={styles.inputContainer}>
           <View style={styles.inputIconContainer}>
-            <Ionicons name="restaurant-outline" size={20} color="#2e573a" />
+            <Ionicons name="restaurant-outline" size={20} color="#F4A300" />
           </View>
           <TextInput
             style={styles.input}
@@ -295,7 +295,7 @@ const handleImagePicker = () => {
 
         <Animated.View entering={FadeInDown.delay(150).duration(500)} style={styles.inputContainer}>
           <View style={styles.inputIconContainer}>
-            <Ionicons name="document-text-outline" size={20} color="#2e573a" />
+            <Ionicons name="document-text-outline" size={20} color="#F4A300" />
           </View>
           <TextInput
             style={styles.input}
@@ -312,7 +312,7 @@ const handleImagePicker = () => {
         <View style={styles.row}>
           <Animated.View entering={FadeInDown.delay(200).duration(500)} style={[styles.inputContainer, styles.halfInput]}>
             <View style={styles.inputIconContainer}>
-              <Ionicons name="time-outline" size={20} color="#2e573a" />
+              <Ionicons name="time-outline" size={20} color="#F4A300" />
             </View>
             <TextInput
               style={styles.input}
@@ -335,7 +335,7 @@ const handleImagePicker = () => {
 
           <Animated.View entering={FadeInDown.delay(250).duration(500)} style={[styles.inputContainer, styles.halfInput]}>
             <View style={styles.inputIconContainer}>
-              <Ionicons name="people-outline" size={20} color="#2e573a" />
+              <Ionicons name="people-outline" size={20} color="#F4A300" />
             </View>
             <TextInput
               style={styles.input}
@@ -362,7 +362,7 @@ const handleImagePicker = () => {
 
         <Animated.View entering={FadeInDown.delay(300).duration(500)} style={styles.sectionContainer}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="list-outline" size={22} color="#2e573a" />
+            <Ionicons name="list-outline" size={22} color="#F4A300" />
             <Text style={styles.sectionTitle}>Ingredients</Text>
           </View>
           <TextInput
@@ -380,7 +380,7 @@ const handleImagePicker = () => {
 
         <Animated.View entering={FadeInDown.delay(350).duration(500)} style={styles.sectionContainer}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="create-outline" size={22} color="#2e573a" />
+            <Ionicons name="create-outline" size={22} color="#F4A300" />
             <Text style={styles.sectionTitle}>Instructions</Text>
           </View>
           <TextInput
@@ -426,7 +426,7 @@ const handleImagePicker = () => {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.modalOption} onPress={pickImage}>
-        <Ionicons name="images" size={24} color="#2e573a" />
+        <Ionicons name="images" size={24} color="#F4A300" />
         <Text style={styles.modalOptionText}>Choose from Gallery</Text>
       </TouchableOpacity>
 
