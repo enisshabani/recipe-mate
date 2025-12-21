@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: Platform.OS === 'android' ? "flex-start" : "center",
+    alignItems: Platform.OS === 'web' ? "center" : "flex-start",
     paddingHorizontal: 20,
     paddingTop: Platform.OS === 'android' ? 28 : 20,
     paddingBottom: Platform.OS === 'android' ? 16 : 20,
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     overflow: "hidden",
-    marginTop: Platform.OS === 'android' ? 8 : 0,
+    marginTop: Platform.OS === 'web' ? 0 : 8,
   },
   headerSearchContainerExpanded: {
     flex: 1,
