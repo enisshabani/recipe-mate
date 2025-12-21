@@ -114,6 +114,10 @@ export default function ApiRecipesScreen() {
     () => (results.length > 0 ? results : defaultMeals),
     [results]
   );
+    const renderApiMeal = useCallback(
+      ({ item, index }) => <ApiMealCard item={item} index={index} />,
+      []
+    );
 
   return (
     <KeyboardAvoidingView

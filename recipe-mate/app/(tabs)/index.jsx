@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,8 @@ import {
 import Animated, { FadeIn, FadeInDown, SlideInDown } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import RecipeCard from "../../components/recipeCard";
+
+const MemoRecipeCard = React.memo(RecipeCard);
 import { useRouter } from "expo-router";
 import { useRecipes } from "../../contexts/RecipeContext";
 
@@ -23,9 +25,11 @@ export default function HomeScreen() {
   const [recentSearches, setRecentSearches] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const filteredRecipes = recipes.filter((recipe) =>
-    recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredRecipes = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return recipes;
+    return recipes.filter((recipe) => recipe.title.toLowerCase().includes(q));
+  }, [recipes, searchQuery]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -40,6 +44,11 @@ export default function HomeScreen() {
         {searchQuery ? "Try a different search" : "Add your first recipe to get started"}
       </Text>
     </Animated.View>
+  );
+
+  const renderRecipeCard = useCallback(
+    ({ item, index }) => <MemoRecipeCard recipe={item} index={index} />,
+    []
   );
 
   return (
@@ -101,9 +110,15 @@ export default function HomeScreen() {
 
       <FlatList
         data={filteredRecipes}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => <RecipeCard recipe={item} index={index} />}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={renderRecipeCard}
         showsVerticalScrollIndicator={false}
+        removeClippedSubviews
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        updateCellsBatchingPeriod={50}
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={filteredRecipes.length === 0 ? styles.emptyContainer : { paddingBottom: 20 }}
         ListEmptyComponent={EmptyState}
         refreshControl={
