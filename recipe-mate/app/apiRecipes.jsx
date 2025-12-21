@@ -89,22 +89,17 @@ const ApiMealCard = React.memo(({ item, onPress, onImagePress, index }) => (
     entering={FadeInDown.delay(index * 100).duration(500).springify()}
     style={styles.card}
   >
-    <View style={styles.cardTouchable}>
-      <TouchableOpacity
-        onPress={(e) => {
-          e.stopPropagation();
-          onImagePress && onImagePress(item.strMealThumb);
-        }}
-        activeOpacity={0.9}
-        style={styles.imageContainer}
-      >
+    <TouchableOpacity 
+      style={styles.cardTouchable}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
+      <View style={styles.imageContainer}>
         <Image source={{ uri: item.strMealThumb }} style={styles.image} />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
-        <Text style={styles.mealName}>{item.strMeal}</Text>
-        <Text style={styles.mealCategory}>{item.strCategory}</Text>
-      </TouchableOpacity>
-    </View>
+      </View>
+      <Text style={styles.mealName}>{item.strMeal}</Text>
+      <Text style={styles.mealCategory}>{item.strCategory}</Text>
+    </TouchableOpacity>
   </Animated.View>
 ));
 
@@ -133,13 +128,14 @@ export default function ApiRecipesScreen() {
         <ApiMealCard
           item={item}
           index={index}
+          onPress={() => router.push(`/mealDetails?id=${item.idMeal}`)}
           onImagePress={(imageUri) => {
             setSelectedImageUri(imageUri);
             setShowImagePreview(true);
           }}
         />
       ),
-      []
+      [router]
     );
 
   return (
