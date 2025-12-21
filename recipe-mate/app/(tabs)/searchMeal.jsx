@@ -22,7 +22,7 @@ export default function SearchScreen() {
   const [communityRecipes, setCommunityRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 LIVE SEARCH TEXT
+  //  LIVE SEARCH TEXT
   const [searchText, setSearchText] = useState("");
   const [selectedImageUri, setSelectedImageUri] = useState(null);
   const [showImagePreview, setShowImagePreview] = useState(false);
@@ -31,7 +31,7 @@ export default function SearchScreen() {
   const { user } = useAuth();
   const router = useRouter();
 
-  // 🔹 LIVE FILTERING (PA ENTER)
+  // LIVE FILTERING 
   const filteredRecipes = useMemo(() => {
     if (!searchText.trim()) return communityRecipes;
 
