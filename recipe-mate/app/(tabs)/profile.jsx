@@ -551,7 +551,7 @@ const handleFavorites = () => {
           
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <Ionicons name="notifications" size={24} color={deepAccent} />
+              <Ionicons name="notifications" size={24} color="#F4A300" />
               <View style={styles.settingTextContainer}>
                 <Text style={[styles.settingTitle, { color: textPrimary }]}>
                   Daily Cooking Reminder
@@ -580,7 +580,7 @@ const handleFavorites = () => {
 
           <View style={styles.statRow}>
             <View style={styles.statItem}>
-              <Ionicons name="restaurant" size={32} color={deepAccent} />
+              <Ionicons name="restaurant" size={32} color="#F4A300" />
               <Text style={[styles.statValue, { color: textPrimary }]}>
                 {totalRecipes}
               </Text>
@@ -600,7 +600,7 @@ const handleFavorites = () => {
             </View>
 
             <View style={styles.statItem}>
-              <Ionicons name="time" size={32} color={deepAccent} />
+              <Ionicons name="time" size={32} color="#F4A300" />
               <Text style={[styles.statValue, { color: textPrimary }]}>
                 {cookingTimeLabel}
               </Text>
@@ -628,7 +628,7 @@ const handleFavorites = () => {
                     { backgroundColor: "#FFFCFB" },
                   ]}
                 >
-                  <Ionicons name="heart" size={20} color={deepAccent} />
+                  <Ionicons name="heart" size={20} color="#F4A300" />
                 </View>
                 <Text
                   style={[
@@ -639,7 +639,7 @@ const handleFavorites = () => {
                   My Favorites
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={deepAccent} />
+              <Ionicons name="chevron-forward" size={20} color="#F4A300" />
             </View>
           </AnimatedMenuButton>
 
@@ -734,7 +734,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   contentContainer: {
-    padding: 16,
+    padding: 0,
     paddingBottom: 20,
   },
   contentContainerWithTabBar: {
@@ -745,11 +745,14 @@ const styles = StyleSheet.create({
     padding: 32,
     alignItems: 'center',
     marginBottom: 16,
-    shadowColor: '#000',
+    marginHorizontal: 16,
+    shadowColor: '#2e573a',
     shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 6 },
     shadowRadius: 12,
     elevation: 5,
+    borderWidth: 2,
+    borderColor: '#2e573a',
   },
   avatar: {
     width: 80,
@@ -758,6 +761,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
+    borderWidth: 3,
+    borderColor: '#2e573a',
   },
   avatarTouchable: {
     position: 'relative',
@@ -766,6 +771,8 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
+    borderWidth: 3,
+    borderColor: '#2e573a',
   },
   cameraIconContainer: {
     position: 'absolute',
@@ -792,21 +799,27 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
+    marginHorizontal: 16,
+    shadowColor: '#2e573a',
+    shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
+    borderWidth: 2,
+    borderColor: '#2e573a',
   },
   settingsCard: {
     borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
+    marginHorizontal: 16,
+    shadowColor: '#2e573a',
+    shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
+    borderWidth: 2,
+    borderColor: '#2e573a',
   },
   settingItem: {
     flexDirection: 'row',
@@ -858,13 +871,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
+    marginHorizontal: 16,
+    shadowColor: '#2e573a',
+    shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
     borderColor: '#2e573a',
-    borderWidth: 1,
+    borderWidth: 2,
   },
   menuItem: {
     flexDirection: 'row',
@@ -873,15 +887,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFCFB',
     paddingVertical: 16,
     paddingHorizontal: 20,
-    borderRadius: 50,
+    borderRadius: 12,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: '#F4A300',
     borderColor: '#F4A300',
-    borderWidth: 3,
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 6,
-    elevation: 3,
+    borderWidth: 2,
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
   },
   menuItemPressed: {
     transform: [{ scale: 0.98 }],
@@ -914,13 +928,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 24,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
+    marginHorizontal: 16,
+    shadowColor: '#2e573a',
+    shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 3,
     borderColor: '#2e573a',
-    borderWidth: 1,
+    borderWidth: 2,
   },
   footerTitle: {
     fontSize: 18,
