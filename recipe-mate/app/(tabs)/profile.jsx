@@ -321,13 +321,17 @@ export default function ProfileScreen() {
   };
 
   const toggleDailyReminder = async (value) => {
-    if (Platform.OS === "web") {
-      Alert.alert("Not Available", "Daily reminders are only available on mobile devices.");
-      return;
-    }
-
     setDailyReminderEnabled(value);
     await AsyncStorage.setItem('dailyReminderEnabled', JSON.stringify(value));
+
+    if (Platform.OS === "web") {
+      if (value) {
+        Alert.alert("Reminder Enabled", "Note: Daily reminders will only work on mobile devices. Your preference has been saved.");
+      } else {
+        Alert.alert("Reminder Disabled", "Daily cooking reminder has been turned off.");
+      }
+      return;
+    }
 
     if (value) {
       const { status } = await Notifications.requestPermissionsAsync();
