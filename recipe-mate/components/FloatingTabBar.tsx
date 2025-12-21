@@ -38,7 +38,7 @@ export default function FloatingTabBar({
   tabs,
   containerWidth = Dimensions.get('window').width - 32,
   borderRadius = 24,
-  bottomMargin = Platform.OS === 'android' ? 8 : 16,
+  bottomMargin = Platform.OS === 'android' ? 16 : 16,
 }: FloatingTabBarProps) {
   const theme = useTheme();
   const router = useRouter();
