@@ -223,9 +223,10 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: Platform.OS === 'web' ? "center" : "flex-start",
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingTop: Platform.OS === 'android' ? 28 : 20,
+    paddingBottom: Platform.OS === 'android' ? 16 : 20,
     backgroundColor: "#2e573a",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -252,6 +253,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     overflow: "hidden",
+    marginTop: Platform.OS === 'web' ? 0 : 8,
   },
   headerSearchContainerExpanded: {
     flex: 1,
@@ -383,7 +385,7 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     right: 20,
-    bottom: 90,
+    bottom: Platform.OS === 'android' ? 90 : 90,
     backgroundColor: "#2e573a",
     width: 56,
     height: 56,
