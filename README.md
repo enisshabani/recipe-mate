@@ -46,17 +46,19 @@ expo start
 
 Aplikacioni mund të ekzekutohet në emulator ose në pajisje reale përmes Expo Go.
 
-<img src="recipe-mate/AppScreenshots/welcome.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/signup.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/login.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/homepage.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/recipe.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/recipe2.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/addRecipe.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/editRecipe.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/editRecipe2.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/searchRecipes.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/APIRecipes.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/timer.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/profile.jpeg" width="200" />
-<img src="recipe-mate/AppScreenshots/profile2.jpeg" width="200" />
+<div align="center">
+  <img src="recipe-mate/AppScreenshots/welcome.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/signup.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/login.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/homepage.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/recipe.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/recipe2.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/addRecipe.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/editRecipe.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/editRecipe2.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/searchRecipes.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/APIRecipes.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/timer.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/profile.jpeg" width="200" />
+  <img src="recipe-mate/AppScreenshots/profile2.jpeg" width="200" />
+</div>
