@@ -159,6 +159,14 @@ export default function EditRecipe() {
   };
 
   const removeImage = () => {
+    if (Platform.OS === "web") {
+      const confirmed = confirm("Are you sure you want to remove the recipe image?");
+      if (confirmed) {
+        setRecipe({ ...recipe, imageUri: null });
+      }
+      return;
+    }
+
     Alert.alert(
       "Remove Image",
       "Are you sure you want to remove the recipe image?",
