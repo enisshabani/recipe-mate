@@ -9,7 +9,7 @@ import {
   TextInput,
   RefreshControl,
 } from "react-native";
-import Animated, { FadeIn, FadeInDown, SlideInDown } from "react-native-reanimated";
+import Animated, { FadeIn, FadeInDown, SlideInDown, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import RecipeCard from "../../components/recipeCard";
 
@@ -23,6 +23,15 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [searchExpanded, setSearchExpanded] = useState(false);
+  const [addButtonHovered, setAddButtonHovered] = useState(false);
+
+  const searchAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      width: withTiming(searchExpanded ? 200 : 0, { duration: 300 }),
+      opacity: withTiming(searchExpanded ? 1 : 0, { duration: 300 }),
+    };
+  });
 
   const filteredRecipes = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -36,13 +45,25 @@ export default function HomeScreen() {
   }, []);
 
   const EmptyState = () => (
-    <Animated.View entering={FadeIn.duration(600)} style={styles.emptyState}>
+    <View style={styles.emptyState}>
       <Ionicons name="restaurant-outline" size={64} color="#ccc" />
       <Text style={styles.emptyTitle}>No recipes found</Text>
       <Text style={styles.emptyText}>
         {searchQuery ? "Try a different search" : "Add your first recipe to get started"}
       </Text>
-    </Animated.View>
+      {!searchQuery && (
+        <TouchableOpacity
+          style={[styles.emptyAddButton, addButtonHovered && styles.emptyAddButtonHovered]}
+          onPress={() => router.push("/add")}
+          activeOpacity={0.8}
+          onMouseEnter={() => setAddButtonHovered(true)}
+          onMouseLeave={() => setAddButtonHovered(false)}
+        >
+          <Ionicons name="add" size={20} color="#fff" />
+          <Text style={styles.emptyAddButtonText}>Add Recipe</Text>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 
   const renderRecipeCard = useCallback(
@@ -58,37 +79,50 @@ export default function HomeScreen() {
           <Text style={styles.title}>Recipe Mate</Text>
           <Text style={styles.subtitle}>Discover delicious recipes</Text>
         </View>
-
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => router.push("/add")}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="add" size={20} color="#fde3cf" />
-          <Text style={styles.addButtonText}>Add</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Animated.View entering={FadeIn.delay(200).duration(500)} style={styles.searchContainer}>
-        <Ionicons name="search-outline" size={20} color="#777" style={{ marginRight: 8 }} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for a recipe"
-          placeholderTextColor="#999"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSubmitEditing={() => {
-            if (searchQuery.trim() !== "" && !recentSearches.includes(searchQuery)) {
-              setRecentSearches((prev) => [...prev, searchQuery]);
-            }
+        
+        <Animated.View 
+          entering={FadeIn.delay(200).duration(500)} 
+          style={styles.headerSearchContainer}
+          onMouseEnter={() => setSearchExpanded(true)}
+          onMouseLeave={() => {
+            if (!searchQuery) setSearchExpanded(false);
           }}
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={() => setSearchQuery("")}>
-            <Ionicons name="close-circle" size={20} color="#999" />
+        >
+          <TouchableOpacity 
+            onPress={() => setSearchExpanded(true)}
+            style={styles.searchIconWrapper}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="search-outline" size={20} color="#777" />
           </TouchableOpacity>
-        )}
-      </Animated.View>
+          
+          {searchExpanded && (
+            <Animated.View style={[styles.searchInputWrapper, searchAnimatedStyle]}>
+              <TextInput
+                style={styles.headerSearchInput}
+                placeholder="Search for a recipe"
+                placeholderTextColor="#999"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                onBlur={() => {
+                  if (!searchQuery) setSearchExpanded(false);
+                }}
+                autoFocus
+                onSubmitEditing={() => {
+                  if (searchQuery.trim() !== "" && !recentSearches.includes(searchQuery)) {
+                    setRecentSearches((prev) => [...prev, searchQuery]);
+                  }
+                }}
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery("")}>
+                  <Ionicons name="close-circle" size={20} color="#999" />
+                </TouchableOpacity>
+              )}
+            </Animated.View>
+          )}
+        </Animated.View>
+      </View>
 
       {recentSearches.length > 0 && (
         <Animated.View entering={FadeIn.duration(400)} style={styles.recentRow}>
@@ -163,24 +197,33 @@ const styles = StyleSheet.create({
     color: "#FFFCFB",
     marginTop: 2,
   },
-  addButton: {
-    backgroundColor: "#2e573a",
-    borderRadius: 24,
-    paddingVertical: 10,
-    paddingHorizontal: 18,
+  headerSearchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    shadowColor: "#2e573a",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  addButtonText: {
-    color: "#fde3cf",
-    fontWeight: "700",
-    fontSize: 15,
+  searchIconWrapper: {
+    padding: 2,
+  },
+  searchInputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  headerSearchInput: {
+    fontSize: 14,
+    color: "#333",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    flex: 1,
   },
   searchContainer: {
     flexDirection: "row",
@@ -255,6 +298,29 @@ const styles = StyleSheet.create({
     color: "#666",
     textAlign: "center",
     lineHeight: 22,
+    marginBottom: 24,
+  },
+  emptyAddButton: {
+    flexDirection: "row",
+    backgroundColor: "#2e573a",
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    alignItems: "center",
+    gap: 8,
+    shadowColor: "#2e573a",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  emptyAddButtonHovered: {
+    backgroundColor: "#234528",
+  },
+  emptyAddButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
   },
   emptyContainer: {
     flexGrow: 1,

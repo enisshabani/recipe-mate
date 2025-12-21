@@ -41,6 +41,9 @@ export default function TimerScreen() {
   const [notificationId, setNotificationId] = useState(null);
 
   const [selectedSoundId, setSelectedSoundId] = useState(SOUND_OPTIONS[0].id);
+  const [startButtonHovered, setStartButtonHovered] = useState(false);
+  const [cancelButtonHovered, setCancelButtonHovered] = useState(false);
+  const [testButtonHovered, setTestButtonHovered] = useState(false);
   
   const pulseScale = useSharedValue(1);
   const buttonScale = useSharedValue(1);
@@ -376,27 +379,57 @@ export default function TimerScreen() {
         <Animated.View entering={FadeInDown.delay(300).duration(500)} style={styles.buttonsRow}>
 
           {isRunning && !isPaused ? (
-            <TouchableOpacity style={styles.cancelButton} onPress={handleStop} activeOpacity={0.7}>
+            <TouchableOpacity 
+              style={[styles.cancelButton, cancelButtonHovered && styles.cancelButtonHovered]} 
+              onPress={handleStop} 
+              activeOpacity={0.7}
+              onMouseEnter={() => setCancelButtonHovered(true)}
+              onMouseLeave={() => setCancelButtonHovered(false)}
+            >
               <Text style={styles.cancelText}>Stop</Text>
             </TouchableOpacity>
           ) : isPaused ? (
-            <TouchableOpacity style={styles.cancelButton} onPress={handleRestart} activeOpacity={0.7}>
+            <TouchableOpacity 
+              style={[styles.cancelButton, cancelButtonHovered && styles.cancelButtonHovered]} 
+              onPress={handleRestart} 
+              activeOpacity={0.7}
+              onMouseEnter={() => setCancelButtonHovered(true)}
+              onMouseLeave={() => setCancelButtonHovered(false)}
+            >
               <Text style={styles.cancelText}>Reset Timer</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={styles.cancelButton} onPress={handleCancel} activeOpacity={0.7}>
+            <TouchableOpacity 
+              style={[styles.cancelButton, cancelButtonHovered && styles.cancelButtonHovered]} 
+              onPress={handleCancel} 
+              activeOpacity={0.7}
+              onMouseEnter={() => setCancelButtonHovered(true)}
+              onMouseLeave={() => setCancelButtonHovered(false)}
+            >
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
           )}
 
           {!isRunning && !isPaused ? (
-            <TouchableOpacity style={styles.startButton} onPress={handleStart} activeOpacity={0.7}>
+            <TouchableOpacity 
+              style={[styles.startButton, startButtonHovered && styles.startButtonHovered]} 
+              onPress={handleStart} 
+              activeOpacity={0.7}
+              onMouseEnter={() => setStartButtonHovered(true)}
+              onMouseLeave={() => setStartButtonHovered(false)}
+            >
               <Text style={styles.startText}>Start</Text>
             </TouchableOpacity>
           ) : null}
 
           {!isRunning && isPaused ? (
-            <TouchableOpacity style={styles.startButton} onPress={handleResume} activeOpacity={0.7}>
+            <TouchableOpacity 
+              style={[styles.startButton, startButtonHovered && styles.startButtonHovered]} 
+              onPress={handleResume} 
+              activeOpacity={0.7}
+              onMouseEnter={() => setStartButtonHovered(true)}
+              onMouseLeave={() => setStartButtonHovered(false)}
+            >
               <Text style={styles.startText}>Resume</Text>
             </TouchableOpacity>
           ) : null}
@@ -418,7 +451,13 @@ export default function TimerScreen() {
             </Picker>
           </View>
 
-          <TouchableOpacity style={styles.testButton} onPress={handleTestSound} activeOpacity={0.7}>
+          <TouchableOpacity 
+            style={[styles.testButton, testButtonHovered && styles.testButtonHovered]} 
+            onPress={handleTestSound} 
+            activeOpacity={0.7}
+            onMouseEnter={() => setTestButtonHovered(true)}
+            onMouseLeave={() => setTestButtonHovered(false)}
+          >
             <Ionicons name="volume-high" size={18} color="#fff" style={{ marginRight: 8 }} />
             <Text style={styles.testText}>Test sound</Text>
           </TouchableOpacity>
@@ -555,6 +594,12 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
+  startButtonHovered: {
+    backgroundColor: "#D48F00",
+  },
+  cancelButtonHovered: {
+    backgroundColor: "#FFF5E6",
+  },
   cancelText: {
     color: "#2e573a",
     fontWeight: "700",
@@ -613,6 +658,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
+  },
+  testButtonHovered: {
+    backgroundColor: "#234528",
   },
   testText: {
     color: "#fff",

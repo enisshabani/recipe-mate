@@ -26,6 +26,7 @@ export default function SearchScreen() {
   const [searchText, setSearchText] = useState("");
   const [selectedImageUri, setSelectedImageUri] = useState(null);
   const [showImagePreview, setShowImagePreview] = useState(false);
+  const [apiButtonHovered, setApiButtonHovered] = useState(false);
 
   const { user } = useAuth();
   const router = useRouter();
@@ -118,8 +119,10 @@ export default function SearchScreen() {
         {/* API NAVIGATION BUTTON */}
         <View style={styles.apiButtonWrapper}>
           <TouchableOpacity
-            style={styles.apiButton}
+            style={[styles.apiButton, apiButtonHovered && styles.apiButtonHovered]}
             onPress={() => router.push("/apiRecipes")}
+            onMouseEnter={() => setApiButtonHovered(true)}
+            onMouseLeave={() => setApiButtonHovered(false)}
           >
             <Text style={styles.apiButtonText}>Explore API Recipes</Text>
           </TouchableOpacity>
@@ -209,6 +212,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     alignSelf: "center",
+  },
+  apiButtonHovered: {
+    backgroundColor: "#234528",
   },
   apiButtonText: {
     color: "#fff",
