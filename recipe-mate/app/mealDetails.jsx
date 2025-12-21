@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import Animated, { FadeIn, FadeInDown, FadeInUp, useSharedValue, useAnimatedStyle, withSpring, withSequence } from "react-native-reanimated";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -17,6 +18,7 @@ export default function MealDetails() {
   const { id } = useLocalSearchParams();
   const [meal, setMeal] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [showImagePreview, setShowImagePreview] = useState(false);
   const router = useRouter();
   const { addRecipe, addToFavorites, isFavorite, removeFromFavorites, recipes } =
     useRecipes();
@@ -147,11 +149,25 @@ export default function MealDetails() {
         </Animated.View>
 
         {/* Image with animation */}
-        <Animated.Image 
-          entering={FadeInDown.delay(100).duration(500)}
-          source={{ uri: meal.strMealThumb }} 
-          style={styles.image} 
-        />
+        <TouchableOpacity 
+          activeOpacity={0.9}
+          onPress={() => setShowImagePreview(true)}
+        >
+          <Animated.View 
+            entering={FadeInDown.delay(100).duration(500)}
+            style={styles.imageContainer}
+          >
+            <Image 
+              source={{ 
+                uri: meal.strMealThumb,
+                cache: 'force-cache'
+              }} 
+              style={styles.image}
+              resizeMode="cover"
+              defaultSource={require('../assets/images/react-logo.png')}
+            />
+          </Animated.View>
+        </TouchableOpacity>
 
         {/* Title and Category */}
         <Animated.View entering={FadeInDown.delay(200).duration(500)} style={styles.titleContainer}>
@@ -250,6 +266,36 @@ export default function MealDetails() {
           </Text>
         </TouchableOpacity>
       </Animated.View>
+
+      {/* Image Preview Modal */}
+      <Modal
+        visible={showImagePreview}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowImagePreview(false)}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowImagePreview(false)}
+          >
+            <View style={styles.modalContent}>
+              <Image
+                source={{ uri: meal.strMealThumb }}
+                style={styles.fullImage}
+                resizeMode="contain"
+              />
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setShowImagePreview(false)}
+              >
+                <Ionicons name="close-circle" size={40} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -298,10 +344,25 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
+  imageContainer: {
+    width: "100%",
+    height: 250,
+    backgroundColor: "#f5f5f5",
+    overflow: "hidden",
+    borderRadius: 18,
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 0,
+    borderWidth: 2,
+    borderColor: "#2e573a",
+    alignSelf: "center",
+    maxWidth: "92%",
+  },
+
   image: {
     width: "100%",
-    height: 280,
-    resizeMode: "cover",
+    height: "100%",
+    backgroundColor: "#f5f5f5",
   },
 
   titleContainer: {
@@ -345,40 +406,43 @@ const styles = StyleSheet.create({
 
   infoBox: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#2e573a",
     borderRadius: 16,
-    padding: 16,
+    padding: 18,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 3,
+    borderWidth: 2,
+    borderColor: "#2e573a",
   },
 
   iconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "#FFF4D6",
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 10,
+    borderWidth: 2,
+    borderColor: "#F4A300",
   },
 
   infoLabel: {
-    fontSize: 12,
-    color: "#888",
+    fontSize: 13,
+    color: "#fde3cf",
     marginBottom: 4,
-    fontWeight: "500",
+    fontWeight: "600",
+    letterSpacing: 0.5,
   },
 
   infoText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#2e573a",
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#FFFFFF",
   },
 
   section: {
@@ -405,11 +469,11 @@ const styles = StyleSheet.create({
     padding: 16,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
+    borderWidth: 2,
+    borderColor: "#2e573a",
   },
 
   ingredientItem: {
@@ -428,7 +492,7 @@ const styles = StyleSheet.create({
 
   ingredient: {
     fontSize: 15,
-    color: "#444",
+    color: "#2e573a",
     flex: 1,
     lineHeight: 22,
   },
@@ -436,16 +500,16 @@ const styles = StyleSheet.create({
   instructions: {
     fontSize: 15,
     lineHeight: 24,
-    color: "#555",
+    color: "#2e573a",
     backgroundColor: "#fff",
     padding: 16,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
+    borderWidth: 2,
+    borderColor: "#2e573a",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
   },
 
@@ -488,7 +552,7 @@ const styles = StyleSheet.create({
   },
 
   savedButton: {
-    backgroundColor: "#d9534f",
+    backgroundColor: "#e74c3c",
   },
 
   favoriteButton: {
@@ -499,5 +563,38 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 15,
     fontWeight: "700",
+  },
+
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.95)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modalOverlay: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modalContent: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  fullImage: {
+    width: "100%",
+    height: "80%",
+  },
+
+  closeButton: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    zIndex: 10,
   },
 });
