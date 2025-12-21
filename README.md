@@ -1,29 +1,47 @@
-# Recipe Mate – Grupi 25
+# RecipeMate – Group XX
 
-###  Anëtarët e grupit (rend alfabetik sipas emrit):
-- **Enis Shabani**
-- **Lis Spahija**
-- **Lyra Bullaku**
-- **Rinesa Selmonaj**
-- **Shqiperi Mjeku**
+## Anëtarët e Grupit
+- Enis Shabani  
+- Lis Spahija  
+- Lyra Bullaku  
+- Rinesa Selmonaj  
+- Shqiperi Mjeku  
 
----
+## Përshkrimi i Aplikacionit
+RecipeMate është një aplikacion mobil i zhvilluar me React Native (Expo) që u mundëson përdoruesve të krijojnë, menaxhojnë dhe shfletojnë receta gatimi. Aplikacioni kombinon autentifikim, ruajtje të të dhënave në cloud, integrim me API të jashtme dhe përdorim të device features, duke ofruar një përvojë moderne dhe të optimizuar për përdoruesin.
 
-## Përshkrim i aplikacionit
+## Funksionalitetet Kryesore
+RecipeMate u mundëson përdoruesve të krijojnë, shikojnë, përditësojnë dhe menaxhojnë receta personale përmes një ndërfaqeje të thjeshtë dhe intuitive. Aplikacioni përfshin autentifikim të sigurt përmes Firebase me Email/Password dhe Google, ndërsa të dhënat e recetave ruhen dhe menaxhohen në Firebase Firestore përmes operacioneve CRUD. Përmbajtja plotësohet edhe me receta nga burime të jashtme përmes integrimit me TheMealDB API.
 
-**Recipe Mate** është një aplikacion mobil për organizimin e recetave ushqimore, ku përdoruesit mund të shtojnë, ruajnë dhe menaxhojnë recetat e tyre në mënyrë të thjeshtë dhe praktike.
+Aplikacioni mbështet shtimin e imazheve për receta përmes kamerës ose image picker dhe dërgon njoftime lokale për veprime të caktuara. Navigimi realizohet me Expo Router dhe ndërfaqja është e ndërtuar me fokus në UI/UX të pastër, duke përdorur animacione të lehta për button press, modale dhe përfundim të detyrave. Performanca është e optimizuar përmes përdorimit të FlatList dhe teknikave të memoization në React (useCallback, useMemo, React.memo), ndërsa stabiliteti i aplikacionit është verifikuar përmes testimit bazik, duke përfshirë snapshot tests, interaction tests dhe mocking tests.
 
-Në fazën e parë janë implementuar funksionalitetet bazë si: shtimi, listimi dhe editimi i recetave.
 
-Në fazën e dytë, aplikacioni është zgjeruar me:
-1. Autentifikim me Firebase (Email/Password dhe Google)
-2. CRUD me Firebase Firestore
-3. Integrim me TheMealDB API
-4. Navigim me Expo Router dhe UI të përmirësuar
 
-Në fazën e tretë, aplikacioni është avancuar me përmirësime të performancës, testim dhe integrime të reja:
-1. Device Features: Camera/Image Picker, Local Notifications
-2. UI/UX: Layout i pastër, animacione (button press, modal fade, animacion në përfundim të detyrës)
-3. Optimizations: FlatList, React memoization (useCallback, useMemo, React.memo), asset optimization
-4. Testing: Snapshot tests, interaction tests, mocking tests
-5. Strukturë e Projektit: `/app`, `/components`, `/firebase`, `/assets` – strukturë e qartë dhe emra logjikë
+## Struktura e Projektit
+
+/app – përmban screens dhe routing-un e aplikacionit duke përdorur Expo Router. Përfshin autentifikimin (login/signup), navigimin kryesor me tabs, si dhe ekranet për shtimin, editimin, shikimin dhe menaxhimin e recetave.
+
+/components – përmban komponentë të ripërdorshëm UI dhe funksionalë si recipe cards, modalet për konfirmim dhe elemente të personalizuara të navigimit.
+
+/contexts – përmban Context API për menaxhimin e gjendjes globale, përfshirë autentifikimin dhe recetat.
+
+/firebase – përmban konfigurimin e Firebase dhe logjikën për autentifikim dhe operacione CRUD me Firestore.
+
+/assets – përmban imazhe, tinguj dhe asete të tjera statike të aplikacionit.
+
+/__tests__ – përmban testet bazike (snapshot dhe interaction tests).
+
+
+## Udhëzime për Instalimin dhe Ekzekutimin
+
+Instalimi i varësive:
+```bash
+npm install
+```
+
+Start aplikacionin:
+```bash
+expo start
+```
+
+Aplikacioni mund të ekzekutohet në emulator ose në pajisje reale përmes Expo Go.
