@@ -593,49 +593,48 @@ const handleFavorites = () => {
             >
               <Animated.View 
                 entering={FadeInDown.duration(300)}
-                style={styles.locationModalContent}
+                style={[styles.locationModalContent, { backgroundColor: cardBackground }]}
               >
-                <Text style={styles.locationModalTitle}>Where are you from?</Text>
+                <Text style={[styles.locationModalTitle, { color: textPrimary }]}>Where are you from?</Text>
                 
                 <TouchableOpacity
-                  style={styles.locationOption}
+                  style={[styles.locationOption, { backgroundColor: backgroundColor, borderColor: colors.border }]}
                   onPress={handleUseMyLocation}
                   activeOpacity={0.7}
                 >
-                  <Ionicons name="location" size={24} color="#F4A300" />
-                  <Text style={styles.locationOptionText}>Use My Location</Text>
+                  <Ionicons name="location" size={24} color={colors.accent} />
+                  <Text style={[styles.locationOptionText, { color: textPrimary }]}>Use My Location</Text>
                 </TouchableOpacity>
 
-                <View style={styles.locationOption}>
-                  <Ionicons name="globe-outline" size={24} color="#F4A300" />
-                  <View style={{ flex: 1, marginLeft: 12 }}>
-                    <Picker
-                      selectedValue={tempLocation}
-                      onValueChange={(value) => setTempLocation(value)}
-                      style={styles.inlinePicker}
-                    >
-                      <Picker.Item label="Select a country..." value="" />
-                      {countries.map((country) => (
-                        <Picker.Item key={country} label={country || "Select a country..."} value={country} />
-                      ))}
-                    </Picker>
-                  </View>
+                <View style={[styles.pickerContainer, { backgroundColor: backgroundColor, borderColor: colors.border }]}>
+                  <Ionicons name="globe-outline" size={24} color={colors.accent} style={{ marginRight: 12 }} />
+                  <Picker
+                    selectedValue={tempLocation}
+                    onValueChange={(value) => setTempLocation(value)}
+                    style={[styles.inlinePicker, { color: textPrimary }]}
+                    dropdownIconColor={textPrimary}
+                  >
+                    <Picker.Item label="Select a country..." value="" color={textSecondary} />
+                    {countries.map((country) => (
+                      <Picker.Item key={country} label={country || "Select a country..."} value={country} />
+                    ))}
+                  </Picker>
                 </View>
 
                 <View style={styles.locationModalButtons}>
                   <TouchableOpacity
-                    style={styles.locationCancelButton}
+                    style={[styles.locationCancelButton, { borderColor: colors.primary, backgroundColor: cardBackground }]}
                     onPress={() => {
                       setTempLocation(userLocation);
                       setShowLocationModal(false);
                     }}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.locationCancelText}>Cancel</Text>
+                    <Text style={[styles.locationCancelText, { color: colors.primary }]}>Cancel</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={styles.locationConfirmButton}
+                    style={[styles.locationConfirmButton, { backgroundColor: colors.primary, opacity: !tempLocation ? 0.5 : 1 }]}
                     onPress={handleSaveLocation}
                     activeOpacity={0.7}
                     disabled={!tempLocation}
@@ -1020,17 +1019,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   locationModalContent: {
-    backgroundColor: '#FFFCFB',
     borderRadius: 20,
-    padding: 20,
-    width: '85%',
+    padding: 24,
+    width: '88%',
     maxWidth: 400,
     alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
   },
   locationModalTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#2e573a',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -1041,34 +1043,35 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
   },
   locationOptionText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2e573a',
     marginLeft: 12,
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
   },
   locationCancelButton: {
     flex: 1,
     padding: 16,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#2e573a',
-    backgroundColor: '#fff',
   },
   locationCancelText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#2e573a',
     textAlign: 'center',
   },
   locationConfirmButton: {
     flex: 1,
     padding: 16,
     borderRadius: 12,
-    backgroundColor: '#2e573a',
   },
   locationConfirmText: {
     fontSize: 16,
@@ -1077,8 +1080,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inlinePicker: {
+    flex: 1,
     fontSize: 16,
-    color: '#2e573a',
   },
   locationModalButtons: {
     flexDirection: 'row',
