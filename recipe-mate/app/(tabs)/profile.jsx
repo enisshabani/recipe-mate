@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import * as Notifications from "expo-notifications";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../contexts/AuthContext";
 import { logOut } from "../../firebase/auth";
@@ -96,6 +97,7 @@ export default function ProfileScreen() {
   const loadUserLocation = async () => {
     try {
       const savedLocation = await AsyncStorage.getItem('userLocation');
+      console.log('Loading saved location:', savedLocation);
       if (savedLocation) {
         setUserLocation(savedLocation);
       }
@@ -111,13 +113,87 @@ export default function ProfileScreen() {
 
   const handleSaveLocation = async () => {
     try {
+      console.log('Saving location from picker:', tempLocation);
       await AsyncStorage.setItem('userLocation', tempLocation);
+      console.log('Saved to AsyncStorage');
       setUserLocation(tempLocation);
+      console.log('Updated userLocation state to:', tempLocation);
       setShowLocationModal(false);
+      
+      // Verify save
+      setTimeout(async () => {
+        const verified = await AsyncStorage.getItem('userLocation');
+        console.log('Verified saved location (picker):', verified);
+      }, 100);
+      
       Alert.alert("Success", "Location updated!");
     } catch (error) {
       console.log('Error saving location:', error);
       Alert.alert("Error", "Failed to save location");
+    }
+  };
+
+  const handleUseMyLocation = async () => {
+    try {
+      console.log('Starting location request...');
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      console.log('Permission status:', status);
+      
+      if (status !== 'granted') {
+        setShowLocationModal(false);
+        Alert.alert(
+          "Permission Denied",
+          "Please enable location permissions in your device settings to use this feature."
+        );
+        return;
+      }
+
+      console.log('Getting current position...');
+      const location = await Location.getCurrentPositionAsync({});
+      console.log('Location:', location);
+      
+      console.log('Reverse geocoding...');
+      const results = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+      console.log('Geocode results:', results);
+
+      if (results && results.length > 0 && results[0].country) {
+        const country = results[0].country;
+        console.log('Saving country:', country);
+        await AsyncStorage.setItem('userLocation', country);
+        console.log('Country saved to AsyncStorage');
+        setUserLocation(country);
+        console.log('userLocation state updated to:', country);
+        setTempLocation(country);
+        setShowLocationModal(false);
+        
+        // Reload location to verify
+        setTimeout(async () => {
+          const verified = await AsyncStorage.getItem('userLocation');
+          console.log('Verified saved location:', verified);
+        }, 100);
+        
+        Alert.alert("Success", `Location set to ${country}`);
+      } else {
+        console.log('No country found in results - reverse geocoding not supported');
+        setShowLocationModal(false);
+        Alert.alert(
+          "Location Not Available", 
+          "Automatic location detection is not available on this platform. Please select your country manually from the list.",
+          [{ text: "OK", onPress: () => setShowLocationModal(true) }]
+        );
+      }
+    } catch (error) {
+      console.log('Error getting location:', error);
+      console.log('Error details:', JSON.stringify(error));
+      setShowLocationModal(false);
+      Alert.alert(
+        "Error", 
+        "Failed to get your location. Please select your country manually from the list.",
+        [{ text: "OK", onPress: () => setShowLocationModal(true) }]
+      );
     }
   };
 
@@ -490,6 +566,9 @@ const handleFavorites = () => {
             </Text>
             <Ionicons name="pencil" size={14} color="#fde3cf" style={{ opacity: 0.7 }} />
           </TouchableOpacity>
+          
+          {/* Debug: Log userLocation */}
+          {console.log('Rendering with userLocation:', userLocation)}
         </Animated.View>
 
         {/* Location Edit Modal */}
@@ -499,46 +578,70 @@ const handleFavorites = () => {
           animationType="fade"
           onRequestClose={() => setShowLocationModal(false)}
         >
-          <View style={styles.modalOverlay}>
-            <Animated.View 
-              entering={FadeInDown.duration(300)}
-              style={styles.modalContent}
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowLocationModal(false)}
+          >
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={(e) => e.stopPropagation()}
             >
-              <Text style={styles.modalTitle}>Where are you from?</Text>
-              
-              <View style={styles.pickerWrapper}>
-                <Picker
-                  selectedValue={tempLocation}
-                  onValueChange={(value) => setTempLocation(value)}
-                  style={styles.countryPicker}
-                >
-                  <Picker.Item label="Select a country..." value="" />
-                  {countries.map((country) => (
-                    <Picker.Item key={country} label={country || "Select a country..."} value={country} />
-                  ))}
-                </Picker>
-              </View>
-
-              <View style={styles.locationModalButtons}>
+              <Animated.View 
+                entering={FadeInDown.duration(300)}
+                style={styles.locationModalContent}
+              >
+                <Text style={styles.locationModalTitle}>Where are you from?</Text>
+                
                 <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setShowLocationModal(false)}
+                  style={styles.locationOption}
+                  onPress={handleUseMyLocation}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                  <Ionicons name="location" size={24} color="#F4A300" />
+                  <Text style={styles.locationOptionText}>Use My Location</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.saveButton]}
-                  onPress={handleSaveLocation}
-                  activeOpacity={0.7}
-                >
-                  <Ionicons name="checkmark" size={20} color="#fff" />
-                  <Text style={styles.saveButtonText}>Save</Text>
-                </TouchableOpacity>
-              </View>
-            </Animated.View>
-          </View>
+                <View style={styles.locationOption}>
+                  <Ionicons name="globe-outline" size={24} color="#F4A300" />
+                  <View style={{ flex: 1, marginLeft: 12 }}>
+                    <Picker
+                      selectedValue={tempLocation}
+                      onValueChange={(value) => setTempLocation(value)}
+                      style={styles.inlinePicker}
+                    >
+                      <Picker.Item label="Select a country..." value="" />
+                      {countries.map((country) => (
+                        <Picker.Item key={country} label={country || "Select a country..."} value={country} />
+                      ))}
+                    </Picker>
+                  </View>
+                </View>
+
+                <View style={styles.locationModalButtons}>
+                  <TouchableOpacity
+                    style={styles.locationCancelButton}
+                    onPress={() => {
+                      setTempLocation(userLocation);
+                      setShowLocationModal(false);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.locationCancelText}>Cancel</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.locationConfirmButton}
+                    onPress={handleSaveLocation}
+                    activeOpacity={0.7}
+                    disabled={!tempLocation}
+                  >
+                    <Text style={styles.locationConfirmText}>Confirm</Text>
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+            </TouchableOpacity>
+          </TouchableOpacity>
         </Modal>
 
         <Modal
@@ -912,9 +1015,71 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFCFB',
     marginBottom: 20,
   },
+  locationModalContent: {
+    backgroundColor: '#FFFCFB',
+    borderRadius: 20,
+    padding: 20,
+    width: '85%',
+    maxWidth: 400,
+    alignSelf: 'center',
+  },
+  locationModalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#2e573a',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  locationOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#fff',
+  },
+  locationOptionText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2e573a',
+    marginLeft: 12,
+  },
+  locationCancelButton: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#2e573a',
+    backgroundColor: '#fff',
+  },
+  locationCancelText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#2e573a',
+    textAlign: 'center',
+  },
+  locationConfirmButton: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: '#2e573a',
+  },
+  locationConfirmText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  inlinePicker: {
+    fontSize: 16,
+    color: '#2e573a',
+  },
   locationModalButtons: {
     flexDirection: 'row',
     gap: 12,
+    marginTop: 8,
   },
   saveButton: {
     flex: 1,
@@ -1141,7 +1306,8 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalContent: {
     backgroundColor: '#FFFFFF',
