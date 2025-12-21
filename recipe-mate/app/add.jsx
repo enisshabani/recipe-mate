@@ -32,6 +32,7 @@ export default function AddRecipeScreen() {
   const [instructions, setInstructions] = useState("");
   const [imageUri, setImageUri] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [showImagePreview, setShowImagePreview] = useState(false);
 
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -230,7 +231,7 @@ const handleImagePicker = () => {
         >
           <TouchableOpacity
   style={styles.imagePickerButton}
-  onPress={handleImagePicker}
+  onPress={imageUri ? () => setShowImagePreview(true) : handleImagePicker}
 >
   {imageUri ? (
     <Image source={{ uri: imageUri }} style={styles.imagePreview} />
@@ -241,6 +242,40 @@ const handleImagePicker = () => {
     </View>
   )}
 </TouchableOpacity>
+
+        <Modal
+          visible={showImagePreview}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowImagePreview(false)}
+        >
+          <View style={styles.imagePreviewOverlay}>
+            <TouchableOpacity
+              style={styles.imagePreviewClose}
+              onPress={() => setShowImagePreview(false)}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="close" size={28} color="#fff" />
+            </TouchableOpacity>
+            
+            <Image
+              source={{ uri: imageUri }}
+              style={styles.fullScreenImage}
+            />
+
+            <TouchableOpacity
+              style={styles.changeImageButton}
+              onPress={() => {
+                setShowImagePreview(false);
+                handleImagePicker();
+              }}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="camera" size={20} color="#fff" />
+              <Text style={styles.changeImageText}>Change Image</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
 
         <Animated.View entering={FadeInDown.delay(100).duration(500)} style={styles.inputContainer}>
           <View style={styles.inputIconContainer}>
@@ -538,10 +573,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   
-imagePickerButton:{backgroundColor:"#fff",borderWidth:2,borderColor:"#ddd",borderRadius:8,borderStyle:"dashed",marginBottom:15,overflow:"hidden"},
-imagePickerPlaceholder:{height:200,justifyContent:"center",alignItems:"center"},
+imagePickerButton:{backgroundColor:"#fff",borderWidth:2,borderColor:"#F4A300",borderRadius:16,borderStyle:"dashed",marginBottom:15,overflow:"hidden",height:300},
+imagePickerPlaceholder:{height:"100%",justifyContent:"center",alignItems:"center"},
 imagePickerText:{marginTop:10,fontSize:16,color:"#666"},
-imagePreview:{width:"100%",height:200,resizeMode:"cover"},
+imagePreview:{width:"100%",height:"100%",resizeMode:"cover",borderRadius:14},
 modalOverlay:{flex:1,backgroundColor:"rgba(0,0,0,0.5)",justifyContent:"center",alignItems:"center"},
 modalContent:{backgroundColor:"#FFFCFB",borderRadius:20,padding:20,width:"100%"},
 modalTitle:{fontSize:20,fontWeight:"700",color:"#2e573a",textAlign:"center",marginBottom:20},
@@ -549,5 +584,10 @@ modalOption:{flexDirection:"row",alignItems:"center",padding:16,borderRadius:12,
 modalOptionText:{fontSize:16,fontWeight:"600",color:"#2e573a",marginLeft:12},
 modalCancelButton:{padding:16,borderRadius:12,borderWidth:2,borderColor:"#2e573a"},
 modalCancelText:{fontSize:16,fontWeight:"700",color:"#2e573a",textAlign:"center"},
+imagePreviewOverlay:{flex:1,backgroundColor:"#000",justifyContent:"center",alignItems:"center",paddingTop:40,paddingBottom:40},
+fullScreenImage:{width:"90%",height:"70%",resizeMode:"contain",borderRadius:16},
+imagePreviewClose:{position:"absolute",top:16,right:16,zIndex:10,backgroundColor:"rgba(0,0,0,0.5)",borderRadius:24,width:48,height:48,justifyContent:"center",alignItems:"center"},
+changeImageButton:{flexDirection:"row",backgroundColor:"#2e573a",paddingVertical:12,paddingHorizontal:20,borderRadius:12,alignItems:"center",gap:10,marginTop:20},
+changeImageText:{fontSize:14,fontWeight:"600",color:"#fff"},
 
 });
