@@ -97,10 +97,13 @@ const pickImage = async () => {
     allowsEditing: true,
     aspect: [4, 3],
     quality: 0.8,
+    base64: true,
   });
 
   if (!result.canceled && result.assets?.length) {
-    setImageUri(result.assets[0].uri);
+    const base64 = result.assets[0].base64;
+    const imageBase64 = `data:image/jpeg;base64,${base64}`;
+    setImageUri(imageBase64);
   }
 };
 
@@ -113,10 +116,13 @@ const takePhoto = async () => {
     allowsEditing: true,
     aspect: [4, 3],
     quality: 0.8,
+    base64: true,
   });
 
   if (!result.canceled && result.assets?.length) {
-    setImageUri(result.assets[0].uri);
+    const base64 = result.assets[0].base64;
+    const imageBase64 = `data:image/jpeg;base64,${base64}`;
+    setImageUri(imageBase64);
   }
 };
 
