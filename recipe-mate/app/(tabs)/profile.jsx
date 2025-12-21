@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert, TouchableOpacity, Switch } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert, TouchableOpacity, Switch, Image, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeIn, FadeInDown, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
+import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../contexts/AuthContext";
 import { logOut } from "../../firebase/auth";
@@ -54,10 +55,24 @@ export default function ProfileScreen() {
   const { stats, recipes } = useRecipes();
   const router = useRouter();
   const [dailyReminderEnabled, setDailyReminderEnabled] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   useEffect(() => {
     loadReminderSettings();
+    loadProfileImage();
   }, []);
+
+  const loadProfileImage = async () => {
+    try {
+      const savedImage = await AsyncStorage.getItem('profileImage');
+      if (savedImage) {
+        setProfileImage(savedImage);
+      }
+    } catch (error) {
+      console.log('Error loading profile image:', error);
+    }
+  };
 
   const loadReminderSettings = async () => {
     try {
@@ -68,6 +83,66 @@ export default function ProfileScreen() {
     } catch (error) {
       console.log('Error loading reminder settings:', error);
     }
+  };
+
+  const requestPermissions = async () => {
+    if (Platform.OS !== "web") {
+      const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+      const mediaStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (
+        cameraStatus.status !== "granted" ||
+        mediaStatus.status !== "granted"
+      ) {
+        Alert.alert(
+          "Permissions Required",
+          "Please grant camera and photo library permissions to add a profile picture."
+        );
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const pickProfileImage = async () => {
+    setShowImageModal(false);
+    const ok = await requestPermissions();
+    if (!ok) return;
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets?.length) {
+      setProfileImage(result.assets[0].uri);
+      await AsyncStorage.setItem('profileImage', result.assets[0].uri);
+      Alert.alert("Success", "Profile picture updated!");
+    }
+  };
+
+  const takeProfilePhoto = async () => {
+    setShowImageModal(false);
+    const ok = await requestPermissions();
+    if (!ok) return;
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets?.length) {
+      setProfileImage(result.assets[0].uri);
+      await AsyncStorage.setItem('profileImage', result.assets[0].uri);
+      Alert.alert("Success", "Profile picture updated!");
+    }
+  };
+
+  const handleProfileImagePress = () => {
+    Platform.OS === "web" ? pickProfileImage() : setShowImageModal(true);
   };
 
   const scheduleDailyReminder = async () => {
@@ -304,9 +379,25 @@ const handleFavorites = () => {
             { backgroundColor: "#2e573a" },
           ]}
         >
-          <View style={[styles.avatar, { backgroundColor: "#FFFFFF" }]}>
-            <Ionicons name="person" size={48} color={deepAccent} />
-          </View>
+          <TouchableOpacity 
+            onPress={handleProfileImagePress}
+            activeOpacity={0.7}
+            style={styles.avatarTouchable}
+          >
+            <View style={[styles.avatar, { backgroundColor: "#FFFFFF" }]}>
+              {profileImage ? (
+                <Image
+                  source={{ uri: profileImage }}
+                  style={styles.profileImage}
+                />
+              ) : (
+                <Ionicons name="person" size={48} color={deepAccent} />
+              )}
+            </View>
+            <View style={styles.cameraIconContainer}>
+              <Ionicons name="camera" size={16} color="#fff" />
+            </View>
+          </TouchableOpacity>
           <Text style={[styles.name, { color: "#fde3cf" }]}>
             {isAuthenticated ? user.email : "Recipe Chef"}
           </Text>
@@ -319,6 +410,48 @@ const handleFavorites = () => {
             Cooking enthusiast since 2024
           </Text>
         </Animated.View>
+
+        <Modal
+          visible={showImageModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowImageModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <Animated.View 
+              entering={FadeInDown.duration(300)}
+              style={styles.modalContent}
+            >
+              <Text style={styles.modalTitle}>Change Profile Picture</Text>
+              
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={takeProfilePhoto}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="camera" size={24} color="#2e573a" />
+                <Text style={styles.modalButtonText}>Take a Photo</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={pickProfileImage}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="image" size={24} color="#2e573a" />
+                <Text style={styles.modalButtonText}>Choose from Gallery</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setShowImageModal(false)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
+        </Modal>
 
         <Animated.View
           entering={FadeInDown.delay(200).duration(500).springify()}
@@ -573,6 +706,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  avatarTouchable: {
+    position: 'relative',
+  },
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  cameraIconContainer: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#F4A300',
+    borderRadius: 18,
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+  },
   name: {
     fontSize: 30,
     fontWeight: '700',
@@ -728,5 +882,52 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textAlign: 'center',
     lineHeight: 18,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    paddingBottom: 40,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#2e573a',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFCFB',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#2e573a',
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2e573a',
+    marginLeft: 12,
+  },
+  cancelButton: {
+    backgroundColor: '#f8f8f8',
+    borderColor: '#ddd',
+    marginTop: 8,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666666',
   },
 });
