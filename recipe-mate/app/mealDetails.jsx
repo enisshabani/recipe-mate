@@ -412,32 +412,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
+    borderWidth: 2,
+    borderColor: "#2e573a",
   },
 
   iconCircle: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#FFF4D6",
+    backgroundColor: "#FFF9E6",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: "#F4A300",
   },
 
   infoLabel: {
     fontSize: 12,
-    color: "#888",
+    color: "#F4A300",
     marginBottom: 4,
-    fontWeight: "500",
+    fontWeight: "600",
   },
 
   infoText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
     color: "#2e573a",
   },
@@ -466,11 +468,11 @@ const styles = StyleSheet.create({
     padding: 16,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
+    borderWidth: 2,
+    borderColor: "#2e573a",
   },
 
   ingredientItem: {
@@ -489,7 +491,7 @@ const styles = StyleSheet.create({
 
   ingredient: {
     fontSize: 15,
-    color: "#444",
+    color: "#2e573a",
     flex: 1,
     lineHeight: 22,
   },
@@ -497,16 +499,16 @@ const styles = StyleSheet.create({
   instructions: {
     fontSize: 15,
     lineHeight: 24,
-    color: "#555",
+    color: "#2e573a",
     backgroundColor: "#fff",
     padding: 16,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
+    borderWidth: 2,
+    borderColor: "#2e573a",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
   },
 
@@ -549,7 +551,7 @@ const styles = StyleSheet.create({
   },
 
   savedButton: {
-    backgroundColor: "#d9534f",
+    backgroundColor: "#e74c3c",
   },
 
   favoriteButton: {
