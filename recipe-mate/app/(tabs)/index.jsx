@@ -76,32 +76,34 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>Recipe Mate</Text>
-          <Text style={styles.subtitle}>Discover delicious recipes</Text>
-        </View>
+        {!(searchExpanded && Platform.OS !== 'web') && (
+          <View>
+            <Text style={styles.title}>Recipe Mate</Text>
+            <Text style={styles.subtitle}>Discover delicious recipes</Text>
+          </View>
+        )}
         
         <Animated.View 
           entering={FadeIn.delay(200).duration(500)} 
-          style={Platform.OS === 'web' ? styles.headerSearchContainer : styles.headerSearchContainerMobile}
+          style={[
+            styles.headerSearchContainer,
+            searchExpanded && Platform.OS !== 'web' && styles.headerSearchContainerExpanded
+          ]}
           onMouseEnter={() => Platform.OS === 'web' && setSearchExpanded(true)}
           onMouseLeave={() => {
             if (Platform.OS === 'web' && !searchQuery) setSearchExpanded(false);
           }}
         >
-          {Platform.OS === 'web' && (
-            <TouchableOpacity 
-              onPress={() => setSearchExpanded(true)}
-              style={styles.searchIconWrapper}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="search-outline" size={20} color="#777" />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity 
+            style={styles.searchIconWrapper}
+            activeOpacity={0.7}
+            onPress={() => Platform.OS !== 'web' && setSearchExpanded(true)}
+          >
+            <Ionicons name="search-outline" size={24} color="#fff" />
+          </TouchableOpacity>
           
-          {(Platform.OS !== 'web' || searchExpanded) && (
-            <Animated.View style={[styles.searchInputWrapper, Platform.OS === 'web' ? searchAnimatedStyle : styles.searchInputWrapperMobile]}>
-              <Ionicons name="search-outline" size={20} color="#777" style={{ marginRight: 8 }} />
+          {(Platform.OS === 'web' && searchExpanded) && (
+            <Animated.View style={[styles.searchInputWrapper, searchAnimatedStyle]}>
               <TextInput
                 style={styles.headerSearchInput}
                 placeholder="Search for a recipe"
@@ -111,7 +113,6 @@ export default function HomeScreen() {
                 onBlur={() => {
                   if (Platform.OS === 'web' && !searchQuery) setSearchExpanded(false);
                 }}
-                autoFocus={Platform.OS === 'web'}
                 onSubmitEditing={() => {
                   if (searchQuery.trim() !== "" && !recentSearches.includes(searchQuery)) {
                     setRecentSearches((prev) => [...prev, searchQuery]);
@@ -123,6 +124,38 @@ export default function HomeScreen() {
                   <Ionicons name="close-circle" size={20} color="#999" />
                 </TouchableOpacity>
               )}
+            </Animated.View>
+          )}
+          
+          {(Platform.OS !== 'web' && searchExpanded) && (
+            <Animated.View style={[styles.searchInputWrapper, styles.searchInputWrapperMobile]}>
+              <TextInput
+                style={styles.headerSearchInput}
+                placeholder="Search for a recipe"
+                placeholderTextColor="#999"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                autoFocus
+                onSubmitEditing={() => {
+                  if (searchQuery.trim() !== "" && !recentSearches.includes(searchQuery)) {
+                    setRecentSearches((prev) => [...prev, searchQuery]);
+                  }
+                }}
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery("")}>
+                  <Ionicons name="close-circle" size={20} color="#999" />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity 
+                onPress={() => {
+                  setSearchQuery("");
+                  setSearchExpanded(false);
+                }}
+                style={styles.closeMobileButton}
+              >
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
             </Animated.View>
           )}
         </Animated.View>
@@ -214,47 +247,38 @@ const styles = StyleSheet.create({
   headerSearchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 24,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  headerSearchContainerMobile: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderWidth: 2,
-    borderColor: "#2e573a",
+    overflow: "hidden",
+  },
+  headerSearchContainerExpanded: {
     flex: 1,
-    marginLeft: 12,
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
   },
   searchIconWrapper: {
-    padding: 2,
+    padding: 4,
   },
   searchInputWrapper: {
     flexDirection: "row",
     alignItems: "center",
     overflow: "hidden",
+    marginLeft: 8,
   },
   searchInputWrapperMobile: {
-    flexDirection: "row",
-    alignItems: "center",
     flex: 1,
   },
   headerSearchInput: {
     fontSize: 14,
-    color: "#333",
+    color: "#fff",
     paddingVertical: 4,
     paddingHorizontal: 8,
     flex: 1,
+  },
+  closeMobileButton: {
+    padding: 4,
+    marginLeft: 8,
   },
   searchContainer: {
     flexDirection: "row",

@@ -68,11 +68,17 @@ export const signInWithGoogle = async () => {
         prompt: 'select_account'
       });
       
+      console.log("Starting Google sign-in...");
+      
       try {
+        // Try popup first
         const userCredential = await signInWithPopup(auth, provider);
+        console.log("Google sign-in successful:", userCredential.user);
         return { user: userCredential.user, error: null };
       } catch (popupError) {
         console.error("Google sign-in popup error:", popupError);
+        console.error("Error code:", popupError.code);
+        console.error("Error message:", popupError.message);
         
         // If popup fails, provide helpful error message
         if (popupError.code === 'auth/popup-closed-by-user') {
@@ -183,11 +189,16 @@ export const signInWithGitHub = async () => {
         allow_signup: 'true'
       });
       
+      console.log("Starting GitHub sign-in...");
+      
       try {
         const userCredential = await signInWithPopup(auth, provider);
+        console.log("GitHub sign-in successful:", userCredential.user);
         return { user: userCredential.user, error: null };
       } catch (popupError) {
         console.error("GitHub sign-in popup error:", popupError);
+        console.error("Error code:", popupError.code);
+        console.error("Error message:", popupError.message);
         
         // If popup fails, provide helpful error message
         if (popupError.code === 'auth/popup-closed-by-user') {
