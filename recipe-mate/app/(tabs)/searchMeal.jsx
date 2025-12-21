@@ -70,32 +70,18 @@ export default function SearchScreen() {
           onPress={() => router.push(`/communityRecipe?id=${item.id}`)}
           activeOpacity={0.8}
         >
-          <TouchableOpacity
-            style={styles.imagePlaceholder}
-            onPress={() => {
-              if (item.imageUri) {
-                setSelectedImageUri(item.imageUri);
-                setShowImagePreview(true);
-              }
-            }}
-            activeOpacity={0.9}
-          >
+          <View style={styles.imagePlaceholder}>
             {item.imageUri ? (
               <Image
                 source={{ uri: item.imageUri }}
-                style={styles.userProfileImage}
-              />
-            ) : item.userProfileImage ? (
-              <Image
-                source={{ uri: item.userProfileImage }}
-                style={styles.userProfileImage}
+                style={styles.recipeImage}
               />
             ) : (
               <Text style={styles.imagePlaceholderText}>
                 {item.title?.charAt(0)?.toUpperCase()}
               </Text>
             )}
-          </TouchableOpacity>
+          </View>
 
           <Text style={styles.cardTitle} numberOfLines={2}>
             {item.title}
@@ -316,6 +302,14 @@ const styles = StyleSheet.create({
     fontSize: 42,
     fontWeight: "800",
     color: "#fde3cf",
+  },
+  
+  recipeImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
   },
   
   cardTitle: {

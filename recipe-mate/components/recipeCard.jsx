@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Animated, { FadeInDown, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -37,7 +37,7 @@ function RecipeCard({ recipe, index = 0 }) {
 
       {/* EDIT */}
       <TouchableOpacity
-        style={{ flex: 1 }}
+        style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
         onPress={() =>
           router.push({
             pathname: "/recipe",
@@ -48,10 +48,24 @@ function RecipeCard({ recipe, index = 0 }) {
         onPressOut={handlePressOut}
         activeOpacity={1}
       >
-        <Text style={styles.title}>{recipe.title}</Text>
-        <Text style={styles.ingredientsText}>
-          {recipe.ingredients.length} ingredients
-        </Text>
+        {/* Recipe Image */}
+        {recipe.imageUri ? (
+          <Image 
+            source={{ uri: recipe.imageUri }} 
+            style={styles.recipeImage}
+          />
+        ) : (
+          <View style={styles.imagePlaceholder}>
+            <Ionicons name="restaurant-outline" size={32} color="#fde3cf" />
+          </View>
+        )}
+
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>{recipe.title}</Text>
+          <Text style={styles.ingredientsText}>
+            {recipe.ingredients.length} ingredients
+          </Text>
+        </View>
       </TouchableOpacity>
 
       {/* DELETE */}
@@ -93,6 +107,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
+  },
+  recipeImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    marginRight: 12,
+    backgroundColor: "#f5f5f5",
+  },
+  imagePlaceholder: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    marginRight: 12,
+    backgroundColor: "#2e573a",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textContainer: {
+    flex: 1,
   },
   title: {
     fontSize: 18,
