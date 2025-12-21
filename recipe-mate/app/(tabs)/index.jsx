@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   TextInput,
   RefreshControl,
+  Platform,
 } from "react-native";
 import Animated, { FadeIn, FadeInDown, SlideInDown, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
@@ -82,22 +83,25 @@ export default function HomeScreen() {
         
         <Animated.View 
           entering={FadeIn.delay(200).duration(500)} 
-          style={styles.headerSearchContainer}
-          onMouseEnter={() => setSearchExpanded(true)}
+          style={Platform.OS === 'web' ? styles.headerSearchContainer : styles.headerSearchContainerMobile}
+          onMouseEnter={() => Platform.OS === 'web' && setSearchExpanded(true)}
           onMouseLeave={() => {
-            if (!searchQuery) setSearchExpanded(false);
+            if (Platform.OS === 'web' && !searchQuery) setSearchExpanded(false);
           }}
         >
-          <TouchableOpacity 
-            onPress={() => setSearchExpanded(true)}
-            style={styles.searchIconWrapper}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="search-outline" size={20} color="#777" />
-          </TouchableOpacity>
+          {Platform.OS === 'web' && (
+            <TouchableOpacity 
+              onPress={() => setSearchExpanded(true)}
+              style={styles.searchIconWrapper}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="search-outline" size={20} color="#777" />
+            </TouchableOpacity>
+          )}
           
-          {searchExpanded && (
-            <Animated.View style={[styles.searchInputWrapper, searchAnimatedStyle]}>
+          {(Platform.OS !== 'web' || searchExpanded) && (
+            <Animated.View style={[styles.searchInputWrapper, Platform.OS === 'web' ? searchAnimatedStyle : styles.searchInputWrapperMobile]}>
+              <Ionicons name="search-outline" size={20} color="#777" style={{ marginRight: 8 }} />
               <TextInput
                 style={styles.headerSearchInput}
                 placeholder="Search for a recipe"
@@ -105,9 +109,9 @@ export default function HomeScreen() {
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 onBlur={() => {
-                  if (!searchQuery) setSearchExpanded(false);
+                  if (Platform.OS === 'web' && !searchQuery) setSearchExpanded(false);
                 }}
-                autoFocus
+                autoFocus={Platform.OS === 'web'}
                 onSubmitEditing={() => {
                   if (searchQuery.trim() !== "" && !recentSearches.includes(searchQuery)) {
                     setRecentSearches((prev) => [...prev, searchQuery]);
@@ -164,6 +168,16 @@ export default function HomeScreen() {
           />
         }
       />
+      
+      {filteredRecipes.length > 0 && (
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => router.push("/add")}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="add" size={28} color="#fff" />
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 }
@@ -210,6 +224,18 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  headerSearchContainerMobile: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderWidth: 2,
+    borderColor: "#2e573a",
+    flex: 1,
+    marginLeft: 12,
+  },
   searchIconWrapper: {
     padding: 2,
   },
@@ -217,6 +243,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     overflow: "hidden",
+  },
+  searchInputWrapperMobile: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
   },
   headerSearchInput: {
     fontSize: 14,
@@ -324,5 +355,21 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flexGrow: 1,
+  },
+  fab: {
+    position: "absolute",
+    right: 20,
+    bottom: 90,
+    backgroundColor: "#2e573a",
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });
