@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -28,7 +28,11 @@ export default function CommunityRecipeScreen() {
     transform: [{ scale: heartScale.value }],
   }));
 
-  const handleToggleFavorite = () => {
+  const favorite = recipe ? isFavorite(recipe.id) : false;
+
+
+  const handleToggleFavorite = useCallback(() => {
+    if (!recipe) return;
     heartScale.value = 1;
     heartScale.value = withSequence(
       withSpring(1.4, { damping: 6, stiffness: 500 }),
@@ -40,7 +44,7 @@ export default function CommunityRecipeScreen() {
     } else {
       addToFavorites(recipe);
     }
-  };
+  }, [recipe, favorite, addToFavorites, removeFromFavorites]);
 
   useEffect(() => {
     const loadRecipe = async () => {

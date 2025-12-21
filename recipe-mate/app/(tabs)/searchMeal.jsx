@@ -115,7 +115,7 @@ export default function SearchScreen() {
         ) : (
           <FlatList
             contentContainerStyle={styles.listContainer}
-            data={filteredRecipes}   // ✅ KJO ËSHTË KYÇI
+            data={filteredRecipes}  
             numColumns={3}
             keyExtractor={(item) => String(item.id)}
             columnWrapperStyle={{ justifyContent: "space-between" }}
