@@ -22,6 +22,7 @@ export const addRecipe = async (recipe) => {
        ? recipe.ingredients
        : [],
      instructions: recipe.instructions?.trim() || "",
+     imageUri: recipe.imageUri || null,
      userId: recipe.userId || null, 
      type: recipe.type || "manual",  
    };
@@ -90,6 +91,9 @@ export const updateRecipe = async (id, updatedFields) => {
      }),
      ...(updatedFields.instructions !== undefined && {
        instructions: updatedFields.instructions?.trim() || "",
+     }),
+     ...(updatedFields.imageUri !== undefined && {
+       imageUri: updatedFields.imageUri || null,
      }),
    };
 
