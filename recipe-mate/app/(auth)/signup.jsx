@@ -190,6 +190,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#2e573a",
     backgroundColor: "#fff",
+    maxWidth: 400,
+    width: "100%",
+    alignSelf: "center",
   },
   button: {
     backgroundColor: "#2e573a",
