@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
@@ -83,16 +84,27 @@ const defaultMeals = [
 ];
 
 
-const ApiMealCard = React.memo(({ item, onPress, index }) => (
+const ApiMealCard = React.memo(({ item, onPress, onImagePress, index }) => (
   <Animated.View
     entering={FadeInDown.delay(index * 100).duration(500).springify()}
     style={styles.card}
   >
-    <TouchableOpacity style={styles.cardTouchable} onPress={onPress}>
-      <Image source={{ uri: item.strMealThumb }} style={styles.image} />
-      <Text style={styles.mealName}>{item.strMeal}</Text>
-      <Text style={styles.mealCategory}>{item.strCategory}</Text>
-    </TouchableOpacity>
+    <View style={styles.cardTouchable}>
+      <TouchableOpacity
+        onPress={(e) => {
+          e.stopPropagation();
+          onImagePress && onImagePress(item.strMealThumb);
+        }}
+        activeOpacity={0.9}
+        style={styles.imageContainer}
+      >
+        <Image source={{ uri: item.strMealThumb }} style={styles.image} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
+        <Text style={styles.mealName}>{item.strMeal}</Text>
+        <Text style={styles.mealCategory}>{item.strCategory}</Text>
+      </TouchableOpacity>
+    </View>
   </Animated.View>
 ));
 
@@ -100,6 +112,8 @@ export default function ApiRecipesScreen() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedImageUri, setSelectedImageUri] = useState(null);
+  const [showImagePreview, setShowImagePreview] = useState(false);
   const router = useRouter();
 
   const handleSearch = useCallback(async () => {
@@ -115,7 +129,16 @@ export default function ApiRecipesScreen() {
     [results]
   );
     const renderApiMeal = useCallback(
-      ({ item, index }) => <ApiMealCard item={item} index={index} />,
+      ({ item, index }) => (
+        <ApiMealCard
+          item={item}
+          index={index}
+          onImagePress={(imageUri) => {
+            setSelectedImageUri(imageUri);
+            setShowImagePreview(true);
+          }}
+        />
+      ),
       []
     );
 
@@ -170,6 +193,10 @@ export default function ApiRecipesScreen() {
                 onPress={() =>
                   router.push(`../mealDetails?id=${item.idMeal}`)
                 }
+                onImagePress={(imageUri) => {
+                  setSelectedImageUri(imageUri);
+                  setShowImagePreview(true);
+                }}
               />
             )}
             contentContainerStyle={styles.listContainer}
@@ -178,6 +205,30 @@ export default function ApiRecipesScreen() {
             removeClippedSubviews
           />
         )}
+
+        <Modal
+          visible={showImagePreview}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowImagePreview(false)}
+        >
+          <View style={styles.imagePreviewOverlay}>
+            <TouchableOpacity
+              style={styles.imagePreviewClose}
+              onPress={() => setShowImagePreview(false)}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="close" size={28} color="#fff" />
+            </TouchableOpacity>
+            
+            {selectedImageUri && (
+              <Image
+                source={{ uri: selectedImageUri }}
+                style={styles.fullScreenImage}
+              />
+            )}
+          </View>
+        </Modal>
       </View>
     </KeyboardAvoidingView>
   );
@@ -242,6 +293,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 6,
   },
+  imageContainer: {
+    width: "100%",
+  },
   image: { width: "100%", height: 160, borderRadius: 10 },
   mealName: {
     fontSize: 12,
@@ -254,5 +308,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     color: "#777",
+  },
+  imagePreviewOverlay: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '80%',
+    resizeMode: 'contain',
+    borderRadius: 16,
+  },
+  imagePreviewClose: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    zIndex: 10,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 24,
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

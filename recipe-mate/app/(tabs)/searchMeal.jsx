@@ -9,8 +9,11 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Modal,
+  Image,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../contexts/AuthContext";
 import { getCommunityRecipes } from "../../firebase/recipe";
@@ -21,6 +24,8 @@ export default function SearchScreen() {
 
   // 🔹 LIVE SEARCH TEXT
   const [searchText, setSearchText] = useState("");
+  const [selectedImageUri, setSelectedImageUri] = useState(null);
+  const [showImagePreview, setShowImagePreview] = useState(false);
 
   const { user } = useAuth();
   const router = useRouter();
@@ -64,11 +69,32 @@ export default function SearchScreen() {
           onPress={() => router.push(`/communityRecipe?id=${item.id}`)}
           activeOpacity={0.8}
         >
-          <View style={styles.imagePlaceholder}>
-            <Text style={styles.imagePlaceholderText}>
-              {item.title?.charAt(0)?.toUpperCase()}
-            </Text>
-          </View>
+          <TouchableOpacity
+            style={styles.imagePlaceholder}
+            onPress={() => {
+              if (item.imageUri) {
+                setSelectedImageUri(item.imageUri);
+                setShowImagePreview(true);
+              }
+            }}
+            activeOpacity={0.9}
+          >
+            {item.imageUri ? (
+              <Image
+                source={{ uri: item.imageUri }}
+                style={styles.userProfileImage}
+              />
+            ) : item.userProfileImage ? (
+              <Image
+                source={{ uri: item.userProfileImage }}
+                style={styles.userProfileImage}
+              />
+            ) : (
+              <Text style={styles.imagePlaceholderText}>
+                {item.title?.charAt(0)?.toUpperCase()}
+              </Text>
+            )}
+          </TouchableOpacity>
 
           <Text style={styles.cardTitle} numberOfLines={2}>
             {item.title}
@@ -128,6 +154,30 @@ export default function SearchScreen() {
             updateCellsBatchingPeriod={50}
           />
         )}
+
+        <Modal
+          visible={showImagePreview}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowImagePreview(false)}
+        >
+          <View style={styles.imagePreviewOverlay}>
+            <TouchableOpacity
+              style={styles.imagePreviewClose}
+              onPress={() => setShowImagePreview(false)}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="close" size={28} color="#fff" />
+            </TouchableOpacity>
+            
+            {selectedImageUri && (
+              <Image
+                source={{ uri: selectedImageUri }}
+                style={styles.fullScreenImage}
+              />
+            )}
+          </View>
+        </Modal>
       </View>
     </KeyboardAvoidingView>
   );
@@ -258,6 +308,31 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#888",
     marginTop: 2,
+  },
+  imagePreviewOverlay: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '80%',
+    resizeMode: 'contain',
+    borderRadius: 16,
+  },
+  imagePreviewClose: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    zIndex: 10,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 24,
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   
 });
