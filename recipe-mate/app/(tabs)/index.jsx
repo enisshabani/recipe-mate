@@ -13,7 +13,6 @@ import Animated, { FadeIn, FadeInDown, SlideInDown } from "react-native-reanimat
 import { Ionicons } from "@expo/vector-icons";
 import RecipeCard from "../../components/recipeCard";
 
-const MemoRecipeCard = React.memo(RecipeCard);
 import { useRouter } from "expo-router";
 import { useRecipes } from "../../contexts/RecipeContext";
 
@@ -47,9 +46,10 @@ export default function HomeScreen() {
   );
 
   const renderRecipeCard = useCallback(
-    ({ item, index }) => <MemoRecipeCard recipe={item} index={index} />,
+    ({ item, index }) => <RecipeCard recipe={item} index={index} />,
     []
   );
+  
 
   return (
     <SafeAreaView style={styles.container}>

@@ -203,6 +203,7 @@ export default function ApiRecipesScreen() {
             initialNumToRender={12}
             windowSize={7}
             removeClippedSubviews
+            maxToRenderPerBatch={12}
           />
         )}
 
