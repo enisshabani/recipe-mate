@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert, TouchableOpacity, Switch, Image, Modal } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Platform, Pressable, Alert, TouchableOpacity, Switch, Image, Modal, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeIn, FadeInDown, useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
+import { Picker } from "@react-native-picker/picker";
 import * as Notifications from "expo-notifications";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -60,10 +61,14 @@ export default function ProfileScreen() {
   const [showImagePreview, setShowImagePreview] = useState(false);
   const [loginButtonHovered, setLoginButtonHovered] = useState(false);
   const [signupButtonHovered, setSignupButtonHovered] = useState(false);
+  const [userLocation, setUserLocation] = useState("");
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [tempLocation, setTempLocation] = useState("");
 
   useEffect(() => {
     loadReminderSettings();
     loadProfileImage();
+    loadUserLocation();
   }, []);
 
   const loadProfileImage = async () => {
@@ -87,6 +92,58 @@ export default function ProfileScreen() {
       console.log('Error loading reminder settings:', error);
     }
   };
+
+  const loadUserLocation = async () => {
+    try {
+      const savedLocation = await AsyncStorage.getItem('userLocation');
+      if (savedLocation) {
+        setUserLocation(savedLocation);
+      }
+    } catch (error) {
+      console.log('Error loading user location:', error);
+    }
+  };
+
+  const handleEditLocation = () => {
+    setTempLocation(userLocation);
+    setShowLocationModal(true);
+  };
+
+  const handleSaveLocation = async () => {
+    try {
+      await AsyncStorage.setItem('userLocation', tempLocation);
+      setUserLocation(tempLocation);
+      setShowLocationModal(false);
+      Alert.alert("Success", "Location updated!");
+    } catch (error) {
+      console.log('Error saving location:', error);
+      Alert.alert("Error", "Failed to save location");
+    }
+  };
+
+  const countries = [
+    "", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia",
+    "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin",
+    "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+    "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia",
+    "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica",
+    "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini",
+    "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada",
+    "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia",
+    "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati",
+    "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
+    "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands",
+    "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco",
+    "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria",
+    "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea",
+    "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis",
+    "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
+    "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia",
+    "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland",
+    "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago",
+    "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+    "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+  ];
 
   const requestPermissions = async () => {
     if (Platform.OS !== "web") {
@@ -420,7 +477,69 @@ const handleFavorites = () => {
           >
             Cooking enthusiast since 2024
           </Text>
+          
+          {/* Location Display */}
+          <TouchableOpacity 
+            style={styles.locationContainer}
+            onPress={handleEditLocation}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="location" size={16} color="#fde3cf" />
+            <Text style={styles.locationText}>
+              {userLocation || "Add your location"}
+            </Text>
+            <Ionicons name="pencil" size={14} color="#fde3cf" style={{ opacity: 0.7 }} />
+          </TouchableOpacity>
         </Animated.View>
+
+        {/* Location Edit Modal */}
+        <Modal
+          visible={showLocationModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowLocationModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <Animated.View 
+              entering={FadeInDown.duration(300)}
+              style={styles.modalContent}
+            >
+              <Text style={styles.modalTitle}>Where are you from?</Text>
+              
+              <View style={styles.pickerWrapper}>
+                <Picker
+                  selectedValue={tempLocation}
+                  onValueChange={(value) => setTempLocation(value)}
+                  style={styles.countryPicker}
+                >
+                  <Picker.Item label="Select a country..." value="" />
+                  {countries.map((country) => (
+                    <Picker.Item key={country} label={country || "Select a country..."} value={country} />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={styles.locationModalButtons}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setShowLocationModal(false)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.saveButton]}
+                  onPress={handleSaveLocation}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="checkmark" size={20} color="#fff" />
+                  <Text style={styles.saveButtonText}>Save</Text>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+          </View>
+        </Modal>
 
         <Modal
           visible={showImageModal}
@@ -794,6 +913,66 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
+    marginBottom: 12,
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 20,
+    marginTop: 8,
+  },
+  locationText: {
+    fontSize: 14,
+    color: '#fde3cf',
+    fontWeight: '500',
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: '#2e573a',
+    borderRadius: 12,
+    backgroundColor: '#FFFCFB',
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
+  countryPicker: {
+    height: 50,
+    width: '100%',
+  },
+  locationInput: {
+    borderWidth: 1,
+    borderColor: '#2e573a',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#2e573a',
+    backgroundColor: '#FFFCFB',
+    marginBottom: 20,
+  },
+  locationModalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  saveButton: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#2e573a',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 0,
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
   },
   statsCard: {
     borderRadius: 20,
