@@ -53,6 +53,15 @@ export default function ProfileScreen() {
   const textSecondary = "#666666";
   const deepAccent = "#2e573a";
 
+  const colors = {
+    primary: "#2e573a",
+    accent: "#F4A300",
+    border: "#2e573a",
+    text: "#2e573a",
+    background: "#FFFCFB",
+    card: "#FFFFFF",
+  };
+
   const {user, loading, isAuthenticated} = useAuth();
   const { stats, recipes } = useRecipes();
   const router = useRouter();
@@ -861,6 +870,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingTop: 20,
   },
   notAuthContainer: {
     flex: 1,
