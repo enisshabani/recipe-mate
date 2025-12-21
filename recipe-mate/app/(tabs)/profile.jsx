@@ -571,47 +571,6 @@ const handleFavorites = () => {
         </Animated.View>
 
         <Animated.View
-          entering={FadeInDown.delay(300).duration(500).springify()}
-          style={[styles.statsCard, { backgroundColor: cardBackground }]}
-        >
-          <Text style={[styles.sectionTitle, { color: textPrimary }]}>
-            Your Stats
-          </Text>
-
-          <View style={styles.statRow}>
-            <View style={styles.statItem}>
-              <Ionicons name="restaurant" size={32} color="#F4A300" />
-              <Text style={[styles.statValue, { color: textPrimary }]}>
-                {totalRecipes}
-              </Text>
-              <Text style={[styles.statLabel, { color: textSecondary }]}>
-                Recipes
-              </Text>
-            </View>
-
-            <View style={styles.statItem}>
-              <Ionicons name="heart" size={32} color="#e74c3c" />
-              <Text style={[styles.statValue, { color: textPrimary }]}>
-                {favoritesCount}
-              </Text>
-              <Text style={[styles.statLabel, { color: textSecondary }]}>
-                Favorites
-              </Text>
-            </View>
-
-            <View style={styles.statItem}>
-              <Ionicons name="time" size={32} color="#F4A300" />
-              <Text style={[styles.statValue, { color: textPrimary }]}>
-                {cookingTimeLabel}
-              </Text>
-              <Text style={[styles.statLabel, { color: textSecondary }]}>
-                Cook Time
-              </Text>
-            </View>
-          </View>
-        </Animated.View>
-
-        <Animated.View
           entering={FadeInDown.delay(450).duration(500).springify()}
           style={[styles.menuCard, { backgroundColor: cardBackground }]}
         >

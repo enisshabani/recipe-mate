@@ -38,7 +38,7 @@ export default function FloatingTabBar({
   tabs,
   containerWidth = Dimensions.get('window').width - 32,
   borderRadius = 24,
-  bottomMargin = 16,
+  bottomMargin = Platform.OS === 'android' ? 8 : 16,
 }: FloatingTabBarProps) {
   const theme = useTheme();
   const router = useRouter();
@@ -138,13 +138,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingVertical: 12,
+    paddingVertical: Platform.OS === 'android' ? 8 : 12,
     paddingHorizontal: 8,
   },
   tab: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: Platform.OS === 'android' ? 6 : 8,
   },
   label: {
     fontSize: 12,
