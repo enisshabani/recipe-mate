@@ -1,4 +1,4 @@
-# RecipeMate – Group XX
+# RecipeMate – Group 25
 
 ## Anëtarët e Grupit
 - Enis Shabani  
