@@ -236,7 +236,7 @@ const handleImagePicker = () => {
     <Image source={{ uri: imageUri }} style={styles.imagePreview} />
   ) : (
     <View style={styles.imagePickerPlaceholder}>
-      <Ionicons name="camera" size={40} color="#666" />
+      <Ionicons name="camera" size={40} color="#F4A300" />
       <Text style={styles.imagePickerText}>Add Recipe Image</Text>
     </View>
   )}
@@ -386,7 +386,7 @@ const handleImagePicker = () => {
       <Text style={styles.modalTitle}>Add Recipe Image</Text>
 
       <TouchableOpacity style={styles.modalOption} onPress={takePhoto}>
-        <Ionicons name="camera" size={24} color="#2e573a" />
+        <Ionicons name="camera" size={24} color="#F4A300" />
         <Text style={styles.modalOptionText}>Take Photo</Text>
       </TouchableOpacity>
 
