@@ -127,13 +127,16 @@ export default function SearchScreen() {
 
         {/* 🔹 LIVE SEARCH INPUT */}
         <View style={styles.searchSection}>
-          <TextInput
-            placeholder="Search for a recipe..."
-            value={searchText}
-            onChangeText={setSearchText}
-            style={styles.input}
-            placeholderTextColor="#999"
-          />
+          <View style={styles.searchInputContainer}>
+            <Ionicons name="search-outline" size={20} color="#777" style={{ marginRight: 8 }} />
+            <TextInput
+              placeholder="Search for a recipe..."
+              value={searchText}
+              onChangeText={setSearchText}
+              style={styles.input}
+              placeholderTextColor="#999"
+            />
+          </View>
         </View>
 
         {loading ? (
@@ -202,8 +205,10 @@ const styles = StyleSheet.create({
   apiButton: {
     backgroundColor: "#2e573a",
     paddingVertical: 10,
-    borderRadius: 10,
+    paddingHorizontal: 32,
+    borderRadius: 12,
     alignItems: "center",
+    alignSelf: "center",
   },
   apiButtonText: {
     color: "#fff",
@@ -213,13 +218,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 18,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#F4A300",
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+  searchInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "#fff",
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    borderWidth: 2,
+    borderColor: "#2e573a",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 14,
+    fontSize: 16,
+    color: "#333",
   },
   listContainer: {
     paddingHorizontal: 20,   
