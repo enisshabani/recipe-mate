@@ -22,7 +22,7 @@ Në fazën e dytë, aplikacioni është zgjeruar me:
 4. Navigim me Expo Router dhe UI të përmirësuar
 
 Në fazën e tretë, aplikacioni është avancuar me përmirësime të performancës, testim dhe integrime të reja:
-1. Device Features: Camera/Image Picker, Local Notifications, GPS/Location
+1. Device Features: Camera/Image Picker, Local Notifications
 2. UI/UX: Layout i pastër, animacione (button press, modal fade, animacion në përfundim të detyrës)
 3. Optimizations: FlatList, React memoization (useCallback, useMemo, React.memo), asset optimization
 4. Testing: Snapshot tests, interaction tests, mocking tests
