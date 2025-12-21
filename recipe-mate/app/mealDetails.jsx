@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import Animated, { FadeIn, FadeInDown, FadeInUp, useSharedValue, useAnimatedStyle, withSpring, withSequence } from "react-native-reanimated";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -17,6 +18,7 @@ export default function MealDetails() {
   const { id } = useLocalSearchParams();
   const [meal, setMeal] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [showImagePreview, setShowImagePreview] = useState(false);
   const router = useRouter();
   const { addRecipe, addToFavorites, isFavorite, removeFromFavorites, recipes } =
     useRecipes();
@@ -147,11 +149,25 @@ export default function MealDetails() {
         </Animated.View>
 
         {/* Image with animation */}
-        <Animated.Image 
-          entering={FadeInDown.delay(100).duration(500)}
-          source={{ uri: meal.strMealThumb }} 
-          style={styles.image} 
-        />
+        <TouchableOpacity 
+          activeOpacity={0.9}
+          onPress={() => setShowImagePreview(true)}
+        >
+          <Animated.View 
+            entering={FadeInDown.delay(100).duration(500)}
+            style={styles.imageContainer}
+          >
+            <Image 
+              source={{ 
+                uri: meal.strMealThumb,
+                cache: 'force-cache'
+              }} 
+              style={styles.image}
+              resizeMode="cover"
+              defaultSource={require('../assets/images/react-logo.png')}
+            />
+          </Animated.View>
+        </TouchableOpacity>
 
         {/* Title and Category */}
         <Animated.View entering={FadeInDown.delay(200).duration(500)} style={styles.titleContainer}>
@@ -250,6 +266,36 @@ export default function MealDetails() {
           </Text>
         </TouchableOpacity>
       </Animated.View>
+
+      {/* Image Preview Modal */}
+      <Modal
+        visible={showImagePreview}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowImagePreview(false)}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowImagePreview(false)}
+          >
+            <View style={styles.modalContent}>
+              <Image
+                source={{ uri: meal.strMealThumb }}
+                style={styles.fullImage}
+                resizeMode="contain"
+              />
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setShowImagePreview(false)}
+              >
+                <Ionicons name="close-circle" size={40} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -298,10 +344,25 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
+  imageContainer: {
+    width: "100%",
+    height: 250,
+    backgroundColor: "#f5f5f5",
+    overflow: "hidden",
+    borderRadius: 18,
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 0,
+    borderWidth: 2,
+    borderColor: "#2e573a",
+    alignSelf: "center",
+    maxWidth: "92%",
+  },
+
   image: {
     width: "100%",
-    height: 280,
-    resizeMode: "cover",
+    height: "100%",
+    backgroundColor: "#f5f5f5",
   },
 
   titleContainer: {
@@ -499,5 +560,38 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 15,
     fontWeight: "700",
+  },
+
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.95)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modalOverlay: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modalContent: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  fullImage: {
+    width: "100%",
+    height: "80%",
+  },
+
+  closeButton: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    zIndex: 10,
   },
 });
