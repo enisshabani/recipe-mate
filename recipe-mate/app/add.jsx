@@ -18,6 +18,7 @@ import {
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import * as Notifications from "expo-notifications";
 import { useRecipes } from "../contexts/RecipeContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -403,8 +404,6 @@ const handleImagePicker = () => {
     </View>
   </TouchableOpacity>
 </Modal>
-</SafeAreaView>
-
     </SafeAreaView>
   );
 }
