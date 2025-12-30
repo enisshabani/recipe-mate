@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 import FloatingTabBar from '../components/FloatingTabBar';
 
-// Mocking external dependencies (Mocking tests)
+// Mock expo-router to isolate navigation logic from tab rendering
 jest.mock('expo-router', () => ({
   useRouter: () => ({
     push: jest.fn(),
@@ -10,12 +10,14 @@ jest.mock('expo-router', () => ({
   usePathname: () => '/(tabs)/index',
 }));
 
+// Mock react-native-reanimated to avoid animation runtime issues in tests
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
   Reanimated.default.call = () => {};
   return Reanimated;
 });
 
+// Mock theme provider to provide consistent styling values
 jest.mock('@react-navigation/native', () => ({
   useTheme: () => ({
     colors: {
@@ -29,6 +31,7 @@ jest.mock('@react-navigation/native', () => ({
   }),
 }));
 
+// Mock icon component to simplify rendering and verification
 jest.mock('@/components/ui/icon-symbol', () => {
   const { View } = require('react-native');
   return function IconSymbol() {
